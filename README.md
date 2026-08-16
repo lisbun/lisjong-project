@@ -6,7 +6,7 @@ Project-wide architecture, repository boundaries, and roadmap for the lisjong ec
 
 `lisjong-project` は、lisjong ecosystem 全体の設計・repository責務・依存方向・長期ロードマップを管理する documentation / project coordination repository です。
 
-実装コードは原則として持ちません。`lisjong`、`lisjong-engine`、将来の `lisjong-eval` のいずれかを親repositoryとして扱うものでもありません。
+実装コードは原則として持ちません。`lisjong`、`lisjong-engine`、`lisjong-arena` のいずれかを親repositoryとして扱うものでもありません。
 
 ## 正本の分担
 
@@ -35,7 +35,7 @@ GitHub上で確認できる現在進捗を本repositoryの文書へ重複して�
 | --- | --- |
 | [`lisjong`](https://github.com/lisbun/lisjong) | 麻雀AI / Policy、Policy contract、AI判断ロジック、外部環境とのAdapter・integration |
 | [`lisjong-engine`](https://github.com/lisbun/lisjong-engine) | 日本式リーチ麻雀のルール、状態遷移、合法手、game / match進行 |
-| `lisjong-eval` | 将来の評価基盤。複数対局の実行計画、結果収集、metrics、統計的比較 |
+| [`lisjong-arena`](https://github.com/lisbun/lisjong-arena) | 再現可能なPolicy比較基盤。matchup、seed、seat rotation、複数対局の実行計画、結果収集、metrics |
 
 詳細な責務境界と依存方向は [Architecture](docs/architecture.md) を参照してください。
 長期的な能力ロードマップは [Roadmap](docs/roadmap.md) を参照してください。

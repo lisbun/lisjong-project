@@ -9,10 +9,10 @@
 ## Roadmap principles
 
 - 接続可能性と正しさを、AIの強さより先に確立する
-- 麻雀ルール、AI判断、評価を明確な責務境界で分離する
-- deterministicな実行条件を早期に確立し、後続の回帰testと評価に利用する
+- 麻雀ルール、AI判断、Policy比較を明確な責務境界で分離する
+- deterministicな実行条件を早期に確立し、後続の回帰testと比較に利用する
 - 外部環境固有の都合をPolicyやengineの内部契約へ漏らさない
-- 比較可能な対象と再現可能なgame実行が揃う前にevaluation基盤を過剰構築しない
+- 比較可能な対象と再現可能なgame実行が揃う前にArenaを過剰構築しない
 - 学習Policyは、手書きPolicyを再現可能に比較できる基盤が整ってから導入する
 
 ## Capability roadmap
@@ -35,23 +35,26 @@ engine完成はAIの強さを条件としません。合法手生成、状態遷
 
 環境ごとの差異はAdapter側で吸収し、Policy判断ロジックやengineのルール実装へ外部protocol固有の型や状態を持ち込みません。
 
-### 4. Reproducible evaluation foundation
+### 4. Reproducible Policy comparison foundation
 
-複数Policyを比較する価値が生まれ、かつdeterministicな複数対局を再現できる状態になった段階で、`lisjong-eval` の独立を検討します。
+`lisjong-arena` を、複数Policyの強さを再現可能な条件で比較する独立repositoryとして使用します。
 
-分離時には少なくとも次が成立していることを目安とします。
+初期Arenaは `lisjong` の既存RiichiEnv integrationを利用するため、`lisjong-engine` の完成を開始条件にしません。少なくとも次の条件を固定できる状態を目指します。
 
 - 比較対象となる複数Policyが存在する
-- seedを指定してgame結果を再現できる
-- seat差を制御できる
+- fixed seed setを指定できる
+- deterministicなseat rotationでseat差を制御できる
+- Policy assignmentを記録できる
 - game結果を機械的に収集できる
-- 単発の勝敗ではなく複数試行で比較する必要がある
+- 同一protocolで再実行できる
+
+RiichiEnvと`lisjong-engine`の両方が実際の実行経路として存在する前に、汎用backend abstractionを先行設計しません。
 
 ### 5. Statistical Policy comparison
 
-評価基盤では、固定されたevaluation protocolに従い、seed集合、seat rotation、試行数、metricsを記録してPolicy差を比較できる状態を目指します。
+Arenaでは、固定されたcomparison protocolに従い、seed集合、seat rotation、試行数、metricsを記録してPolicy差を比較できる状態を目指します。
 
-平均順位、平均得点、順位率等の基本metricsから開始し、必要性が確認された段階で信頼区間や統計的比較を追加します。
+平均順位、平均得点、1st / 2nd / 3rd / 4th counts等の基本metricsから開始し、必要性が確認された段階で信頼区間や統計的比較を追加します。
 
 ### 6. Advanced hand-crafted Policy
 
@@ -61,7 +64,7 @@ engine完成はAIの強さを条件としません。合法手生成、状態遷
 
 ### 7. Learning Policy
 
-手書きPolicyとevaluation protocolが十分に安定した後、学習Policyを導入します。
+手書きPolicyとcomparison protocolが十分に安定した後、学習Policyを導入します。
 
 学習アルゴリズム、model形式、training data、計算基盤は、その時点の要件に基づいて設計し、本ロードマップでは先に固定しません。
 

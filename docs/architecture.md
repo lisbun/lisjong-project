@@ -42,36 +42,58 @@
 
 `lisjong-engine` はPolicy、AI戦略、学習、RiichiEnv / RiichiLab固有integrationを持ちません。
 
-### 将来の `lisjong-eval`
+### `lisjong-arena`
 
-`lisjong-eval` は、複数の対局結果を再現可能な実験条件で収集し、Policyの強さを比較する評価基盤を担当します。
+`lisjong-arena` は、複数のlisjong Policyを再現可能な条件で対局させ、Policy全体の強さを比較するarena / comparison基盤を担当します。
 
-想定責務:
+主な責務:
 
-- Policy A / Bの比較
-- 評価用seed集合
-- seat rotation
-- 複数半荘の実行計画
-- 結果収集
-- 平均順位・平均得点・順位率等のmetrics
-- 統計的比較
-- benchmark / report
-- 再現可能なevaluation protocol
+- Policy同士のmatchup定義
+- evaluation用seed集合
+- deterministicなseat rotation
+- 複数gameの実行計画
+- Policy assignmentの記録
+- raw game result収集
+- 平均順位・平均得点・順位回数等の基本metrics
+- 再現可能なPolicy comparison protocol
+- 将来的な統計的比較・benchmark / report
 
-AI判断ロジックや麻雀ルールそのものは持たせません。
+`lisjong-arena` はAI判断ロジック、Action / state evaluation、麻雀ルール、単一gameの状態遷移を所有しません。
 
-`lisjong-eval` の具体的なpackage依存方向は、repositoryを実際に分離する段階で必要なAPI境界を確認して決定します。早期に固定しません。
+## Initial arena execution path
+
+`lisjong-engine` の完成は `lisjong-arena` 開始の前提にしません。初期Arenaは、すでに存在する `lisjong` のRiichiEnv integrationを利用してPolicy比較を成立させます。
+
+```text
+lisjong-arena
+    |
+    | matchup / seeds / seat rotation / aggregation
+    v
+lisjong
+    |
+    | existing RiichiEnv integration
+    v
+RiichiEnv
+```
+
+この構成では、Arenaは複数対局の計画と集計に集中し、Policy実行・Observation / Action変換・単一gameのRiichiEnv orchestrationを `lisjong` へ委譲します。
+
+将来 `lisjong-engine` が実際に対局可能になった段階では、`lisjong` 側のengine integrationをArenaから利用できるようにします。RiichiEnvと`lisjong-engine`という2つの実経路が揃う前に、将来APIを推測した汎用 `GameBackend` / `EvaluationBackend` 等のabstractionは導入しません。共通化は実経路の差異を確認してから判断します。
 
 ## Dependency direction
 
-現在確定しているruntime dependencyは次の一方向です。
+project-wideに許可する依存方向は次の通りです。
 
 ```text
+lisjong-arena -> lisjong
 lisjong -> lisjong-engine
 lisjong-engine -X-> lisjong
+lisjong -X-> lisjong-arena
 ```
 
-`lisjong-engine` は `lisjong` のPolicyやAI実装を知らずに成立する必要があります。
+初期Arenaでは `lisjong-arena -> lisjong -> RiichiEnv` の経路を使用します。`lisjong-arena` がRiichiEnv固有のObservation / Action変換や麻雀ルールを再実装しないことを重要な境界とします。
+
+`lisjong-engine` は `lisjong` のPolicyやAI実装を知らずに成立する必要があります。`lisjong` もArenaの比較protocolを知らずに単一game integrationを提供できる必要があります。
 
 `lisjong-project` はdocumentation / coordination repositoryであり、このruntime dependency graphには含めません。
 
@@ -86,8 +108,8 @@ lisjong-engine -X-> lisjong
 Policyとゲーム環境を接続するintegration runner
     -> lisjong
 
-複数対局を実行・集計してPolicyを比較するevaluation runner
-    -> lisjong-eval
+複数対局を実行・集計してPolicyを比較するarena / comparison runner
+    -> lisjong-arena
 ```
 
 ### Game runner
@@ -98,9 +120,9 @@ Policyとゲーム環境を接続するintegration runner
 
 RiichiEnv、RiichiLab、`lisjong-engine` 等の実行環境とPolicyを接続します。外部Observation / Action表現とPolicy contractの境界を扱いますが、麻雀ルールそのものは再実装しません。
 
-### Evaluation runner
+### Arena / comparison runner
 
-複数gameのseed、seat、Policy組合せ、試行数等を計画し、結果を集計して比較します。単一gameのルール進行やPolicy判断ロジックは所有しません。
+複数gameのseed、seat、Policy組合せ、試行数等を計画し、raw resultを収集・集計してPolicyを比較します。単一gameのルール進行、環境固有Adapter、Policy判断ロジックは所有しません。
 
 ## Issue placement rules
 
@@ -108,7 +130,7 @@ RiichiEnv、RiichiLab、`lisjong-engine` 等の実行環境とPolicyを接続し
 
 - 麻雀ゲームを正しく進行するために必要なら `lisjong-engine`
 - 観測からActionを選ぶAI、またはPolicyと環境の接続なら `lisjong`
-- 複数対局を実験条件に従って比較・集計するなら将来の `lisjong-eval`
+- 複数対局を実験条件に従って比較・集計するなら `lisjong-arena`
 - repository境界や依存方向そのものを変更するなら `lisjong-project`
 
 複数repositoryに変更が必要な機能でも、同じ仕様を複数repoへ重複して持たせません。横断契約をどこが所有するかを先に決め、各repoは自分の内部実装だけを持ちます。
