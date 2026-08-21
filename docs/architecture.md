@@ -48,6 +48,8 @@ RiichiEnv / RiichiLab等の外部environment固有型、WebSocket、credential�
 
 `lisjong-engine` は、与えられたActionに従って日本式リーチ麻雀を正しく進行し、対局結果を生成するgame engineを担当します。
 
+lisjong ecosystemから見た `lisjong-engine` の役割は、外部game environmentに依存せず、ルール・状態・再現性・player-visibleな観測 / action境界をecosystem側で制御できる **first-party execution substrate** です。これはHuman Play専用engineやAI専用simulatorを意味せず、AI、人間、test / scripted selector等の異なるconsumerが、action selectionをengine外から与えて同じgame executionを利用できる土台を意味します。
+
 主な責務:
 
 - 牌、手牌、山、河、副露等のドメインモデル
@@ -59,9 +61,11 @@ RiichiEnv / RiichiLab等の外部environment固有型、WebSocket、credential�
 - 最終点数・順位
 - `RuleSet`
 - deterministicなseed管理
+- player-visibleなobservation / public action boundary
+- external selectorから利用可能なdeterministic game execution boundary
 - engine固有component / rule correctnessのvalidation
 
-`lisjong-engine` はPolicy、AI戦略、学習、外部AI hosting、Mortal / MJAI等のexternal-agent integration、RiichiEnv / RiichiLab固有integration、evaluation orchestrationを持ちません。
+`lisjong-engine` はPolicy、AI戦略、学習、human-facing UI / input handling、外部AI hosting、Mortal / MJAI等のexternal-agent integration、RiichiEnv / RiichiLab固有integration、evaluation orchestrationを持ちません。誰がActionを選ぶか、どのように人間へ表示・入力させるか、複数trialをどう評価するかはconsumer側の責務です。
 
 ### `lisjong-arena`
 
@@ -122,6 +126,23 @@ execution infrastructureがArena外の複数concrete consumerから必要にな�
 ## External execution paths
 
 external executionはArena側のexecution / observation responsibilityとして発展させます。ただし、既存integrationを一括移動することや、project-wideなgeneric backendを先行設計することは要求しません。
+
+### First-party game execution
+
+`lisjong-engine` は、RiichiEnv等のexternal game environmentを置き換えるためではなく、ecosystem自身が完全に制御できるfirst-party game execution pathを提供します。external backendとfirst-party engineは競合する唯一の正解として扱わず、用途ごとの強みを使い分けます。
+
+```text
+execution / integration consumer
+          |
+          +----> external game environment
+          |
+          +----> lisjong-engine
+                     first-party execution
+```
+
+RiichiEnv等は高速simulation、external ecosystem interoperability、独立実装との比較等に利用できます。`lisjong-engine` はdeterministicな再現、controlled scenario、engine-owned ground truthを利用したoffline validation、Human Play等のconcrete consumer requirementに応じた最小boundaryの検証に利用できます。
+
+どちらか一方をproject-wideな唯一のexecution backendとして固定しません。first-party pathを利用するconsumerも、engine内部mutable stateやprivileged informationをPolicy-visible stateへ漏らさず、用途に応じた公開boundaryを利用します。
 
 ### Policy-vs-Policy development evaluation
 
@@ -306,7 +327,30 @@ Visualization / Analysisの責務原則は次の通りです。
 - Arena artifactをviewer唯一の入力経路としない
 - adapter / normalization contractは具体的consumer requirementsから抽出する
 
-Human PlayはVisualization / Analysisとは別の将来能力です。具体的なviewer repository、GUI framework、protocol、OSS採用は現時点では固定しません。
+### Human Play boundary
+
+Human PlayはVisualization / Analysisとは別の将来能力として扱います。Human Playは `lisjong-engine` 自体の責務ではなく、first-party execution substrateを利用するconsumer capabilityです。
+
+```text
+Human Play consumer
+        |
+        | observation / public actions / selected action
+        v
+lisjong-engine
+```
+
+Human Play側は、human seat assignment、人間向けのstate / action表示、human input、action selection UX、confirmation等のinteraction、CLI / GUI presentation、必要なsession orchestrationを所有します。AI seatを含む場合はconsumer / integration側が `lisjong` Policyを利用し、`lisjong-engine -> lisjong` の逆依存は作りません。
+
+Human Playの都合でGUI / CLI固有型をengineやPolicy contractへ逆流させません。concrete Human Play consumerで既存engine boundaryの不足が確認された場合は、UI固有APIをそのまま追加するのではなく、複数consumerにも再利用可能なminimum engine contractとして抽出できるかを確認します。
+
+Human Play専用repositoryは現時点では固定しません。次のようなconcrete requirementが発生した時点で、既存repositoryの責務を侵食しない専用consumer repositoryを第一候補としてplacementを再評価します。
+
+- CLI / GUI等のconcrete Human Play implementationへ着手する
+- human input / presentation / session orchestrationが独立した継続的責務になる
+- `lisjong-engine` と `lisjong` の双方をconsumerとして利用する必要が生じる
+- Human Play固有のdependency、test、release lifecycleを分離する価値が明確になる
+
+owner repositoryが未定であることや、現在Human Playを利用していないこと自体を旧assetの廃止理由にはしません。旧CLI / HumanPlayerから保持すべきbehavior / test knowledgeはconcrete consumer requirementとして整理し、互換APIそのものの維持とは分離します。
 
 ## Runner responsibilities
 
@@ -347,6 +391,8 @@ RiichiEnv、RiichiLab、将来利用するfirst-party engine等の実行環境�
 具体的な既存Adapter / runner / trace contractのmigration先は、project-wide ruleだけから機械的に決めず、consumerとdependencyを確認してconcrete Issueで決定します。
 
 Visualization / Analysisの具体的な実装repositoryは現時点で固定しません。consumer requirementsが具体化した時点で、既存repositoryの責務を侵食しないplacementを決定します。
+
+Human Playの具体的な実装repositoryも現時点では固定しません。human-facing presentation / input / session responsibilityがconcrete consumerとして成立した時点でplacementを再評価し、その都合だけでengine coreへUI責務を持ち込みません。
 
 複数repositoryに変更が必要な機能でも、同じ仕様を複数repoへ重複して持たせません。横断契約をどこが所有するかを先に決め、各repoは自分の内部実装だけを持ちます。
 
