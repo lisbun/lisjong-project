@@ -33,9 +33,11 @@ GitHub上で確認できる現在進捗を本repositoryの文書へ重複して�
 
 | Repository | 主な責務 |
 | --- | --- |
-| [`lisjong`](https://github.com/lisbun/lisjong) | 麻雀AI / Policy、Policy contract、AI判断ロジック、外部環境とのAdapter・integration |
+| [`lisjong`](https://github.com/lisbun/lisjong) | 麻雀AI decision core。Policy、Policy contract、AI判断ロジック、推論・評価component |
 | [`lisjong-engine`](https://github.com/lisbun/lisjong-engine) | 日本式リーチ麻雀のルール、状態遷移、合法手、game / match進行 |
-| [`lisjong-arena`](https://github.com/lisbun/lisjong-arena) | 再現可能なPolicy比較基盤。matchup、seed、seat rotation、複数対局の実行計画、結果収集、metrics |
+| [`lisjong-arena`](https://github.com/lisbun/lisjong-arena) | lisjongのexternal execution / observationと再現可能なPolicy評価。environment integration、対局記録、matchup、seed、seat rotation、結果収集、metrics |
+
+`lisjong-arena` 内では、environmentへの接続・対局実行・raw observation取得を担う execution / observation と、comparison protocol・metrics・artifactを担う evaluation を別責務として扱います。
 
 詳細な責務境界と依存方向は [Architecture](docs/architecture.md) を参照してください。
 長期的な能力ロードマップは [Roadmap](docs/roadmap.md) を参照してください。
@@ -51,7 +53,8 @@ repository境界そのものを変更する提案や、複数repositoryへまた
 
 長期的な影響があり、後から理由を再確認する価値がある横断的な設計判断だけを `docs/decisions/` にADRとして残します。
 
-最初の決定は [ADR 0001: Repository boundaries](docs/decisions/0001-repository-boundaries.md) です。
+- [ADR 0001: Repository boundaries](docs/decisions/0001-repository-boundaries.md)
+- [ADR 0002: External execution and observation ownership](docs/decisions/0002-external-execution-observation-ownership.md)
 
 ## License
 
