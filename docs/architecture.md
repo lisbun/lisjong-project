@@ -11,34 +11,38 @@
 
 ### `lisjong`
 
-`lisjong` は、観測可能な麻雀状態からActionを選ぶAIと、そのAI自身を実際の対局環境で利用可能にするself-integration能力を担当します。
+`lisjong` は、観測可能な麻雀状態からActionを選ぶAI decision coreを担当します。
 
 主な責務:
 
 - Policy / AI戦略
 - `DecisionContext` / Policy contract
+- `InternalAction` 等のAI-side contract
 - 実行時に利用するPolicy / AI configurationの選択
+- Policy返却値の合法性・semantic identity validation
 - 向聴数、受け入れ枚数、牌効率、lookahead
 - remaining tile information、HandBelief等のhidden-state inference
 - 将来的な立直判断、打点・offensive value、鳴き、守備・defensive risk、押し引き、value / utility-aware decision、学習Policy
 - Policy内部componentのcorrectness / calibration validation
-- RiichiEnv / RiichiLab / 将来の `lisjong-engine` とPolicyを接続するAdapter・integration
-- Policy選択結果の環境側合法手への対応付け・再検証
-- Arenaなしでlisjong自身を外部環境へ参加させるstandalone execution
+- AI feature / training example / learned estimatorの意味契約
 
-self-integrationは、概念上次の2つを区別します。
+lisjongの中心的な境界は概念上次とします。
 
 ```text
-environment-facing self-integration
-    1 seat分の外部環境表現とPolicy contractを接続する能力
-
-standalone execution
-    lisjong自身を実際の環境へ参加させるrunner / client能力
+DecisionContext
+      |
+      v
+    Policy
+      |
+      v
+InternalAction
 ```
 
-これはproject-wideな能力境界であり、単一のclassやmoduleがObservation変換、Policy実行、Action mapping、session lifecycleをすべて所有することを要求しません。具体的なAdapter / Policy execution / runner / clientの分割は `lisjong` 側architectureを正本とします。
+RiichiEnv / RiichiLab等の外部environment固有型、WebSocket、credential、matchmaking、retry / reconnect、continuous participation、game record persistence等のexecution concernをPolicy contractへ持ち込みません。
 
-`lisjong` は麻雀ルールそのものを進行するgame engineではなく、他AIのhosting、external competitor専用integration、複数trialの評価計画・集計も原則として所有しません。
+`lisjong` は麻雀ルールそのものを進行するgame engineでも、外部環境へのstandalone runner / clientの長期的な所有者でも、複数trialの評価計画・集計を行うrepositoryでもありません。
+
+個々の既存Adapter / runner / trace contractをどこへ置くかは、consumerとdependencyを確認してconcrete Issueで決定します。project-wide architectureだけを理由に同じsemanticsを複数repositoryへ重複実装しません。
 
 ### `lisjong-engine`
 
@@ -61,7 +65,39 @@ standalone execution
 
 ### `lisjong-arena`
 
-`lisjong-arena` は、lisjongのPolicy / game performanceを再現可能な条件で評価するarena / comparison基盤を担当します。
+`lisjong-arena` は、lisjongをconcrete environmentで実行・観測し、そのexecution dataを再現可能なPolicy / game evaluationへ接続するarena基盤を担当します。
+
+同一repository内でも、次の2責務を分離します。
+
+```text
+execution / observation
+        |
+        v
+ raw execution data
+        |
+        v
+    evaluation
+```
+
+#### Execution / observation
+
+主な責務:
+
+- environment-specific integration
+- RiichiLab client / Adapter等のexternal participation能力
+- local / external execution runner
+- matchmaking participation
+- repeated / continuous participation
+- retry / backoff等のexecution resilience
+- execution profile / credential source resolution
+- protocol trace
+- raw game record / objective execution eventの取得
+- environmentへ実際に送信・適用したActionの記録
+- Policy contractとexternal Observation / legal Actionを接続するenvironment-facing conversion
+
+このlayerはPolicy performance metric、comparison protocol、Arena固有seed / seat rotation semanticsへ依存しません。またAI判断ロジックや麻雀ruleを再実装しません。
+
+#### Evaluation
 
 主な責務:
 
@@ -75,31 +111,41 @@ standalone execution
 - 評価scopeに応じたmetrics
 - 再現可能なcomparison protocol
 - 将来的な統計的比較・external benchmark / report
-- evaluationだけを目的とするexternal competitor integration / orchestration
+- evaluation目的のexternal competitor integration / orchestration
+
+Evaluationはexecution / observation能力をconsumerとして利用できますが、その逆方向の依存は避けます。
 
 `lisjong-arena` はAI判断ロジック、Policy内部componentのcorrectness / calibration test、麻雀ルール、単一gameの状態遷移を再実装しません。
 
-external competitor integrationは、まずそのevaluationを成立させるArena-private implementation detailとして開始してよいものとします。同じintegrationがArena外の複数concrete consumerからも必要になった場合にのみ、共通runtime / repositoryへの抽出を再検討します。
+execution infrastructureがArena外の複数concrete consumerから必要になった場合、または24/7 production hosting等の独立したoperational responsibilityへ成長した場合にのみ、共通runtime / repositoryへの抽出を再検討します。
 
-## Arena execution paths
+## External execution paths
 
-Arenaの実行経路は用途ごとに扱います。既存のPolicy-vs-Policy evaluation経路を否定せず、mixed-agent external benchmarkで必要な追加経路だけを許容します。
+external executionはArena側のexecution / observation responsibilityとして発展させます。ただし、既存integrationを一括移動することや、project-wideなgeneric backendを先行設計することは要求しません。
 
 ### Policy-vs-Policy development evaluation
 
-Policy同士のdevelopment evaluationでは、`lisjong` が提供する既存self-integration / standalone executionを利用できます。
+Policy同士のdevelopment evaluationでは、Arenaが利用可能なconcrete execution pathを選択します。
 
 ```text
 lisjong-arena
       |
-      v
-   lisjong
-      |
+      | execution / observation
       v
 external game environment
+      |
+      | DecisionContext / InternalAction
+      v
+   lisjong Policy
 ```
 
-この経路では、Arenaはmatchup、seed、seat rotation、trial、result / metricsに集中し、lisjong自身を環境へ接続する処理は `lisjong` 側の責務を再利用します。
+既存のRiichiEnv Adapter / runner等をどのrepositoryが最終所有するかは、concrete migration Issueでconsumerとdependencyを確認して決定します。
+
+### Live / standalone participation
+
+RiichiLab等へlisjong自身を参加させるfirst-party entry pointは、target responsibilityとしてArena側のexecution / observation layerへ寄せます。
+
+接続・session lifecycle・matchmaking・retry / reconnect・continuous participation・protocol trace等はAI decision coreとは分離します。
 
 ### Mixed-agent external benchmark
 
@@ -117,34 +163,33 @@ Mortal等のexternal competitorを含むbenchmarkでは、Arenaが選択したOS
             lisjong      external agent
 ```
 
-この場合でも、Arenaがlisjong用のObservation / legal Action / selected Action mapping semanticsを独自に複製してよいことを意味しません。Arenaは `lisjong` のstandalone runner全体を必ず再利用する必要はありませんが、lisjong自身を1 seatとして実行するためのenvironment-facing self-integration semanticsを可能な限り再利用します。
-
-具体的なreuse API、external environment、competitor、protocolはconsumer repository / Issue側で決定します。
+この場合でも、ArenaがlisjongのPolicy判断ロジックや麻雀ルールを複製してよいことを意味しません。具体的なreuse API、external environment、competitor、protocolはconsumer repository / Issue側で決定します。
 
 ## Dependency direction
 
-first-party repository間で許可する依存方向は次の通りです。
+今回のrepository boundaryで少なくとも維持するfirst-party dependency ruleは次です。
 
 ```text
 lisjong-arena -> lisjong
-lisjong -> lisjong-engine
 lisjong-engine -X-> lisjong
 lisjong -X-> lisjong-arena
 ```
 
-これとは別に、consumer repositoryが用途に応じて外部OSSへ依存することを許容します。例えばArenaがevaluation execution / interoperabilityのために外部game environmentへ直接依存しても、first-party依存方向を変更したことにはなりません。
+`lisjong -> lisjong-engine` の必要性そのものは、本architecture変更では再設計しません。first-party engineがconcrete execution pathとして利用される時点で、実際のAPIとconsumerを確認し、必要であれば別のproject-wide decisionで再評価します。
+
+これとは別に、consumer repositoryが用途に応じて外部OSSへ依存することを許容します。
 
 ```text
 first-party dependency
     lisjong-arena -> lisjong
 
-example evaluation-specific external dependency
-    lisjong-arena -> selected OSS execution environment
+example execution dependency
+    lisjong-arena -> selected external game environment
 ```
 
-external dependencyを許容することと、Arenaがlisjong用Adapter / conversion semanticsや麻雀ルールを重複実装してよいことは別です。
+external dependencyを許容することと、ArenaがAI判断ロジックや麻雀ルールを重複実装してよいことは別です。
 
-`lisjong-engine` は `lisjong` のPolicyやAI実装を知らずに成立する必要があります。`lisjong` もArenaの比較protocolを知らずに自分自身のintegrationを提供できる必要があります。
+`lisjong-engine` は `lisjong` のPolicyやAI実装を知らずに成立する必要があります。`lisjong` もArenaのexecution lifecycleやcomparison protocolを知らずにAI decision coreとして成立する必要があります。
 
 `lisjong-project` はdocumentation / coordination repositoryであり、このruntime dependency graphには含めません。
 
@@ -173,18 +218,16 @@ Component validation
     -> component owning repository
 
 Policy / game evaluation
-    -> lisjong-arena
+    -> lisjong-arena evaluation
 
 External benchmark for evaluation
-    -> lisjong-arena
+    -> lisjong-arena evaluation
 
 Live / standalone participation of lisjong itself
-    -> lisjong self-integration
+    -> lisjong-arena execution / observation
 ```
 
 例えばHandBelief accuracyの向上は `lisjong` 側componentのquality claimであり、そのHandBeliefを利用するPolicyが対局上強くなったかはArena側のdecision / game performance claimです。この2つを同一の評価として扱いません。
-
-また、lisjong自身がRiichiLab等のlive environmentへ参加する能力はArenaを必要とせず `lisjong` が所有します。一方、外部AIとの対戦をlisjongの強さを測るbenchmarkとして実施する場合は `lisjong-arena` が所有します。
 
 Arenaへcomponent-specific correctness / calibration testを無理に集約しません。また、deterministic reproducibilityとstatistical strength claimを分離し、同じseed / protocolを再実行できることだけをPolicy strengthの統計的証明とはみなしません。
 
@@ -192,28 +235,64 @@ Arenaへcomponent-specific correctness / calibration testを無理に集約し�
 
 AABB / ABBB、具体的なseed / seat rotation contract、sample size、variance、confidence interval、paired comparison等はproject-wide architectureでは固定せず、`lisjong-arena` の正本へ委ねます。
 
-## Observable data and Visualization / Analysis boundary
+## Execution data, AI improvement, and Visualization / Analysis boundary
 
-Visualization / Analysisは、対局状況・牌譜・Policy意思決定過程・evaluation結果を観察、再生、分析するread-orientedなconsumer能力として扱います。
-
-概念的には次のsourceをconsumerへ接続できる境界を目指します。
+external environmentから得るraw execution dataと、それをAI改善・評価・可視化へ利用する意味付けを分離します。
 
 ```text
 first-party engine / external environment / live integration
                        |
                        v
-             objective events / snapshots
+          lisjong-arena execution / observation
                        |
-              +--------+--------+
-              |                 |
-              v                 v
-        live consumer      persisted log / replay
+               raw execution data
+                 /          \
+                v            v
+       arena evaluation    AI improvement input
+                              |
+                              v
+                           lisjong
 
 Policy decision / analysis data --------+
 Arena result / provenance / artifact ---+--> analysis consumer
 ```
 
-ただし、project-wide canonical event schemaの新設を先行要件としません。共通 `GameEvent` 等を先に発明するのではなく、RiichiLab / RiichiEnv / `lisjong-engine` / future consumers等のconcrete requirementsを実際に扱った上で、必要なadapter / normalization boundaryを抽出します。
+Arena側のraw execution dataには、例えば次を含められます。
+
+- raw game record
+- protocol trace
+- objective execution event
+- seat-visible observation record
+- environmentへ実際に送信・適用したAction
+- game result
+
+一方、shanten / ukeire値、HandBelief、候補評価、選択理由等のAI内部analysisをexecution recordへ暗黙に混在させません。必要な場合はDecisionTrace / AnalysisTrace等の別channelとして設計します。
+
+training example semantics、learned estimatorのinput / target、feature semantics、component calibration等は `lisjong` 側のAI responsibilityです。Arenaが牌譜を取得することと、その牌譜をどのようなtraining exampleへ変換するかは別責務です。
+
+### Visibility / secret boundary
+
+次の情報境界を維持します。
+
+```text
+runtime credential / Authorization information
+        -X-> trace / game record / evaluation artifact
+
+privileged offline / ground-truth data
+        -X-> online Policy input
+
+privileged execution observation
+        -X-> Policy decision path
+```
+
+- token、Authorization header等のsecretをtrace / game record / artifactへ保存しない
+- offline component evaluationで利用可能なhidden ground truthをonline Policy inputへ逆流させない
+- privileged observer informationをPolicy-visible stateへ追加しない
+- execution / observationの追加がPolicy選択へ干渉しない境界を維持する
+
+Visualization / Analysisは、対局状況・牌譜・Policy意思決定過程・evaluation結果を観察、再生、分析するread-orientedなconsumer能力として扱います。
+
+project-wide canonical event schemaの新設を先行要件としません。共通 `GameEvent` 等を先に発明するのではなく、RiichiLab / RiichiEnv / `lisjong-engine` / future consumers等のconcrete requirementsを実際に扱った上で、必要なadapter / normalization boundaryを抽出します。
 
 Visualization / Analysisの責務原則は次の通りです。
 
@@ -236,11 +315,11 @@ Human PlayはVisualization / Analysisとは別の将来能力です。具体的�
 麻雀そのもののgame runner
     -> lisjong-engine
 
-lisjong自身をゲーム環境へ接続するintegration runner / client
-    -> lisjong
+lisjongをゲーム環境へ接続するintegration runner / client
+    -> lisjong-arena execution / observation
 
-複数試行を実行・集計し、必要に応じてexternal competitorをorchestrateするarena / comparison runner
-    -> lisjong-arena
+複数試行を計画・集計するarena / comparison runner
+    -> lisjong-arena evaluation
 ```
 
 ### Game runner
@@ -249,26 +328,28 @@ lisjong自身をゲーム環境へ接続するintegration runner / client
 
 ### Integration runner / client
 
-RiichiEnv、RiichiLab、`lisjong-engine` 等の実行環境へlisjong自身を接続します。外部Observation / Action表現とPolicy contractの境界、および必要なstandalone session lifecycleを扱いますが、麻雀ルールそのものは再実装しません。
+RiichiEnv、RiichiLab、将来利用するfirst-party engine等の実行環境へlisjong Policyを接続します。外部Observation / Action表現とPolicy contractの境界、および必要なstandalone session lifecycleを扱いますが、麻雀ルールそのものやPolicy判断ロジックは再実装しません。
 
 ### Arena / comparison runner
 
-複数trialのseed、seat、Policy / agent組合せ、evaluation scope、試行数等を計画し、raw resultを収集・集計して比較します。Policy-vs-Policy evaluationでは `lisjong` のintegrationを利用できます。mixed-agent external benchmarkではArenaが選択したexternal execution environmentを直接orchestrateしてよい一方、lisjong用のenvironment-facing semanticsやPolicy判断ロジック、麻雀ルールは再実装しません。
+複数trialのseed、seat、Policy / agent組合せ、evaluation scope、試行数等を計画し、raw resultを収集・集計して比較します。execution / observation layerを利用できますが、integration layerへcomparison semanticsを逆流させません。
 
 ## Issue placement rules
 
 新しい課題のplacementは「どのrepositoryの目的を成立させるために必要な責務か」で判断します。
 
 - 麻雀ゲームを正しく進行するために必要なら `lisjong-engine`
-- 観測からActionを選ぶAI、Policy内部component、Policy / AI configuration selection、またはlisjong自身を環境へ接続・参加させるself-integrationなら `lisjong`
-- Policy / game evaluationを複数trialの実験条件に従って比較・集計する場合、またはevaluation-only external competitor integrationなら `lisjong-arena`
+- 観測からActionを選ぶAI、Policy内部component、Policy / AI configuration、AI feature / training semanticsなら `lisjong`
+- environment接続、RiichiLab等への参加、session lifecycle、retry / reconnect、raw execution observation、またはPolicy / game evaluationなら `lisjong-arena`
 - repository境界、依存方向、evaluation ownership、observable boundary等のproject-wide原則を変更するなら `lisjong-project`
+
+具体的な既存Adapter / runner / trace contractのmigration先は、project-wide ruleだけから機械的に決めず、consumerとdependencyを確認してconcrete Issueで決定します。
 
 Visualization / Analysisの具体的な実装repositoryは現時点で固定しません。consumer requirementsが具体化した時点で、既存repositoryの責務を侵食しないplacementを決定します。
 
 複数repositoryに変更が必要な機能でも、同じ仕様を複数repoへ重複して持たせません。横断契約をどこが所有するかを先に決め、各repoは自分の内部実装だけを持ちます。
 
-external-agent integrationがArena外の複数concrete consumerから必要になった場合は、その時点で共通runtime / repositoryへの抽出を再検討します。将来のconsumerを推測してgeneric external-player hostを先行設計しません。
+execution infrastructureがArena外の複数concrete consumerから必要になった場合は、その時点で共通runtime / repositoryへの抽出を再検討します。将来のconsumerを推測してgeneric runtimeを先行設計しません。
 
 ## Source-of-truth boundary
 
