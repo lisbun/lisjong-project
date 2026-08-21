@@ -173,17 +173,17 @@ Expected valueは中心的な候補ですが、単一の局収支EVをproject-wi
 
 `lisjong` はPolicy libraryだけでなく、自分自身を対局環境へ接続して動作させる能力を持ちます。
 
-概念的には次の2層を区別します。
+概念的なruntime directionは次のように捉えます。
 
 ```text
+standalone runner / client
+        ↓
 environment-facing self-integration
         ↓
-Policy / AI configuration
-        ↓
-standalone runner / client
+selected Policy / AI configuration
 ```
 
-environment-facing self-integrationは、1 seat分のexternal Observation / legal ActionとlisjongのPolicy contractを安全に接続する能力です。standalone runner / clientは、実際のenvironment / session lifecycleを管理してlisjong自身を参加させます。
+standalone runner / clientは、実際のenvironment / session lifecycleを管理してlisjong自身を参加させます。environment-facing self-integrationは、1 seat分のexternal Observation / legal ActionとlisjongのPolicy contractを安全に接続します。
 
 現在の具体経路として、RiichiEnvでのローカル実行とRiichiLabへのオンライン参加を維持します。将来 `lisjong-engine` が実execution environmentとして成立した場合も、同じPolicy contractをself-integration経由で利用できる状態を目指します。
 
