@@ -167,15 +167,16 @@ Mortal等のexternal competitorを含むbenchmarkでは、Arenaが選択したOS
 
 ## Dependency direction
 
-今回のrepository boundaryで少なくとも維持するfirst-party dependency ruleは次です。
+現在許可するfirst-party dependency directionは次です。
 
 ```text
 lisjong-arena -> lisjong
+lisjong -> lisjong-engine
 lisjong-engine -X-> lisjong
 lisjong -X-> lisjong-arena
 ```
 
-`lisjong -> lisjong-engine` の必要性そのものは、本architecture変更では再設計しません。first-party engineがconcrete execution pathとして利用される時点で、実際のAPIとconsumerを確認し、必要であれば別のproject-wide decisionで再評価します。
+`lisjong -> lisjong-engine` は既存の許可方向として本変更では維持しますが、その長期的な必要性を本Decisionで再確認・固定するものではありません。first-party engineがconcrete execution pathとして利用される時点で、実際のAPIとconsumerを確認し、必要に応じて別のproject-wide decisionで再評価します。
 
 これとは別に、consumer repositoryが用途に応じて外部OSSへ依存することを許容します。
 
