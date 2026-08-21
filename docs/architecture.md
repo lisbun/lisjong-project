@@ -140,7 +140,7 @@ execution / integration consumer
                      first-party execution
 ```
 
-RiichiEnv等は高速simulation、external ecosystem interoperability、独立実装との比較等に利用できます。`lisjong-engine` はdeterministicな再現、controlled scenario、engine-owned ground truthを利用したoffline validation、Human Play等のconcrete consumer requirementに応じた最小boundaryの検証に利用できます。
+RiichiEnv等は高速simulation、external ecosystem interoperability、独立実装との比較等に利用できます。`lisjong-engine` はdeterministicな再現、controlled scenario、Human Play等のconcrete consumer requirementに応じた最小boundaryの検証に利用できます。privilegedなengine-owned ground truthをoffline validationで利用する場合は、concrete use caseから目的別の安全なboundaryを設計し、Policy-visible stateとは分離します。
 
 どちらか一方をproject-wideな唯一のexecution backendとして固定しません。first-party pathを利用するconsumerも、engine内部mutable stateやprivileged informationをPolicy-visible stateへ漏らさず、用途に応じた公開boundaryを利用します。
 
@@ -166,7 +166,7 @@ selected game environmentはRiichiEnv等のexternal environmentでも `lisjong-e
 
 RiichiLab等へlisjong自身を参加させるproject-owned entry pointは、target responsibilityとしてArena側のexecution / observation layerへ寄せます。
 
-接続・session lifecycle・matchmaking・retry / reconnect・continuous participation・protocol trace等はAI decision coreとは分離します。
+接続・session lifecycle・matchmaking・retry / reconnect、continuous participation、protocol trace等はAI decision coreとは分離します。
 
 ### Mixed-agent external benchmark
 
@@ -192,20 +192,25 @@ Mortal等のexternal competitorを含むbenchmarkでは、Arenaが選択したOS
 
 ```text
 lisjong-arena -> lisjong
+lisjong-arena -> lisjong-engine
 lisjong -> lisjong-engine
 lisjong-engine -X-> lisjong
 lisjong -X-> lisjong-arena
 ```
 
-`lisjong -> lisjong-engine` は既存の許可方向として本変更では維持しますが、その長期的な必要性を本Decisionで再確認・固定するものではありません。first-party engineがconcrete execution pathとして利用される時点で、実際のAPIとconsumerを確認し、必要に応じて別のproject-wide decisionで再評価します。
+`lisjong-arena -> lisjong-engine` は、Arenaがfirst-party engineをconcrete execution backendとして利用する場合に許可します。これはArena固有のevaluation semanticsをengineへ持ち込むことを意味しません。
+
+`lisjong -> lisjong-engine` は既存の許可方向として本変更では維持しますが、その長期的な必要性を本Decisionで再確認・固定するものではありません。
 
 これとは別に、consumer repositoryが用途に応じて外部OSSへ依存することを許容します。
 
 ```text
-first-party dependency
+first-party dependencies
     lisjong-arena -> lisjong
+    lisjong-arena -> lisjong-engine
+    lisjong -> lisjong-engine
 
-example execution dependency
+example external execution dependency
     lisjong-arena -> selected external game environment
 ```
 
@@ -285,7 +290,7 @@ Arena側のraw execution dataには、例えば次を含められます。
 - protocol trace
 - objective execution event
 - seat-visible observation record
-- environmentへ実際に送信・適用したAction
+- environmentへ実際に送信・適用したActionの記録
 - game result
 
 一方、shanten / ukeire値、HandBelief、候補評価、選択理由等のAI内部analysisをexecution recordへ暗黙に混在させません。必要な場合はDecisionTrace / AnalysisTrace等の別channelとして設計します。
