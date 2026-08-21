@@ -166,7 +166,7 @@ selected game environmentはRiichiEnv等のexternal environmentでも `lisjong-e
 
 RiichiLab等へlisjong自身を参加させるproject-owned entry pointは、target responsibilityとしてArena側のexecution / observation layerへ寄せます。
 
-接続・session lifecycle・matchmaking・retry / reconnect、continuous participation、protocol trace等はAI decision coreとは分離します。
+接続・session lifecycle・matchmaking・retry / reconnect・continuous participation・protocol trace等はAI decision coreとは分離します。
 
 ### Mixed-agent external benchmark
 
@@ -290,7 +290,7 @@ Arena側のraw execution dataには、例えば次を含められます。
 - protocol trace
 - objective execution event
 - seat-visible observation record
-- environmentへ実際に送信・適用したActionの記録
+- environmentへ実際に送信・適用したAction
 - game result
 
 一方、shanten / ukeire値、HandBelief、候補評価、選択理由等のAI内部analysisをexecution recordへ暗黙に混在させません。必要な場合はDecisionTrace / AnalysisTrace等の別channelとして設計します。
