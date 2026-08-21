@@ -123,9 +123,9 @@ Evaluationはexecution / observation能力をconsumerとして利用できます
 
 execution infrastructureがArena外の複数concrete consumerから必要になった場合、または24/7 production hosting等の独立したoperational responsibilityへ成長した場合にのみ、共通runtime / repositoryへの抽出を再検討します。
 
-## External execution paths
+## Execution paths
 
-external executionはArena側のexecution / observation responsibilityとして発展させます。ただし、既存integrationを一括移動することや、project-wideなgeneric backendを先行設計することは要求しません。
+Arena側のexecution / observation responsibilityは、external environmentだけでなく、利用可能なfirst-party engineを含むconcrete execution pathへlisjong Policyを接続する役割として発展させます。ただし、既存integrationを一括移動することや、project-wideなgeneric backendを先行設計することは要求しません。
 
 ### First-party game execution
 
@@ -153,18 +153,18 @@ lisjong-arena
       |
       | execution / observation
       v
-external game environment
+selected game environment
       |
-      | DecisionContext / InternalAction
+      | observation / action conversion
       v
    lisjong Policy
 ```
 
-既存のRiichiEnv Adapter / runner等をどのrepositoryが最終所有するかは、concrete migration Issueでconsumerとdependencyを確認して決定します。
+selected game environmentはRiichiEnv等のexternal environmentでも `lisjong-engine` のfirst-party pathでも構いません。既存のRiichiEnv Adapter / runner等をどのrepositoryが最終所有するかは、concrete migration Issueでconsumerとdependencyを確認して決定します。
 
 ### Live / standalone participation
 
-RiichiLab等へlisjong自身を参加させるfirst-party entry pointは、target responsibilityとしてArena側のexecution / observation layerへ寄せます。
+RiichiLab等へlisjong自身を参加させるproject-owned entry pointは、target responsibilityとしてArena側のexecution / observation layerへ寄せます。
 
 接続・session lifecycle・matchmaking・retry / reconnect・continuous participation・protocol trace等はAI decision coreとは分離します。
 
@@ -339,7 +339,7 @@ Human Play consumer
 lisjong-engine
 ```
 
-Human Play側は、human seat assignment、人間向けのstate / action表示、human input、action selection UX、confirmation等のinteraction、CLI / GUI presentation、必要なsession orchestrationを所有します。AI seatを含む場合はconsumer / integration側が `lisjong` Policyを利用し、`lisjong-engine -> lisjong` の逆依存は作りません。
+Human Play側は、human seat assignment、人間向けのstate / action表示、human input、action selection UX、confirmation等のinteraction、CLI / GUI presentation、必要なsession orchestrationを所有します。game / round / turn stateのauthority、合法手、reaction priority、精算、終局条件等のgame progressionは引き続き `lisjong-engine` が所有します。AI seatを含む場合はconsumer / integration側が `lisjong` Policyを利用し、`lisjong-engine -> lisjong` の逆依存は作りません。
 
 Human Playの都合でGUI / CLI固有型をengineやPolicy contractへ逆流させません。concrete Human Play consumerで既存engine boundaryの不足が確認された場合は、UI固有APIをそのまま追加するのではなく、複数consumerにも再利用可能なminimum engine contractとして抽出できるかを確認します。
 
