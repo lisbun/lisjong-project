@@ -4,23 +4,25 @@
 
 本書は lisjong ecosystem 全体として、どの能力をどのような依存関係で成立させたいかを示す長期ロードマップです。
 
-本ロードマップは、すべての能力を上から順番に完了させる直列Phase一覧ではありません。基礎契約を共有した上で、game engine、Policy、Policy comparison、Visualization / Analysisをそれぞれの責務境界で並行して発展させ、必要な地点で統合します。
+本ロードマップは、すべての能力を上から順番に完了させる直列Phase一覧ではありません。基礎契約を共有した上で、game engine、Policy、self-integration、Policy comparison、external benchmark、Visualization / Analysisをそれぞれの責務境界で並行して発展させ、必要な地点で統合します。
 
 個別Issueの実装順序、現在の進捗、完了状態は各repositoryのGitHub Issues / PRsを正本とします。本書にはIssue番号や完了checkboxを原則として持ちません。
 
 ## Roadmap principles
 
 - 接続可能性と正しさを、AIの強さより先に確立する
-- 麻雀ルール、AI判断、Policy比較、分析・可視化を明確な責務境界で分離する
+- 麻雀ルール、AI判断、lisjong自身のself-integration、比較評価、分析・可視化を明確な責務境界で分離する
 - deterministicな実行条件を早期に確立し、後続の回帰testと比較に利用する
 - 外部環境固有の都合をPolicyやengineの内部契約へ漏らさない
 - 成熟したOSSや外部実装はreference / backend / benchmark / toolingとして積極的に評価・利用する
+- 成熟したOSSがgame executionやprotocol interoperabilityを既に提供する場合は、同等機能の重複実装を避けて優先利用する
 - stable public contract、Policy semantics、repository responsibility、project固有artifact contract、cross-repository dependency directionはlisjong ecosystem側で所有する
 - correctnessを確立し、独立validationとregression protectionを行った後に性能を計測し、実測されたbottleneckを最適化する
 - 評価対象に対して最小十分なevaluation scopeを選び、必要になった時点でより高コストなscopeへ拡張する
 - engine完成をPolicy改善や初期Arena開始の不要な前提にしない
 - 比較可能な対象と再現可能なgame実行が揃う前にArenaを過剰構築しない
-- 実際の複数execution pathが揃う前に、将来backendを推測した汎用abstractionを先行設計しない
+- 実際の複数execution pathやconcrete consumerが揃う前に、将来backend / runtimeを推測した汎用abstractionを先行設計しない
+- external competitor integrationはまず具体的なevaluation consumerの内側で始め、Arena外の複数consumerから必要になった時点で共通runtime抽出を再検討する
 - Visualization / Analysisのためにproject-wide canonical event schemaを先行設計せず、具体的consumer requirementsから必要なadapter / normalization boundaryを抽出する
 - 学習Policyは、手書きPolicyを再現可能に比較できる基盤が整ってから導入し、既存の評価・分析基盤を可能な限り再利用する
 
@@ -36,12 +38,16 @@
           |              |              |
           v              v              v
       Engine Track   Policy Track    Arena Track
-          |              |              |
-          +--------------+--------------+
                          |
-                    Convergence
-          Policy x first-party engine
-          Arena x multiple environments
+                  Self-integration
+                         |
+          +--------------+--------------+
+          |                             |
+          v                             v
+   standalone / live              evaluation
+      participation        development / benchmark
+
+          Engine / Policy / Arena convergence
                          |
                          v
                   Learning Policy
@@ -53,7 +59,9 @@ Visualization / Analysis Track
   replay / live / analysis / debugging
 ```
 
-Engine / Policy / Arenaの3つのtrackは互いの完成を不必要に待たず進めます。Visualization / Analysisもread-orientedなconsumer能力として、具体的なdata sourceとconsumer requirementが成立した地点から発展させます。依存が必要になる地点はConvergenceとして明示します。
+Engine / Policy / Arenaの各trackは互いの完成を不必要に待たず進めます。`lisjong` のself-integrationは、PolicyをRiichiEnv / RiichiLab / 将来のfirst-party engine等へ接続し、Arenaなしでもlisjong自身を実環境で動作させる能力として発展させます。
+
+Arenaはその能力を評価対象として利用できますが、lisjong自身のlive / standalone participationを所有しません。Visualization / Analysisもread-orientedなconsumer能力として、具体的なdata sourceとconsumer requirementが成立した地点から発展させます。
 
 ## Foundation — Stable Policy and integration contract
 
@@ -66,9 +74,11 @@ Engine / Policy / Arenaの3つのtrackは互いの完成を不必要に待たず
 - Policy返却値の合法性validation
 - 外部環境とPolicyを分離するAdapter / integration境界
 - seat-visibleな情報だけをPolicyへ渡す情報境界
-- RiichiEnv、RiichiLab、将来の `lisjong-engine` 等へ同じPolicy contractを接続できる設計
+- 実行時に利用するPolicy / AI configurationを選択できる能力
+- 複数環境へ同じPolicy contractを接続できる設計
+- environment-facing integrationとstandalone runner / clientを必要に応じて分離できる設計
 
-このFoundationは、engine、Policy改善、Arenaの各trackが共有する契約です。個々の実行環境固有の型やprotocolは共通Policy contractへ持ち込みません。
+このFoundationは、engine、Policy改善、self-integration、Arenaの各trackが共有する契約です。個々の実行環境固有の型やprotocolは共通Policy contractへ持ち込みません。
 
 ## OSS / external ecosystem and validation strategy
 
@@ -79,7 +89,9 @@ Engine / Policy / Arenaの3つのtrackは互いの完成を不必要に待たず
 - **Benchmark**: external agent / environment
 - **Tooling**: replay / visualization / development support
 
-外部OSS固有の型・API・内部設計は、project-wideなstable contractへ直接漏らしません。具体的なOSS名、version、adapter仕様、dependency採否は、それを所有するrepository / Issueを正本とします。
+external benchmark、simulation、game execution、protocol interoperability等に必要な能力を成熟したOSSが既に提供している場合は、それを優先的に評価・利用します。同等の麻雀ルール、protocol変換、legal-action mapping、session補助等をecosystem内で無目的に再実装しません。
+
+一方、外部OSS固有の型・API・内部設計は、project-wideなstable contractへ直接漏らしません。具体的なversion、adapter仕様、dependency詳細は、それを所有するrepository / Issueを正本とします。
 
 correctnessとperformanceは次の順序で扱います。
 
@@ -117,7 +129,7 @@ domain model / deterministic wall
 
 engine完成はAIの強さを条件としません。合法手生成、状態遷移、和了・点数、round / match進行、最終結果の正しさを優先します。
 
-`lisjong-engine` はPolicyを所有せず、callerが選択した合法Actionを適用してgameを進行する責務に集中します。
+`lisjong-engine` はPolicyを所有せず、callerが選択した合法Actionを適用してgameを進行する責務に集中します。Mortal / MJAI等のexternal-agent integrationやevaluation orchestrationもengineへ持ち込みません。
 
 ## Policy Track — Hand-crafted Policy evolution
 
@@ -153,40 +165,122 @@ Hidden-state inference      Value estimation
 
 Expected valueは中心的な候補ですが、単一の局収支EVをproject-wideな最終目的関数として固定しません。将来の順位条件やgame-level objectiveに応じて、より適切なutilityを扱える余地を残します。
 
-新しい能力を既存Policyへ無条件に上書きするのではなく、比較可能なPolicy世代を残せる設計を優先します。具体的なclass名、algorithm、内部representationはproject-wide roadmapでは固定しません。
+新しい能力を既存Policyへ無条件に上書きするのではなく、比較可能なPolicy世代を残し、実行時に利用するPolicy / AI configurationを選択できる設計を優先します。具体的なclass名、profile形式、algorithm、内部representationはproject-wide roadmapでは固定しません。
 
 機能追加そのものではなく、既存Policyに対してどのような改善・退行を生んだかをArenaで評価可能にすることを重視します。このtrackは `lisjong-engine` の完成を待つ必要はありません。
 
+## Self-integration — lisjong自身を実環境で動かす
+
+`lisjong` はPolicy libraryだけでなく、自分自身を対局環境へ接続して動作させる能力を持ちます。
+
+概念的には次の2層を区別します。
+
+```text
+environment-facing self-integration
+        ↓
+Policy / AI configuration
+        ↓
+standalone runner / client
+```
+
+environment-facing self-integrationは、1 seat分のexternal Observation / legal ActionとlisjongのPolicy contractを安全に接続する能力です。standalone runner / clientは、実際のenvironment / session lifecycleを管理してlisjong自身を参加させます。
+
+現在の具体経路として、RiichiEnvでのローカル実行とRiichiLabへのオンライン参加を維持します。将来 `lisjong-engine` が実execution environmentとして成立した場合も、同じPolicy contractをself-integration経由で利用できる状態を目指します。
+
+Arenaはこのself-integrationを評価対象として利用できますが、RiichiLab等へのlisjong自身のlive / standalone participationを所有しません。
+
 ## Arena Track — Reproducible Policy evaluation
 
-`lisjong-arena` を、複数Policyを再現可能な条件で評価する独立repositoryとして発展させます。
+`lisjong-arena` を、Policy / game performanceを再現可能な条件で比較・評価する独立repositoryとして発展させます。
 
-評価戦略は、具体protocolをproject-wideに固定するのではなく、次の階層として扱います。
-
-```text
-Component validation
-        -> low-cost round-level evaluation
-        -> larger-sample Policy evaluation
-        -> game-level validation
-        -> external validation
-```
-
-上位原則は、**評価対象に対して最小十分なevaluation scopeを選ぶこと**です。
-
-局内decision qualityを主対象とする現在の強化段階では、局単位の低コスト評価を高速feedback loopの中心に置きます。多数sampleを取得しやすく、小さなPolicy変更を比較しやすく、regressionやfailureを局単位で分析しやすいためです。
-
-半荘等のgame-level評価は廃止しません。点棒状況、順位条件、親番、連荘、オーラス、トップ取り、ラス回避等のgame-level objectiveが重要になる段階では、高コストなvalidation layerとして利用します。
+Arenaには目的の異なる少なくとも2つのevaluation laneを持たせます。
 
 ```text
-rapid evaluation at the minimum sufficient scope
-          -> promising candidate
-          -> game-level validation when required
-          -> external validation
+Arena evaluation
+    |
+    +-- Round-level development evaluation
+    |       rapid feedback / many samples
+    |       self-improvement / regression detection
+    |
+    +-- Game-level / external benchmark
+            overall game performance
+            external competitor comparison
 ```
 
-具体的なAABB / ABBB等のprotocol、seat rotation、seed contract、sample size、metrics、confidence interval等は `lisjong-arena` 側の正本へ委ねます。
+上位原則は、**評価対象に対して最小十分なevaluation scopeを選ぶこと**です。2つのlaneは代替関係でも厳格な直列gateでもありません。
 
-初期Arenaは `lisjong` の既存integrationを利用し、`lisjong-engine` の完成を開始条件にしません。deterministic reproducibilityとstatistical strength claimは別の主張として扱い、再実行可能であることだけを強さの統計的証明とはみなしません。
+### Lane 1 — Round-level development evaluation
+
+局内decision qualityを主対象とする現在の強化段階では、局単位の低コスト評価を高速feedback loopの中心に置きます。
+
+概念的には次のような性格を持ちます。
+
+```text
+fixed / controlled seeds
+        ×
+round-level execution
+        ×
+many trials
+```
+
+主な目的:
+
+- 小さなPolicy変更の高速比較
+- regression検出
+- Policy世代間比較
+- game-level strategyが未成熟な段階での自己強化
+- failureを局単位で分析・再実行すること
+
+向聴、受け入れ、lookahead、HandBelief、offensive value、defensive risk、鳴き等の局内能力を強化する段階では、このlaneを中心に利用します。
+
+AABB / ABBB等の具体protocol、seed / seat rotation contract、sample size、metrics、confidence interval等は `lisjong-arena` 側の正本へ委ねます。
+
+### Lane 2 — Hanchan-level external benchmark
+
+成熟した外部AIに対するlisjongの総合的なgame performanceを確認するexternal benchmarkでは、半荘等のgame-level scopeを基本候補とします。
+
+現在の初期external competitor候補はMortalです。Mortalとのbenchmarkでは大量の1局対戦を主要protocolとはせず、概念的には次の経路を優先検討します。
+
+```text
+                     lisjong-arena
+                          |
+                      RiichiEnv
+                     /         \
+                    v           v
+            lisjong seat    Mortal seat
+                |               |
+                v               v
+             lisjong          Mortal
+
+        hanchan-level evaluation
+        + controlled seat rotation
+```
+
+RiichiEnvが提供するMortal / MJAI interoperability、game execution、legal Action mapping等を利用できる場合は、それを優先します。同等のMJAI event generator / parser / legal-action mapper / game progressionをlisjong ecosystem側で再実装することを前提にしません。
+
+これはRiichiEnvやMortalをproject-wide永久contractへ固定するものではなく、現在の優先execution / benchmark pathです。具体version、wrapper API、process方式、sample size、statistical protocol等は `lisjong-arena` のconcrete Issueで決定します。
+
+external benchmarkでは将来的に、点棒状況、順位条件、親番、連荘、南場、オーラス、トップ取り、ラス回避、game-level utility等を含めた総合的な意思決定を評価できます。
+
+ただしMortal benchmarkはgame-level strategy完成後にしか実施できないものとはしません。Policy成熟度を測るexternal referenceとして開発途中でも実施でき、game-level strategyの実装進展に伴ってbenchmarkの意味がより豊かになると捉えます。明確なdiagnostic目的があればMortalとのround-level comparisonを行うこと自体も禁止しません。
+
+### Arena execution pathの使い分け
+
+既存のPolicy-vs-Policy development evaluationでは、`lisjong` の既存integration / standalone executionを利用する経路を維持できます。
+
+```text
+lisjong-arena
+      ↓
+   lisjong
+      ↓
+  RiichiEnv
+```
+
+mixed-agent external benchmarkでは、ArenaがRiichiEnv等のOSS execution environmentを直接orchestrateしてよいものとします。ただしlisjong側のObservation / legal Action / selected Action mapping semanticsをArenaへ複製せず、environment-facing self-integrationを可能な限り再利用します。
+
+Mortal等のexternal competitor wrapperは、まずArena-private implementation detailとして開始します。Human Play、Arena外のMortal execution、generic external process hosting等、Arena外の複数concrete consumerが成立した場合にのみ共通runtime / repositoryへの抽出を再検討します。
+
+初期Arenaは引き続き `lisjong-engine` の完成を開始条件にしません。deterministic reproducibilityとstatistical strength claimは別の主張として扱い、再実行可能であることだけを強さの統計的証明とはみなしません。
 
 ArenaはPolicy判断ロジック、麻雀ルール、単一gameの状態遷移を再実装しません。
 
@@ -211,8 +305,11 @@ Component validation
 Policy / game evaluation
     -> lisjong-arena
 
-External / live validation
-    -> relevant integration boundary
+External benchmark for evaluation
+    -> lisjong-arena
+
+Live / standalone participation of lisjong itself
+    -> lisjong self-integration
 ```
 
 component-specific correctness / calibration testを `lisjong-arena` へ無理に集約しません。
@@ -232,7 +329,7 @@ component-specific correctness / calibration testを `lisjong-arena` へ無理�
       RiichiEnv    RiichiLab   lisjong-engine
 ```
 
-環境ごとの差異はAdapter / integration側で吸収し、Policy判断ロジックやengineのルール実装へ外部protocol固有の型や状態を持ち込みません。
+環境ごとの差異はself-integration側で吸収し、Policy判断ロジックやengineのルール実装へ外部protocol固有の型や状態を持ち込みません。
 
 このConvergenceでは、`lisjong -> lisjong-engine` の依存方向を維持し、`lisjong-engine` から `lisjong` へ逆依存させません。
 
@@ -254,7 +351,7 @@ first-party engine integrationが成立した後は、Arenaから既存のRiichi
 
 RiichiEnvと`lisjong-engine`という複数の実execution pathが揃った時点で、それぞれの差異を実測し、共通化すべき境界が本当に存在するかを判断します。
 
-それ以前に、将来APIを推測した汎用 `GameBackend` / `EvaluationBackend` 等のabstractionは導入しません。
+それ以前に、将来APIを推測した汎用 `GameBackend` / `EvaluationBackend` 等のabstractionは導入しません。mixed-agent benchmarkのためにArenaが外部environmentを直接利用できることも、汎用backend abstractionを先行導入する理由にはしません。
 
 ## Visualization / Analysis Track
 
@@ -305,13 +402,14 @@ hand-crafted Policyもbaseline、regression reference、feature / estimator comp
 - Policy contract / integration boundaryはPolicy改善と複数環境接続の基礎になる
 - correctness baselineを確立し、独立validationとregression protectionを行ってから性能最適化へ進む
 - Engine TrackはAIの強さとは独立して正しさを完成させる
-- Policy Trackはfirst-party engine完成前でも進められる
+- Policy Trackとself-integrationはfirst-party engine完成前でも進められる
 - Arena Trackの初期比較はfirst-party engine完成前でも進められる
 - 現在の局内decision改善では低コストなround-level evaluationを高速iterationの中心にする
-- game-level objectiveが重要になった段階で半荘等のgame-level validationを追加する
+- external benchmarkでは評価したいgame-level semanticsに応じて半荘等のscopeを選択する
+- Mortal等のexternal benchmarkはgame-level strategy完成を必須gateとしない
 - 高度な統計機能は最小comparison protocolによる実データを得てから追加する
 - first-party engine integrationはengineが実execution pathとして成立してから行う
-- generic backend abstractionは複数の実execution pathが揃ってから判断する
+- generic backend / external-player runtime abstractionは複数の実execution pathやconcrete consumerが揃ってから判断する
 - Visualization / Analysisの共通境界は具体的なsource / consumer requirementsから抽出する
 - Learning Policyは再現可能なPolicy comparisonが成立してから導入し、既存の評価・分析基盤を再利用する
 
@@ -325,14 +423,15 @@ hand-crafted Policyもbaseline、regression reference、feature / estimator comp
 - 「次は#XX」のような直近作業順序
 - release日程の推測
 - 未確定な内部APIやpackage構成
-- 特定OSSのversion、具体adapter仕様、dependency採否
+- 特定OSSのversionや具体adapter / wrapper仕様
 - AABB / ABBB等の具体的なevaluation protocol
+- Mortal benchmarkの具体的sample size / statistical threshold
 - 未検証のproject-wide canonical event schema
 
-これらは各repositoryのIssues / PRs / architectureを正本とします。
+現在の長期的なpreferred execution / benchmark pathとしてOSS名を示すことはありますが、そのversionや具体integration contractは各consumer repository / Issueを正本とします。
 
 ## Updating this roadmap
 
 本書は、個別Issueが完了するたびには更新しません。
 
-ecosystem全体の到達目標、track間の依存関係、Convergenceの開始条件、repository分離や責務境界、評価戦略など、長期的な方向性が変わった場合に更新します。
+ecosystem全体の到達目標、track間の依存関係、Convergenceの開始条件、repository分離や責務境界、評価戦略、長期的なpreferred execution pathなど、方向性が変わった場合に更新します。
