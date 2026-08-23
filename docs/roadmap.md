@@ -64,6 +64,150 @@ Engine / Policy / Arenaの各trackは互いの完成を不必要に待たず進�
 
 Visualization / Analysisはread-orientedなconsumer能力として、具体的なdata sourceとconsumer requirementが成立した地点から発展させます。
 
+## Near-term AI improvement capability sequence
+
+ADR 0002後のnear-term developmentは、固定Phase番号や完全な直列gateではなく、**AIを継続的に強化するための主要dependencyを持つpartial order**として捉えます。
+
+```text
+Resilient live participation
+        |
+        +---------------------------> objective live records
+
+Policy decision observability
+        |
+        v
+Consumer-driven replay / analysis boundary
+        |
+        +---------------------------> objective records + AI analysis
+
+First-party engine execution
+        |                           \
+        v                            +-> objective execution records
+Human vs AI live consumer
+        |
+        +---------------------------> Human session data
+
+objective records + AI analysis + execution sources
+                    |
+                    v
+             Offline analysis
+                    |
+                    v
+              AI strengthening
+                    |
+                    v
+       reproducible Arena evaluation
+                    |
+                    v
+          external validation
+                    |
+                    +--------------------> AI strengthening
+```
+
+矢印は主要dependency / recommended orderを示します。すべてのcapabilityが完了するまでPolicy改善を止める意味ではありません。Resilient live participationとFirst-party engine executionは互いの完了を待たず進められ、First-party engine executionもReplay / Analysis boundaryの完成をhard dependencyとしません。
+
+### Resilient live participation
+
+RiichiLab等のlive environmentへ、安全に繰り返し参加できるexecution capabilityをArena側のexecution / observationとして発展させます。repeated / continuous participation、disconnectやtransient transport failureからのsafe re-participation、bounded backoff、graceful shutdown等を通じて、real-world opponent distributionから継続的にobjective execution dataを取得できる入口を作ります。
+
+このcapability自体はPolicy strengthを直接変更しません。live execution lifecycleをAI decision coreへ持ち込まず、長時間のdata acquisitionを可能にすることが目的です。
+
+### Policy decision observability
+
+objective execution observationとは分離して、`lisjong` が1 decisionで何を選択し、どのlisjong-owned typed intermediate valueを実際に生成・利用したかをone-way observationできる方向へ発展させます。
+
+```text
+GameTrace / objective execution observation
+    what happened
+
+Decision / Analysis observation
+    what lisjong selected / computed
+```
+
+AI-owned analysis semanticsは `lisjong` に残し、Arenaのraw execution recordへ暗黙に混在させません。observerの追加によってPolicy decision pathへprivileged informationが逆流しない境界も維持します。
+
+### Consumer-driven replay / analysis boundary
+
+objective execution recordとAI-owned decision / analysisを最初のconcrete offline consumerで対応付け、historical replayやdecision inspectionに本当に必要なsemanticsを確認します。
+
+project-wide canonical `GameEvent` / `GameRecord` / global decision ID等を先行発明せず、concrete consumer requirementからのみ、
+
+- historical replayに必要なpersisted data
+- objective executionとAI analysisのcorrelation requirement
+- consumer-side projection / adapter
+- live observationとhistorical replayの差分
+
+を導出します。Visualization / Analysisは引き続きread-oriented consumerとして扱います。
+
+### First-party engine execution
+
+`lisjong-engine` のfirst-party execution substrate上で `lisjong` Policyを実際に動作させるconcrete pathを、Arena側のexecution / integration consumerとして成立させます。
+
+```text
+                lisjong-arena
+                 /        \
+                v          v
+          lisjong       lisjong-engine
+         decision        execution
+```
+
+Arena側がengineのplayer-safe observation / public action boundaryとlisjong Policy contractを接続し、ecosystem自身で完全制御できるdeterministic execution、controlled scenario / regression、将来のground-truth validation、Human vs AIの共通AI execution pathへつなげます。
+
+これはRiichiEnv等のexternal backendを置き換える方針ではありません。複数の実execution pathから共通化の必要性が確認される前に、generic `GameBackend` / backend registry等を先行設計しません。
+
+### Human vs AI live consumer
+
+Human Playは単なる将来UIではなく、first-party engine executionを利用するAI evaluation / data acquisition consumerとしても利用できるようにします。最初から豪華なGUIを前提にせず、minimum live consumerを優先します。
+
+Human Play consumerはhuman-facing presentation、human input、action selection UX、human seat assignment、session orchestrationを所有します。game progressionは `lisjong-engine`、AI decision semanticsは `lisjong` が所有し、UI都合をengine / Policy contractへ逆流させません。
+
+旧 `python-study` のCLI / HumanPlayer implementation自体を互換移植することは目的にせず、そこで抽出済みのbehavior / test / edge-case knowledgeをconcrete implementationの入力として利用します。旧runtimeはfuture Human Play consumer成立までreferenceとして保持し、dependency-aware cleanupは別判断とします。Human Play専用repository名やUI frameworkもconcrete implementation開始前には固定しません。
+
+Human vs AIの**対局成立**は主にFirst-party engine executionを前提とします。一方、Human sessionをAI analysis / data acquisitionへ十分に活用する段階では、Policy decision observabilityとconsumer-driven correlation boundaryを再利用します。
+
+### Offline replay / analysis
+
+live Human interactionとは分離したread-oriented consumerとして、対局後にobjective executionとAI decision / analysisを対応付けて振り返れる状態を目指します。入力sourceはHuman sessionに限定せず、RiichiLab、simulation、first-party engine、Arena evaluation等のconcrete sourceを利用できます。
+
+用途には、regression game / round replay、candidate evaluation inspection、HandBeliefやfuture TenpaiBeliefの変化確認、risk / value / push-fold判断のdebugging、Human opponentに対するinference mismatchの発見等を含み得ます。
+
+Human Play consumerを牌譜viewer / AI思考viewerの母体として肥大化させず、live interactionとoffline analysisを別consumer responsibilityとして維持します。
+
+### AI strengthening feedback loop
+
+上記capabilityは、AI改善を開始するための最後のgateではなく、既存のPolicy improvementをより観測可能・再現可能・data-drivenにするfeedback loopへ接続します。
+
+```text
+RiichiLab / simulation / Human
+            |
+            v
+          execution
+            |
+            v
+ objective record + AI analysis
+            |
+            v
+       offline analysis
+            |
+            v
+     weakness identification
+            |
+            v
+       lisjong improvement
+            |
+            v
+ reproducible Arena evaluation
+            |
+            v
+       external validation
+            |
+            +--------------------> repeat
+```
+
+強化対象を特定algorithmへ固定しません。hidden-state inference、HandBelief / future TenpaiBelief、offensive value、defensive risk、push / fold、riichi / dama、call decisions、value / utility-aware decision、learned estimator / learned Policy等を、このloopの中で必要に応じて改善します。
+
+component quality、Policy decision quality、game performanceは引き続き別のquality claimとして評価します。
+
 ## Foundation — Stable Policy contract and environment boundary
 
 環境非依存のPolicy contractを基礎として、観測可能な状態だけから合法Actionを決定できる状態を確立します。
