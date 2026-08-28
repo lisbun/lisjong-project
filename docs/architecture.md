@@ -123,6 +123,38 @@ Evaluationはexecution / observation能力をconsumerとして利用できます
 
 execution infrastructureがArena外の複数concrete consumerから必要になった場合、または24/7 production hosting等の独立したoperational responsibilityへ成長した場合にのみ、共通runtime / repositoryへの抽出を再検討します。
 
+### `lisjong-play`
+
+`lisjong-play` は、first-party `lisjong-engine` を利用するHuman Play consumerを担当します。
+
+主な責務:
+
+- human seat assignment
+- human-facing state / action presentation
+- human input
+- action selection UX
+- confirmation / interaction
+- CLI / future GUI presentation
+- Human Playに必要なminimum session orchestration
+
+Human decisionは `lisjong-engine` のplayer-safe public boundaryを直接利用します。
+
+```text
+SeatObservation
++
+ActionDescriptor[]
+        |
+        v
+Human selector
+        |
+        v
+selected ActionDescriptor
+```
+
+Human choiceを `PolicyInput` / `DecisionContext` / `InternalAction` / `execute_policy()` へ通しません。game / round / turn state、legal actions、reaction priority、scoring / settlement、round / match progression、terminal conditionsは引き続き `lisjong-engine` が所有します。
+
+AI seatを含むHuman Playでは `lisjong` Policyをconsumer側から利用します。initial implementationでは、first-party engineとPolicyを接続する既存の `lisjong-arena` bridgeをreuseし、同じconversion / decision-local mapping semanticsを `lisjong-play` へ複製しません。このArena dependencyはinitial reuse boundaryであり、別のnon-Arena consumerが同じbridgeを必要とする、dependency footprintが具体的な運用問題になる、またはbridgeに独立したrelease lifecycleが必要になる等のconcrete requirementが生じた場合にplacement / extractionを再評価します。
+
 ## Execution paths
 
 Arena側のexecution / observation responsibilityは、external environmentだけでなく、利用可能なfirst-party engineを含むconcrete execution pathへlisjong Policyを接続する役割として発展させます。ただし、既存integrationを一括移動することや、project-wideなgeneric backendを先行設計することは要求しません。
@@ -194,13 +226,19 @@ Mortal等のexternal competitorを含むbenchmarkでは、Arenaが選択したOS
 lisjong-arena -> lisjong
 lisjong-arena -> lisjong-engine
 lisjong -> lisjong-engine
+lisjong-play -> lisjong-engine
+lisjong-play -> lisjong
+lisjong-play -> lisjong-arena
 lisjong-engine -X-> lisjong
+lisjong-engine -X-> lisjong-play
 lisjong -X-> lisjong-arena
 ```
 
 `lisjong-arena -> lisjong-engine` は、Arenaがfirst-party engineをconcrete execution backendとして利用する場合に許可します。これはArena固有のevaluation semanticsをengineへ持ち込むことを意味しません。
 
 `lisjong -> lisjong-engine` は既存の許可方向として本変更では維持しますが、その長期的な必要性を本Decisionで再確認・固定するものではありません。
+
+`lisjong-play -> lisjong-engine` / `lisjong-play -> lisjong` はHuman seatとAI seatを同じfirst-party executionへ構成するconsumer dependencyです。initial `lisjong-play -> lisjong-arena` はArena-owned first-party Policy bridgeをreuseするためのconcrete dependencyであり、Arenaのevaluation semanticsをHuman Playへ持ち込むことを意味しません。
 
 これとは別に、consumer repositoryが用途に応じて外部OSSへ依存することを許容します。
 
@@ -209,6 +247,9 @@ first-party dependencies
     lisjong-arena -> lisjong
     lisjong-arena -> lisjong-engine
     lisjong -> lisjong-engine
+    lisjong-play -> lisjong-engine
+    lisjong-play -> lisjong
+    lisjong-play -> lisjong-arena
 
 example external execution dependency
     lisjong-arena -> selected external game environment
@@ -334,28 +375,25 @@ Visualization / Analysisの責務原則は次の通りです。
 
 ### Human Play boundary
 
-Human PlayはVisualization / Analysisとは別の将来能力として扱います。Human Playは `lisjong-engine` 自体の責務ではなく、first-party execution substrateを利用するconsumer capabilityです。
+Human PlayはVisualization / Analysisとは別のconsumer能力として扱います。physical ownerは `lisjong-play` です。Human Playは `lisjong-engine` 自体の責務ではなく、first-party execution substrateを利用するconsumer capabilityです。
 
 ```text
-Human Play consumer
+lisjong-play
         |
-        | observation / public actions / selected action
+        | SeatObservation
+        | ActionDescriptor[]
+        | selected ActionDescriptor
         v
 lisjong-engine
 ```
 
-Human Play側は、human seat assignment、人間向けのstate / action表示、human input、action selection UX、confirmation等のinteraction、CLI / GUI presentation、必要なsession orchestrationを所有します。game / round / turn stateのauthority、合法手、reaction priority、精算、終局条件等のgame progressionは引き続き `lisjong-engine` が所有します。AI seatを含む場合はconsumer / integration側が `lisjong` Policyを利用し、`lisjong-engine -> lisjong` の逆依存は作りません。
+`lisjong-play` は、human seat assignment、人間向けのstate / action表示、human input、action selection UX、confirmation等のinteraction、CLI / future GUI presentation、必要なsession orchestrationを所有します。game / round / turn stateのauthority、合法手、reaction priority、精算、終局条件等のgame progressionは引き続き `lisjong-engine` が所有します。
+
+Human choiceはengine public `SeatObservation` / `ActionDescriptor` boundaryを直接利用し、Policy decision boundaryへ通しません。AI seatを含む場合はconsumer側が `lisjong` Policyを利用し、`lisjong-engine -> lisjong` の逆依存は作りません。initial implementationでは既存 `lisjong-arena` first-party Policy bridgeをreuseし、bridge semanticsを `lisjong-play` へcopyしません。
 
 Human Playの都合でGUI / CLI固有型をengineやPolicy contractへ逆流させません。concrete Human Play consumerで既存engine boundaryの不足が確認された場合は、UI固有APIをそのまま追加するのではなく、複数consumerにも再利用可能なminimum engine contractとして抽出できるかを確認します。
 
-Human Play専用repositoryは現時点では固定しません。次のようなconcrete requirementが発生した時点で、既存repositoryの責務を侵食しない専用consumer repositoryを第一候補としてplacementを再評価します。
-
-- CLI / GUI等のconcrete Human Play implementationへ着手する
-- human input / presentation / session orchestrationが独立した継続的責務になる
-- `lisjong-engine` と `lisjong` の双方をconsumerとして利用する必要が生じる
-- Human Play固有のdependency、test、release lifecycleを分離する価値が明確になる
-
-owner repositoryが未定であることや、現在Human Playを利用していないこと自体を旧assetの廃止理由にはしません。旧CLI / HumanPlayerから保持すべきbehavior / test knowledgeはconcrete consumer requirementとして整理し、互換APIそのものの維持とは分離します。
+old `python-study` CLI / HumanPlayerはmigration referenceとしてbehavior / UX / regression knowledgeを保持しますが、runtime API、class hierarchy、action ID、controller/state modelの互換維持は要求しません。
 
 ## Runner responsibilities
 
@@ -391,13 +429,14 @@ RiichiEnv、RiichiLab、将来利用するfirst-party engine等の実行環境�
 - 麻雀ゲームを正しく進行するために必要なら `lisjong-engine`
 - 観測からActionを選ぶAI、Policy内部component、Policy / AI configuration、AI feature / training semanticsなら `lisjong`
 - environment接続、RiichiLab等への参加、session lifecycle、retry / reconnect、raw execution observation、またはPolicy / game evaluationなら `lisjong-arena`
+- Human-facing presentation / input / action selection UX / Human Play session orchestrationなら `lisjong-play`
 - repository境界、依存方向、evaluation ownership、observable boundary等のproject-wide原則を変更するなら `lisjong-project`
 
 具体的な既存Adapter / runner / trace contractのmigration先は、project-wide ruleだけから機械的に決めず、consumerとdependencyを確認してconcrete Issueで決定します。
 
 Visualization / Analysisの具体的な実装repositoryは現時点で固定しません。consumer requirementsが具体化した時点で、既存repositoryの責務を侵食しないplacementを決定します。
 
-Human Playの具体的な実装repositoryも現時点では固定しません。human-facing presentation / input / session responsibilityがconcrete consumerとして成立した時点でplacementを再評価し、その都合だけでengine coreへUI責務を持ち込みません。
+Human Playの具体的な実装repositoryは `lisjong-play` とします。その都合だけでengine coreへUI責務を持ち込みません。
 
 複数repositoryに変更が必要な機能でも、同じ仕様を複数repoへ重複して持たせません。横断契約をどこが所有するかを先に決め、各repoは自分の内部実装だけを持ちます。
 
