@@ -18,7 +18,9 @@
 - raw execution data acquisitionとAI feature / training semanticsを分離する
 - credentialやprivileged observer dataをPolicy inputへ逆流させない
 - 成熟したOSSや強い既存AIはreference / backend / benchmark / toolingとして積極的に評価・利用する
-- 強い既存AIで使われている要素をcanonical designとはみなさず、mechanism-level principleへ分解してlisjong自身のevidenceで検証する
+- 成熟したOSSがgame executionやprotocol interoperabilityを既に提供する場合は、同等機能の重複実装を避けて優先利用する
+- strong-AI referenceをcanonical designとはみなさず、mechanism-level principleへ分解してlisjong自身のevidenceで検証する
+- stable public contract、Policy semantics、repository responsibility、project固有artifact contract、cross-repository dependency directionはlisjong ecosystem側で所有する
 - 一度に複数の研究軸を変更せず、原則としてone bounded experiment = one primary research questionを維持する
 - cheap metricを最終optimization targetへ昇格させず、reject / triage / prioritizationに利用する
 - fixed-protocol hanchan performanceを総合strengthのNorth Starとして維持しつつ、より安価なstate / round-level evidenceで明らかな退化を早期に落とす
@@ -29,6 +31,7 @@
 - engine完成をPolicy改善や初期Arena開始の不要な前提にしない
 - 比較可能な対象と再現可能なgame実行が揃う前にArena evaluationを過剰構築しない
 - 実際の複数execution pathやconcrete consumerが揃う前に、将来backend / runtimeを推測した汎用abstractionを先行設計しない
+- Arena外の複数consumerや独立したproduction hosting要件が成立した時点で、共通runtime抽出を再検討する
 - Visualization / Analysisのためにproject-wide canonical event schemaを先行設計せず、具体的consumer requirementsから必要なadapter / normalization boundaryを抽出する
 - 学習Policyは既存のPolicy contract、execution、evaluation、analysis基盤を可能な限り再利用し、学習専用の別世界を作らない
 - 自動化は小さく決定的なloopから始め、actual bottleneckが確認された範囲だけremote execution、candidate search、self-play、LLM-assisted researchへ広げる
@@ -238,13 +241,7 @@ reject / advance
 
 このsmall loopはLLMをhard dependencyにしません。大量反復する部分では、deterministic code、machine-readable artifact、predeclared ruleを優先します。
 
-より大きなloopでは、人間・ChatGPT・Claude Code等を次のような低頻度・高情報価値の判断へ利用できます。
-
-- evidence review
-- next hypothesis selection
-- bounded Issue design
-- implementation / review assistance
-- unexpected failure interpretation
+より大きなloopでは、人間またはLLM / coding agentを、evidence review、next hypothesis selection、bounded experiment design、implementation / review assistance、unexpected failure interpretation等の低頻度・高情報価値の判断へ利用できます。
 
 ```text
 small loop
@@ -297,7 +294,51 @@ execution sources / objective records / AI analysis
                     +--------------------> repeat
 ```
 
-Resilient live participation、first-party engine execution、Human Play、durable records、replay / analysis等は、このloopへ新しいdata source、observation capability、debugging capabilityを供給します。すべてが完了するまでPolicy改善を止める意味ではありません。
+次のsupporting capabilitiesは、このloopへdata source、observation capability、debugging capabilityを供給します。すべてが完了するまでPolicy改善を止める意味ではありません。
+
+### Resilient live participation
+
+RiichiLab等のlive environmentへ安全に繰り返し参加し、disconnect / transient failureからsafeにre-participateできるexecution capabilityをArena execution / observation側で発展させます。
+
+このcapability自体はPolicy strengthを直接変更せず、real-world opponent distributionからobjective execution dataを取得する入口として扱います。
+
+### Policy decision observability
+
+objective execution observationとPolicy-internal analysisを分離します。
+
+```text
+objective execution
+    what happened
+
+Policy decision / analysis
+    what was selected / computed
+```
+
+Policy-owned semanticsをraw execution recordへ暗黙に混在させず、observer追加によってprivileged informationをPolicy decision pathへ逆流させません。
+
+### Consumer-driven replay / analysis boundary
+
+historical replayやdecision inspectionに必要なpersisted data / correlation semanticsは、具体的consumer requirementから抽出します。
+
+project-wide canonical `GameEvent` / `GameRecord` / global decision IDを先行発明せず、live observationとhistorical replayの差分を実consumerから学びます。
+
+### First-party engine execution
+
+`lisjong-engine` をecosystem自身で制御できるdeterministic execution substrateとして利用し、lisjong Policyと接続できるpathを発展させます。
+
+これはRiichiEnv等のexternal backendを置き換える方針ではありません。external backendとfirst-party engineを用途別に併用し、複数pathから共通化の必要性が確認される前にgeneric backend abstractionを作りません。
+
+### Human Play / spectator / replay consumers
+
+Human Play、AI spectator、persisted replay等のhuman-facing consumerは、engine / Policy / durable recordの公開boundaryを利用します。
+
+UI都合でrule、legality、scoring、AI semanticsを再実装せず、live interactionとread-oriented analysisを必要に応じて分離します。
+
+### Multiple execution paths convergence
+
+RiichiEnv、first-party engine、live environment等の複数execution pathが揃った場合、それぞれの実差異を観測してから共通化境界を判断します。
+
+future APIを推測したgeneric `GameBackend` / `EvaluationBackend` 等を先行導入しません。
 
 ## Foundation — Stable Policy contract and environment boundary
 
@@ -406,7 +447,7 @@ raw execution dataとAI意味付けを分離します。privileged offline / gro
 
 ## Arena Research / Evaluation Track
 
-Arenaでは、experiment-localなdataset construction、training harness、diagnostic analysis、candidate artifact、controlled evaluationを、stable production Policy semanticsと分離して扱えます。
+bounded experimentのownerがArenaである場合、experiment-localなdataset construction、training harness、diagnostic analysis、candidate artifact、controlled evaluationを、stable production Policy semanticsと分離して扱えます。
 
 ```text
 raw / retained evidence
@@ -455,7 +496,7 @@ Stable AI component semantics
     -> component owning repository
 
 Experiment-local measurement / training
-    -> research owner repository
+    -> bounded research owner repository
 
 Policy / game evaluation
     -> lisjong-arena evaluation
@@ -500,7 +541,7 @@ Learning Policyは、再現可能なPolicy comparisonと安全なPolicy-visible 
 - **Benchmark**: external agent / environment
 - **Tooling**: replay / visualization / development support
 
-external benchmark、simulation、protocol interoperability等に必要な能力を成熟したOSSが既に提供する場合は優先利用を検討します。同等機能をecosystem内で無目的に再実装しません。
+external benchmark、simulation、game execution、protocol interoperability等に必要な能力を成熟したOSSが既に提供する場合は優先利用を検討します。同等機能をecosystem内で無目的に再実装しません。
 
 一方、外部OSS固有の型・API・内部設計をproject-wide stable contractへ直接漏らしません。
 
