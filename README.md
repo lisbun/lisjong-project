@@ -6,7 +6,7 @@ Project-wide architecture, repository boundaries, and roadmap for the lisjong ec
 
 `lisjong-project` は、lisjong ecosystem 全体の設計・repository責務・依存方向・長期ロードマップを管理する documentation / project coordination repository です。
 
-実装コードは原則として持ちません。`lisjong`、`lisjong-engine`、`lisjong-arena` のいずれかを親repositoryとして扱うものでもありません。
+実装コードは原則として持ちません。`lisjong`、`lisjong-engine`、`lisjong-arena`、`lisjong-play` のいずれかを親repositoryとして扱うものでもありません。
 
 ## 正本の分担
 
@@ -36,8 +36,11 @@ GitHub上で確認できる現在進捗を本repositoryの文書へ重複して�
 | [`lisjong`](https://github.com/lisbun/lisjong) | 麻雀AI decision core。Policy、Policy contract、AI判断ロジック、推論・評価component |
 | [`lisjong-engine`](https://github.com/lisbun/lisjong-engine) | 日本式リーチ麻雀のルール、状態遷移、合法手、game / match進行 |
 | [`lisjong-arena`](https://github.com/lisbun/lisjong-arena) | lisjongのexternal execution / observationと再現可能なPolicy評価。environment integration、対局記録、matchup、seed、seat rotation、結果収集、metrics |
+| [`lisjong-play`](https://github.com/lisbun/lisjong-play) | first-party `lisjong-engine` を利用するHuman Play / presentation consumer。human-facing state / action presentation、human input、action-selection UX、CLI / GUI |
 
 `lisjong-arena` 内では、environmentへの接続・対局実行・raw observation取得を担う execution / observation と、comparison protocol・metrics・artifactを担う evaluation を別責務として扱います。
+
+`lisjong-play` はgame rulesやstate transitionを再実装せず、`lisjong-engine` のplayer-safe public boundaryをconsumerとして利用します。AI seatを含むHuman Playでは、必要なPolicy / execution bridgeを既存ownerからreuseし、presentation都合でAI-side semanticsやengine semanticsを複製しません。
 
 詳細な責務境界と依存方向は [Architecture](docs/architecture.md) を参照してください。
 長期的な能力ロードマップは [Roadmap](docs/roadmap.md) を参照してください。
