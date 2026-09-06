@@ -12,35 +12,67 @@ Project-wide architecture, repository boundaries, and roadmap for the lisjong ec
 
 ```text
 lisjong-project
-    プロジェクト横断architecture
+    project-wide architecture
     repository責務
     repository間依存方向
-    長期ロードマップ
-    横断的な設計判断
+    long-term roadmap
+    cross-repository promotion boundary
 
 各実装repositoryのdocs/architecture.md
     そのrepository内部のarchitecture
+    concrete contract / implementation boundary
 
 GitHub Issues / PRs
     現在の作業内容
     acceptance criteria
+    experiment / implementation result
     進捗・完了状態
 ```
 
-GitHub上で確認できる現在進捗を本repositoryの文書へ重複して記録しません。
+GitHub上で確認できる現在進捗を本repositoryの恒久文書へ重複して記録しません。
 
 ## Repository
 
 | Repository | 主な責務 |
 | --- | --- |
-| [`lisjong`](https://github.com/lisbun/lisjong) | 麻雀AI decision core。Policy、Policy contract、AI判断ロジック、推論・評価component |
-| [`lisjong-engine`](https://github.com/lisbun/lisjong-engine) | 日本式リーチ麻雀のルール、状態遷移、合法手、game / match進行 |
-| [`lisjong-arena`](https://github.com/lisbun/lisjong-arena) | lisjongのexternal execution / observationと再現可能なPolicy評価。environment integration、対局記録、matchup、seed、seat rotation、結果収集、metrics |
-| [`lisjong-play`](https://github.com/lisbun/lisjong-play) | first-party `lisjong-engine` を利用するHuman Play / presentation consumer。human-facing state / action presentation、human input、action-selection UX、CLI / GUI |
+| [`lisjong`](https://github.com/lisbun/lisjong) | 麻雀AI decision core。Policy、stable AI-side contract、牌効率・HandBelief・value / risk等のstable semantics、production / public Learned Policy semantics |
+| [`lisjong-engine`](https://github.com/lisbun/lisjong-engine) | 日本式リーチ麻雀のルール、状態遷移、合法手、game / match進行、first-party deterministic execution substrate |
+| [`lisjong-arena`](https://github.com/lisbun/lisjong-arena) | external / local execution・observation、bounded experiment-local dataset / training / analysis、再現可能なPolicy / game evaluation |
+| [`lisjong-play`](https://github.com/lisbun/lisjong-play) | first-party `lisjong-engine` を利用するHuman Play / presentation consumer。human input、action-selection UX、GUI / CLI、spectator / replay等 |
 
-`lisjong-arena` 内では、environmentへの接続・対局実行・raw observation取得を担う execution / observation と、comparison protocol・metrics・artifactを担う evaluation を別責務として扱います。
+## Arenaの3責務
 
-`lisjong-play` はgame rulesやstate transitionを再実装せず、`lisjong-engine` のplayer-safe public boundaryをconsumerとして利用します。AI seatを含むHuman Playでは、必要なPolicy / execution bridgeを既存ownerからreuseし、presentation都合でAI-side semanticsやengine semanticsを複製しません。
+`lisjong-arena` 内では、少なくとも次の3責務を分離します。
+
+```text
+Execution / Observation
+    what happened
+
+Experiment-local Research / ML
+    bounded experimentをどうmaterialize / train / diagnoseするか
+
+Evaluation
+    candidate / Policyをどう再現可能に比較するか
+```
+
+Arenaは、bounded research questionのためのpurpose-specific feature / dataset / trainer / model / checkpoint / diagnostic artifactを所有できます。
+
+ただし、Arenaにresearch implementationが存在することと、stable AI semanticsをArenaが所有することは別です。
+
+```text
+experiment-local model
+!= production Policy
+
+experiment-local feature schema
+!= stable PolicyInput / production feature contract
+
+experiment result
+!= stable public API
+```
+
+stableなPolicy / HandBelief / value / feature / inference semanticsへ昇格する場合は、owner repositoryを明示的にreviewし、必要なら `lisjong` のstable contractとしてformalizeします。
+
+`lisjong-play` はgame rulesやstate transitionを再実装せず、`lisjong-engine` のplayer-safe public boundaryをconsumerとして利用します。AI seatを含む場合も、必要なPolicy / execution bridgeを既存ownerからreuseし、presentation都合でAI-side semanticsやengine semanticsを複製しません。
 
 詳細な責務境界と依存方向は [Architecture](docs/architecture.md) を参照してください。
 長期的な能力ロードマップは [Roadmap](docs/roadmap.md) を参照してください。
@@ -48,6 +80,27 @@ GitHub上で確認できる現在進捗を本repositoryの文書へ重複して�
 ## Issue placement
 
 新しい機能や設計課題をどのrepositoryへ置くか迷った場合は、まず [Architecture](docs/architecture.md) の責務境界を基準に判断します。
+
+概略:
+
+```text
+mahjong rules / progression
+    -> lisjong-engine
+
+stable AI semantics / production Policy contract
+    -> lisjong
+
+execution / observation
+bounded experiment-local ML / analysis
+Policy / game evaluation
+    -> lisjong-arena
+
+Human Play / presentation / spectator / replay
+    -> lisjong-play
+
+repository boundary / dependency / ownership rule
+    -> lisjong-project
+```
 
 repository境界そのものを変更する提案や、複数repositoryへまたがる設計判断は `lisjong-project` で扱います。
 個別repository内部の実装・設計・進捗は、それぞれのrepositoryで管理します。
@@ -58,6 +111,8 @@ repository境界そのものを変更する提案や、複数repositoryへまた
 
 - [ADR 0001: Repository boundaries](docs/decisions/0001-repository-boundaries.md)
 - [ADR 0002: External execution and observation ownership](docs/decisions/0002-external-execution-observation-ownership.md)
+
+ADRはhistorical decision recordです。現在のtarget architectureは [Architecture](docs/architecture.md) を正本とします。
 
 ## License
 
