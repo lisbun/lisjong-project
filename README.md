@@ -142,6 +142,7 @@ repository境界そのものを変更する提案や、複数repositoryへまた
 
 - [ADR 0001: Repository boundaries](docs/decisions/0001-repository-boundaries.md)
 - [ADR 0002: External execution and observation ownership](docs/decisions/0002-external-execution-observation-ownership.md)
+- [ADR 0003: External research source use boundary](docs/decisions/0003-external-research-source-use-boundary.md)
 
 ADRはhistorical decision recordです。現在のtarget architectureは [Architecture](docs/architecture.md) を正本とします。
 
