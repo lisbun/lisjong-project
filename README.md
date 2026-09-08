@@ -74,6 +74,37 @@ stableなPolicy / HandBelief / value / feature / inference semanticsへ昇格す
 
 `lisjong-play` はgame rulesやstate transitionを再実装せず、`lisjong-engine` のplayer-safe public boundaryをconsumerとして利用します。AI seatを含む場合も、必要なPolicy / execution bridgeを既存ownerからreuseし、presentation都合でAI-side semanticsやengine semanticsを複製しません。
 
+## External research source boundary
+
+外部AI、外部model、外部牌譜・log、program output等をresearch sourceとして利用する場合は、技術的に取得・実行できることと、学習利用できることを分離します。
+
+```text
+identity / provenance
+    ↓
+private execution / acquisition basis
+    ↓
+retention basis
+    ↓
+ML / distillation use basis
+    ↓
+redistribution basis
+```
+
+これらは独立した判断です。
+
+```text
+technically accessible
+!= approved training data
+
+program may be executed
+!= generated labels may be used for ML
+
+output may be retained
+!= generated corpus may be redistributed
+```
+
+外部sourceをtraining dataへ昇格する前に、exact source / revision / model or weight provenanceと該当する利用条件を記録し、曖昧な用途は楽観的に `GO` と解釈しません。player-visible serving inputとprivileged / oracle情報の境界も別途維持します。
+
 詳細な責務境界と依存方向は [Architecture](docs/architecture.md) を参照してください。
 長期的な能力ロードマップは [Roadmap](docs/roadmap.md) を参照してください。
 
@@ -111,6 +142,7 @@ repository境界そのものを変更する提案や、複数repositoryへまた
 
 - [ADR 0001: Repository boundaries](docs/decisions/0001-repository-boundaries.md)
 - [ADR 0002: External execution and observation ownership](docs/decisions/0002-external-execution-observation-ownership.md)
+- [ADR 0003: External research source use boundary](docs/decisions/0003-external-research-source-use-boundary.md)
 
 ADRはhistorical decision recordです。現在のtarget architectureは [Architecture](docs/architecture.md) を正本とします。
 
