@@ -424,6 +424,67 @@ prediction improvement、decision improvement、game-strength improvementを同�
 
 具体的なseed / seat rotation / sample size / variance / confidence interval / paired comparison等はproject-wide architectureでは固定せず、Arena側のpurpose-specific contractへ委ねます。
 
+## Champion governance
+
+Policy強さのcanonical designationは、Policy architectureのfamilyごとに分離して管理します。
+
+```text
+Champion families
+├─ Heuristic Champion
+└─ Learning Champion
+
+Overall Champion
+    = cross-family formal evidenceに基づくderived designation
+    = 独立したChampion familyではない
+    = not establishedを許容する
+
+Research-track leader
+    != Champion family
+```
+
+### Family classification boundary
+
+familyは、action selection / rankingへ影響し得るdecision logicとparameterの由来で判定します。
+
+```text
+explicit human-authored rule / constant / exact algorithmic derivation
+    -> Heuristic
+
+observation / sample / rollout / gameplay record / optimization / fittingから
+得たparameterがaction decisionへ影響し得る
+    -> Learning
+```
+
+formula-basedに見えるPolicyでも、action decisionへ影響するparameterがempirical data / optimization / fittingから得られている場合はLearning familyとして扱います。逆に、学習済みcomponentをdiagnostic / logging専用に使い、action decisionを変更し得ない場合はLearning familyとみなしません。
+
+heuristicとlearned componentを組み合わせたPolicyは、learned componentが最終action decisionを変更し得る場合にLearning familyとして扱い、独立したHybrid familyを設けません。
+
+### Promotion boundary
+
+family内promotionとcross-family Overall determinationは別のevaluation eventです。
+
+```text
+family-internal promotion
+        !=
+cross-family Overall determination
+```
+
+family内promotionはそのfamilyの評価loopとして独立に進められます。Overall Champion designationの新規確立・変更には、比較可能なfamily Championが存在し、両familyへ共通して適用可能なformal strength-evaluation protocolによるevidenceが得られていることを要求します。architectureごとに有利・不利の異なるOverall criterionを使いません。
+
+いずれのdesignationも `not established` を正式な状態として許容します。あるfamilyのChampionが未確立であることだけを理由に、他方のfamily ChampionをOverall Championへ自動昇格させません。
+
+```text
+family Champion
+        !=
+Overall Champion
+```
+
+### Research-track leader
+
+Learning family内では、BC / Offline Q等のresearch trackごとにleaderを追跡できます。research-track leaderは正式なChampion familyではなく、track固有のdevelopment evidenceで選定してかまいません。一方、Learning Champion自体の決定は、track固有metricだけでは行わず、trackをまたいで共通に適用できるstrength evidenceを使用します。新しいlearning paradigmが増えても、自動的に新しいChampion familyを作りません。
+
+具体的なthreshold、sample size / seed、evaluation頻度、registry / artifact schema、promotion automationはproject-wide architectureで固定せず、Arena側のpurpose-specific contractと該当Issueへ委ねます。判断の背景は [ADR 0004: Champion family separation](decisions/0004-champion-family-separation.md) を参照してください。
+
 ## Execution data, AI improvement, and Visualization / Analysis boundary
 
 external environmentから得るraw execution dataと、それを研究・評価・可視化へ利用する意味付けを分離します。
