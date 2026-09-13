@@ -108,7 +108,7 @@ research-track leaderは正式なChampion familyではない。track leaderの�
 
 現在どのPolicyがどのChampion designationを保持しているかを表現するcanonical registry / metadata placementは、本ADRでは決定しない。evaluation protocol / artifact / measurement evidenceは `lisjong-arena` が正本として所有し、stable Policy identityとcurrent roleは既存の `lisjong` ownershipに従う。Champion designationの永続的なregistry / metadata placementは後続Issueで決定する。
 
-具体的なthreshold、game / seed数、evaluation頻度、artifact schemaも本ADRへ固定せず、Arena側の正本と該当Issue / PRを正本とする。
+具体的なthreshold、game / seed数、evaluation頻度、evaluation artifact schemaも本ADRへ固定せず、Arena側の正本と該当Issue / PRを正本とする。
 
 ## Consequences
 
