@@ -19,7 +19,7 @@ Family-internal promotion and cross-family Overall determination solve different
 
 The point at which architecture-independent comparability is required is the direct comparison between the current Heuristic Champion and current Learning Champion.
 
-For this final layer, single-round evidence is cheaper but does not capture all longer-horizon effects that matter to match strength, including placement, score carry-over, dealer continuation, honba, and riichi-stick state across rounds. The ecosystem already has a generic Arena comparison contract whose normal game mode is `4p-red-half` and whose deterministic four-rotation assignment starts from `[A, A, B, B]`.
+For this final layer, single-round evidence is cheaper but does not capture all longer-horizon effects that matter to match strength, including placement, score carry-over, dealer continuation, honba, and riichi-stick state across rounds. The ecosystem already has a generic Arena comparison contract whose normal game mode is `4p-red-half` and which can realize symmetric AABB seat exposure through deterministic rotation.
 
 ## Decision
 
@@ -56,24 +56,14 @@ Cross-family Overall determination uses half-game evaluation:
 
 ```text
 game mode = 4p-red-half
+matchup   = AABB
 ```
 
-For each ordered seed, use four deterministic AABB cyclic rotations:
+Every evaluated hanchan contains two seats from the current Heuristic Champion and two seats from the current Learning Champion. Across the locked evaluation population, the seat-assignment plan must be symmetric: A and B receive equal total exposure to each seat position.
 
-```text
-rotation 0: [A, A, B, B]
-rotation 1: [B, A, A, B]
-rotation 2: [B, B, A, A]
-rotation 3: [A, B, B, A]
-```
+The exact ordered seed population, number of rotations per seed, and concrete rotation order are **Arena-owned purpose-specific protocol details**, not project-wide invariants. Arena's existing generic `ComparisonPlan` / comparison semantics should be reused where they satisfy the AABB half-game and seat-symmetry contract. Its current four cyclic rotations are a natural implementation candidate, but this ADR does not freeze that concrete rotation schedule into project architecture.
 
-Within one seed block, both families therefore:
-
-- occupy two seats in every hanchan;
-- participate in the same four games;
-- occupy every seat exactly twice across the four rotations.
-
-Arena's existing generic `ComparisonPlan` / comparison semantics should be reused where they satisfy this contract. A second equivalent AABB runner should not be created merely for Champion governance.
+A second equivalent AABB runner should not be created merely for Champion governance.
 
 ### Evidence boundary
 
@@ -91,23 +81,25 @@ The formal event must bind at least:
 - exact Learning Champion identity;
 - execution software / runtime / dependency provenance;
 - pre-result seed population and sample size;
+- pre-result seat-assignment / rotation plan;
 - pre-result primary statistic and classification rule;
 - strict-read or immutable evaluation artifact;
 - fail-closed handling of partial or invalid execution.
 
-After result exposure, seed extension, replacement population, rerun rescue, or criterion changes are not permitted within the same Overall event.
+After result exposure, seed extension, replacement population, rotation-plan replacement, rerun rescue, or criterion changes are not permitted within the same Overall event.
 
 The same statistical criterion must be applied to both families. Architecture-specific favorable thresholds or metrics are forbidden.
 
-### Arena-owned concrete statistics
+### Arena-owned concrete statistics and execution plan
 
-Project-wide architecture fixes the AABB half-game comparison shape, not the concrete statistical design of every Overall event.
+Project-wide architecture fixes the AABB half-game comparison shape and symmetric seat exposure, not the concrete statistical or rotation design of every Overall event.
 
 The purpose-specific Arena contract owns and locks before execution:
 
 ```text
 ordered seeds
 sample size / precision target
+rotation count and concrete seat-assignment order
 primary statistic
 confidence interval or test method
 classification threshold
@@ -136,7 +128,7 @@ When either family Champion changes, historical Overall evidence remains valid h
 ## Repository responsibility
 
 - `lisjong-project` owns the cross-family semantics described by this ADR.
-- `lisjong-arena` owns the concrete Overall evaluation protocol, execution, statistics, artifact, and provenance checks.
+- `lisjong-arena` owns the concrete Overall evaluation protocol, seed / rotation plan, execution, statistics, artifact, and provenance checks.
 - `lisjong` continues to own stable Policy identity / current role according to existing repository boundaries.
 
 Champion registry / metadata placement remains a separate follow-up concern and is not decided here.
@@ -144,9 +136,9 @@ Champion registry / metadata placement remains a separate follow-up concern and 
 ## Consequences
 
 - Existing Heuristic and Learning development loops can continue without forced protocol unification.
-- Overall claims use a common, architecture-independent high-fidelity matchup.
+- Overall claims use a common, architecture-independent high-fidelity AABB half-game matchup.
 - Family Champions can be selected cheaply or purpose-specifically while the final cross-family claim is based on half-game performance.
-- Seat exposure is symmetric within each seed block through deterministic four-rotation AABB assignment.
+- Seat exposure must be symmetric across the locked Overall evaluation population, while the exact rotation schedule remains an Arena contract.
 - Inconclusive evidence remains a valid terminal result instead of being rescued by post-result sampling.
 - Updating either family Champion invalidates automatic carry-forward of the current Overall designation, so Overall may temporarily return to `not established`.
-- Exact sample size and statistical method remain Arena concerns rather than permanent project-wide architecture constants.
+- Exact sample size, rotation schedule, and statistical method remain Arena concerns rather than permanent project-wide architecture constants.
