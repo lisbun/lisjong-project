@@ -104,9 +104,11 @@ research-track leaderは正式なChampion familyではない。track leaderの�
 
 - `lisjong-project`: Champion family、Overall designation、research-track leaderのcross-repository semanticsとpromotion boundaryを所有する。
 - `lisjong-arena`: Policy / game evaluationのconcrete protocol、seed / seat rotation、sample size、metric、artifact、cross-family comparison実行を所有する。
-- `lisjong`: Championとして評価される対象であるstable Policy / AI-side contractを所有する。family classificationはPolicyの由来に対する判定であり、`lisjong` のcontract自体をfamilyごとに分岐させない。
+- `lisjong`: Championとして評価される対象であるstable Policy / AI-side contractと、そのPolicyのidentity / current roleを所有する。family classificationはPolicyの由来に対する判定であり、`lisjong` のcontract自体をfamilyごとに分岐させない。
 
-現在どのPolicyがどのdesignationを保持しているか、具体的なthreshold、game / seed数、evaluation頻度、registry / artifact schemaはこのADRへ固定せず、Arena側の正本と該当Issue / PRを正本とする。
+現在どのPolicyがどのChampion designationを保持しているかを表現するcanonical registry / metadata placementは、本ADRでは決定しない。evaluation protocol / artifact / measurement evidenceは `lisjong-arena` が正本として所有し、stable Policy identityとcurrent roleは既存の `lisjong` ownershipに従う。Champion designationの永続的なregistry / metadata placementは後続Issueで決定する。
+
+具体的なthreshold、game / seed数、evaluation頻度、artifact schemaも本ADRへ固定せず、Arena側の正本と該当Issue / PRを正本とする。
 
 ## Consequences
 

@@ -483,7 +483,7 @@ Overall Champion
 
 Learning family内では、BC / Offline Q等のresearch trackごとにleaderを追跡できます。research-track leaderは正式なChampion familyではなく、track固有のdevelopment evidenceで選定してかまいません。一方、Learning Champion自体の決定は、track固有metricだけでは行わず、trackをまたいで共通に適用できるstrength evidenceを使用します。新しいlearning paradigmが増えても、自動的に新しいChampion familyを作りません。
 
-具体的なthreshold、sample size / seed、evaluation頻度、registry / artifact schema、promotion automationはproject-wide architectureで固定せず、Arena側のpurpose-specific contractと該当Issueへ委ねます。判断の背景は [ADR 0004: Champion family separation](decisions/0004-champion-family-separation.md) を参照してください。
+具体的なthreshold、sample size / seed、evaluation頻度、evaluation artifact schema、promotion automationはproject-wide architectureで固定せず、Arena側のpurpose-specific contractと該当Issueへ委ねます。Champion designationのcanonical registry / metadata placementは未決定であり、後続Issueで扱います。判断の背景は [ADR 0004: Champion family separation](decisions/0004-champion-family-separation.md) を参照してください。
 
 ## Execution data, AI improvement, and Visualization / Analysis boundary
 
