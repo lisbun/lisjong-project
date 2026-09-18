@@ -204,6 +204,8 @@ Schema自体もregistry file内でversionし、threshold semantics revisionを�
 
 Exact post-deployment game countやrating-at-deploymentを立証できないhistorical dataは、値を推測してcanonical recordへ格上げしない。partial evidenceはpartialのまま表現できる。
 
+同様に、Policy classが同じと確認できてもexact source revision / behavior continuityを立証できない後続bot snapshotは、そのexact deploymentの`current_rating`へ昇格させずcontextual evidenceとして保持する。
+
 ## Initial population rule
 
 Historical全Policyのbackfillは行わない。
