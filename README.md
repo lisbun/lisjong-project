@@ -107,6 +107,7 @@ output may be retained
 
 詳細な責務境界と依存方向は [Architecture](docs/architecture.md) を参照してください。
 長期的な能力ロードマップは [Roadmap](docs/roadmap.md) を参照してください。
+RiichiLabのexternal live strength recordは [RiichiLab external strength registry](docs/riichilab-strength-registry.md) を参照してください。
 
 ## Issue placement
 
@@ -145,6 +146,7 @@ repository境界そのものを変更する提案や、複数repositoryへまた
 - [ADR 0003: External research source use boundary](docs/decisions/0003-external-research-source-use-boundary.md)
 - [ADR 0004: Champion family separation](docs/decisions/0004-champion-family-separation.md)
 - [ADR 0005: Overall Champion determination by AABB half-game](docs/decisions/0005-overall-champion-aabb-half.md)
+- [ADR 0006: RiichiLab external strength registry](docs/decisions/0006-riichilab-external-strength-registry.md)
 
 ADRはhistorical decision recordです。現在のtarget architectureは [Architecture](docs/architecture.md) を正本とします。
 
