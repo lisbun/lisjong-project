@@ -49,11 +49,11 @@
       "deployment_ended_at": null,
       "rating_at_deployment": null,
       "games_since_deployment": null,
-      "server_total_games_at_current_observation": 49,
+      "server_total_games_at_current_observation": null,
       "verified_exact_revision_games_lower_bound": 1,
       "verified_policy_identity_games_lower_bound": 24,
-      "current_rating": 1567,
-      "current_rating_observed_at": "2026-09-14T12:45:44+09:00",
+      "current_rating": null,
+      "current_rating_observed_at": null,
       "last_ranked_game_at": null,
       "maturity_status": null,
       "canonical_200_rating": null,
@@ -86,12 +86,13 @@
           "disconnected_games": 0,
           "rating_delta_sum": 134
         },
-        "current_snapshot": {
+        "latest_retained_bot_snapshot": {
           "server_total_games": 49,
           "display_rating": 1567
         }
       },
       "notes": [
+        "The 2026-09-14 bot snapshot is contextual bot-level evidence only; exact source-revision continuity from the retained 2026-09-12 record is not proven, so it is not promoted into current deployment Rating fields.",
         "Bot history before this deployment contains other Policy generations, so server total_games must not be used as games_since_deployment.",
         "No pre-deployment Rating/total-games snapshot is retained; rating_at_deployment and exact games_since_deployment therefore remain unknown.",
         "Maturity is intentionally unclassified until exact post-deployment game count is established.",
