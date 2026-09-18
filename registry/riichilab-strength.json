@@ -1,0 +1,103 @@
+{
+  "schema_id": "lisjong-project-riichilab-strength-registry-v1",
+  "schema_version": 1,
+  "semantics_revision": "v1",
+  "maturity_thresholds": {
+    "PROVISIONAL": {
+      "min_games_inclusive": 0,
+      "max_games_inclusive": 49
+    },
+    "PRELIMINARY": {
+      "min_games_inclusive": 50,
+      "max_games_inclusive": 99
+    },
+    "STABLE": {
+      "min_games_inclusive": 100,
+      "max_games_inclusive": 199
+    },
+    "MATURE": {
+      "min_games_inclusive": 200,
+      "max_games_inclusive": null
+    }
+  },
+  "canonical_snapshot_game": 200,
+  "quality_classes": {
+    "CLEAN": "No observed DC, invalid action, chombo, timeout, or defaulted action.",
+    "DEGRADED": "No observed DC, invalid action, or chombo, but at least one timeout/defaulted action occurred.",
+    "CONTAMINATED": "At least one DC, invalid action, or chombo occurred."
+  },
+  "deployments": [
+    {
+      "deployment_id": "riichilab-313-mechanism-riichi-defense-2026-09-12",
+      "record_status": "PARTIAL_EVIDENCE",
+      "policy_family": "Heuristic",
+      "policy_name": "MechanismRiichiDefenseYakuhaiCallPolicy",
+      "policy_identity": "MechanismRiichiDefenseYakuhaiCallPolicy",
+      "repository": "lisbun/lisjong",
+      "source_revision": "d1d3c14e3e1948cff871273b7b8b57a08c655db9",
+      "behavior_config_identity": null,
+      "checkpoint_digest": null,
+      "riichilab_bot_name": "lisjong-dev",
+      "riichilab_bot_identity": "313",
+      "deployment_started_at": null,
+      "deployment_boundary": {
+        "earliest_possible_at": "2026-09-12T11:14:55Z",
+        "latest_confirmed_by_at": "2026-09-12T14:12:47Z",
+        "exact_start_known": false,
+        "basis": "Arena PR #224 merged before the first retained exact-provenance ranked record."
+      },
+      "deployment_ended_at": null,
+      "rating_at_deployment": null,
+      "games_since_deployment": null,
+      "server_total_games_at_current_observation": 49,
+      "verified_exact_revision_games_lower_bound": 1,
+      "verified_policy_identity_games_lower_bound": 24,
+      "current_rating": 1567,
+      "current_rating_observed_at": "2026-09-14T12:45:44+09:00",
+      "last_ranked_game_at": null,
+      "maturity_status": null,
+      "canonical_200_rating": null,
+      "canonical_200_observed_at": null,
+      "canonical_200_quality": null,
+      "clean_games": null,
+      "dc_games": null,
+      "timeout_games": null,
+      "invalid_action_games": null,
+      "chombo_games": null,
+      "defaulted_action_count": null,
+      "fresh_bot_initialization": false,
+      "evidence": {
+        "exact_revision_record": {
+          "date": "2026-09-12",
+          "arena_revision": "f0259f082abc45ed31c317044d50dfcc663e70c0",
+          "lisjong_revision": "d1d3c14e3e1948cff871273b7b8b57a08c655db9",
+          "record_identity": "97f20dadcbdccedd6699a38947f6d30b3b479fbaf5c3d5e9dd2b07f56c39470c",
+          "profile_identity": "lisjong-dev",
+          "policy_identity": "MechanismRiichiDefenseYakuhaiCallPolicy",
+          "requests": 132,
+          "responses": 132,
+          "end_game": true
+        },
+        "same_policy_cohort": {
+          "date": "2026-09-14",
+          "games": 23,
+          "operator_confirmed_same_policy": true,
+          "exact_source_revision_for_all_games_known": false,
+          "disconnected_games": 0,
+          "rating_delta_sum": 134
+        },
+        "current_snapshot": {
+          "server_total_games": 49,
+          "display_rating": 1567
+        }
+      },
+      "notes": [
+        "Bot history before this deployment contains other Policy generations, so server total_games must not be used as games_since_deployment.",
+        "No pre-deployment Rating/total-games snapshot is retained; rating_at_deployment and exact games_since_deployment therefore remain unknown.",
+        "Maturity is intentionally unclassified until exact post-deployment game count is established.",
+        "The 2026-09-14 same-policy cohort increases the verified Policy-identity lower bound but does not prove a single exact lisjong source revision for every game.",
+        "This record is external live evidence only and is not Champion promotion evidence."
+      ]
+    }
+  ]
+}
