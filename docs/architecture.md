@@ -485,6 +485,58 @@ Learning family内では、BC / Offline Q等のresearch trackごとにleaderを�
 
 具体的なthreshold、sample size / seed、evaluation頻度、evaluation artifact schema、promotion automationはproject-wide architectureで固定せず、Arena側のpurpose-specific contractと該当Issueへ委ねます。Champion designationのcanonical registry / metadata placementは未決定であり、後続Issueで扱います。判断の背景は [ADR 0004: Champion family separation](decisions/0004-champion-family-separation.md) を参照してください。
 
+## RiichiLab external strength registry
+
+RiichiLab ranked Ratingは、Arenaのcontrolled / reproducible strength evidenceとは別の **external live benchmark** として扱います。
+
+```text
+Arena
+    fixed protocol / direct comparison / reproducible evidence
+
+RiichiLab
+    live matchmaking / changing population / ecosystem-relative signal
+```
+
+両者を単一scoreへ合成せず、一方の結果で他方を自動上書きしません。
+
+RiichiLab registryのrecord単位はPolicy表示名ではなく、exact behavioral deploymentです。少なくともPolicy identity / source revision / behavior-affecting configurationまたはcheckpoint、RiichiLab bot identity、deployment boundary、post-deployment game count、Rating observation、execution-quality evidenceを一体として扱います。
+
+v1のpost-deployment exposureは運用上のmaturityとして次に分類します。
+
+```text
+0-49 games      PROVISIONAL
+50-99 games     PRELIMINARY
+100-199 games   STABLE
+200+ games      MATURE
+```
+
+これらはtrue skillの統計的保証ではありません。threshold semanticsを変更する場合はrevisionを明示し、historical recordへ黙ってretroactiveに適用しません。
+
+各deploymentの最初の200 post-deployment ranked games到達直後のRatingをcanonical snapshotとし、後続のcontinuous live Ratingと分離します。peak Ratingやresult-drivenなendpoint延長をcanonical recordに使いません。
+
+RiichiLab側でranked gameとして成立してRatingへ反映された対局は、DC / timeout / default action等があってもexposure countから除外しません。Policy execution qualityはCLEAN / DEGRADED / CONTAMINATED等の別evidenceとして保持し、取得できないquality情報を推測しません。
+
+bot slotの再利用を許容しますが、new deploymentの`games_since_deployment`は0から開始し、server-side Rating carry-overをfresh independent initializationと同一視しません。可能なら`rating_at_deployment`を保存し、欠損時に独自補正や再構築を行いません。
+
+長期inactivity等により追加gameなしでもdisplay Ratingが動き得るため、Rating observationにはgame countとobservation timeを併記します。no-game Rating movementだけをPolicy regressionとは解釈せず、historical canonical snapshotを後日のdisplay変化で上書きしません。
+
+Responsibility boundary:
+
+```text
+lisjong-project
+    registry semantics / project-level representation
+
+lisjong-arena
+    RiichiLab execution / observation
+    durable per-game provenance
+    bounded acquisition / analysis tooling when justified
+
+lisjong
+    stable Policy behavior identity / implementation
+```
+
+RiichiLab RatingだけでHeuristic Champion / Learning Champion / Overall Championをpromotionせず、Champion governanceのcontrolled evidenceは既存project / Arena contractを正本とします。
+
 ## Execution data, AI improvement, and Visualization / Analysis boundary
 
 external environmentから得るraw execution dataと、それを研究・評価・可視化へ利用する意味付けを分離します。
