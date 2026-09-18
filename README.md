@@ -108,6 +108,7 @@ output may be retained
 詳細な責務境界と依存方向は [Architecture](docs/architecture.md) を参照してください。
 長期的な能力ロードマップは [Roadmap](docs/roadmap.md) を参照してください。
 RiichiLabのexternal live strength recordは [RiichiLab external strength registry](docs/riichilab-strength-registry.md) を参照してください。
+麻雀評価のsample size・uncertainty・cluster bootstrap・探索/検証の横断原則は [Mahjong evaluation statistics](docs/mahjong-evaluation-statistics.md) を参照してください。
 
 ## Issue placement
 
