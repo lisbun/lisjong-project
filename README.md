@@ -148,6 +148,7 @@ repository境界そのものを変更する提案や、複数repositoryへまた
 - [ADR 0004: Champion family separation](docs/decisions/0004-champion-family-separation.md)
 - [ADR 0005: Overall Champion determination by AABB half-game](docs/decisions/0005-overall-champion-aabb-half.md)
 - [ADR 0006: RiichiLab external strength registry](docs/decisions/0006-riichilab-external-strength-registry.md)
+- [ADR 0007: Cross-repository development environment identity](docs/decisions/0007-cross-repo-development-environment-identity.md)
 
 ADRはhistorical decision recordです。現在のtarget architectureは [Architecture](docs/architecture.md) を正本とします。
 
