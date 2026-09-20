@@ -434,7 +434,7 @@ Champion families
 └─ Learning Champion
 
 Overall Champion
-    = cross-family formal evidenceに基づくderived designation
+    = DIRECT cross-family evidence または winning-family succession に基づくderived designation
     = 独立したChampion familyではない
     = not establishedを許容する
 
@@ -469,7 +469,9 @@ family-internal promotion
 cross-family Overall determination
 ```
 
-family内promotionはそのfamilyの評価loopとして独立に進められます。Overall Champion designationの新規確立・変更には、比較可能なfamily Championが存在し、両familyへ共通して適用可能なformal strength-evaluation protocolによるevidenceが得られていることを要求します。architectureごとに有利・不利の異なるOverall criterionを使いません。
+family内promotionはそのfamilyの評価loopとして独立に進められます。Overall Championの初回確立、winning familyの変更、current losing-family Championの変更後の再確立には、比較可能なfamily Championが存在し、両familyへ共通して適用可能なformal strength-evaluation protocolによるevidenceが得られていることを要求します。architectureごとに有利・不利の異なるOverall criterionを使いません。
+
+ただし、current Overall-winning familyがvalidなfamily-internal promotionで自身のexact Championをsuccessorへ置き換え、opposing family Championがdirect cross-family basisから不変である場合は、ADR 0005に従ってOverall designationを継承できます。この継承はproject-governance successionであり、family-internal evidenceとhistorical cross-family evidenceから新pairのstatistical superiorityを推移的に証明する主張ではありません。
 
 いずれのdesignationも `not established` を正式な状態として許容します。あるfamilyのChampionが未確立であることだけを理由に、他方のfamily ChampionをOverall Championへ自動昇格させません。
 
@@ -478,6 +480,25 @@ family Champion
         !=
 Overall Champion
 ```
+
+### Overall designation lifecycle
+
+Overall designationはcurrent family Championsとの関係を明示して管理します。
+
+```text
+DIRECT
+    exact current family-Champion pairをcanonical cross-family formal eventで直接比較
+
+INHERITED
+    current Overall-winning familyがvalidにChampionを更新し、
+    opposing family Championがdirect basisから不変
+```
+
+`INHERITED` はwinning familyの代表者交代をproject governance上継承する仕組みです。losing-family Championが変わった場合、両familyが変わった場合、exact predecessor / successor / opponent identityを確認できない場合、promotionまたはdirect basisがinvalidatedされた場合は継承しません。そのcurrent pairについてOverallを `not established` とし、fresh cross-family eventを要求します。
+
+current Overall recordでは少なくとも、current Champion identity、winning family、`DIRECT` / `INHERITED` mode、direct cross-family basisを保持します。継承時はさらにpredecessor / successor identity、family-promotion evidence、opposing Champion unchangedの確認を保持し、historical direct evidenceを書き換えません。
+
+このlifecycleはArenaの具体的なstatistical protocol、sample size、rotation、artifact schemaを変更しません。具体的なcross-family evidence contractはArenaが所有します。詳細な判断規則は [ADR 0005: Overall Champion determination by AABB half-game](decisions/0005-overall-champion-aabb-half.md) を参照してください。
 
 ### Research-track leader
 
