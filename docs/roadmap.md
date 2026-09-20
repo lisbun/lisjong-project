@@ -143,6 +143,45 @@ self-play population
 
 negative resultでも原因切り分けに情報が残る設計を優先します。結果を見てseed、threshold、feature bundle、救済runを追加して同一candidateを延命しません。
 
+### Qualify the scientific task before model training
+
+Hidden-state / auxiliary-supervision experimentでは、**ラベルを技術的に生成できることだけでtrainingを開始しません**。
+
+少なくとも必要に応じて次を分離して確認します。
+
+```text
+label path
+  同じdecision stateへ正確にhidden truthを結び付けられるか
+
+target support
+  intended targetに独立したpositive / negative supportと
+  十分なvariation / non-degeneracyがあるか
+
+source / action relevance
+  source Policy / teacher / populationが、
+  そのhidden conceptが意思決定へ寄与し得る局面と行動を
+  十分に生成しているか
+```
+
+重要な関係:
+
+```text
+many rows
+!= many independent examples
+
+correct labels
+!= scientifically representative target
+
+target exists
+!= teacher actions can express value from that target
+```
+
+同一hand / episodeから繰り返し生成されるdecision rowを独立supportとして数えず、hanchan / episode等の自然なcluster単位も確認します。
+
+Source Policyの行動規則がtarget populationをcensorし得る場合、まずsource/support geometryを診断します。結果を見てteacher、population、support threshold、pilot sizeを都合よく切り替えて同じconfirmatory experimentを延命しません。
+
+必要なら、scientific teacher / populationを先に固定したbounded qualification pilotでsupportを確認し、そのpilotは後続のTRAIN / selection / confirmatory evaluationから分離します。
+
 ### Multi-fidelity evaluation ladder
 
 総合strengthのNorth Starは、引き続き**fixed-protocol hanchan performance**です。
