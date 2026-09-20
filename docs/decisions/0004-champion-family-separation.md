@@ -57,7 +57,7 @@ heuristic candidate generationとlearned scoring / rerankingを組み合わせ�
 
 ### Overall Champion is a derived designation
 
-`Overall Champion` は第3のChampion familyではなく、projectのcurrent canonical strength-evaluation protocolにおいてcross-family evidenceにより最強と確認されたfamily Championを示す派生designationとする。
+`Overall Champion` は第3のChampion familyではなく、projectのcurrent canonical strength-evaluation protocolによるcross-family evidence、またはADR 0005で定義するwinning-family successionによって保持される派生designationとする。
 
 `Overall` はあらゆるmetric / opponent / environmentに対する普遍的な最強を意味しない。
 
@@ -73,7 +73,7 @@ family Champion
 Overall Champion
 ```
 
-片方のfamilyのChampionが未確立であることだけを理由に、他方のfamily ChampionをOverall Championへ自動昇格させない。`Overall Champion` を新規確立・変更する場合は、比較可能なfamily Championが存在し、cross-family formal evaluation evidenceが得られていることを要求する。
+片方のfamilyのChampionが未確立であることだけを理由に、他方のfamily ChampionをOverall Championへ自動昇格させない。`Overall Champion` の初回確立、winning familyの変更、またはcurrent losing-family Championの変更後の再確立には、比較可能なfamily Championが存在し、cross-family formal evaluation evidenceが得られていることを要求する。current Overall-winning familyがvalidなfamily-internal promotionで自身のChampionを置き換え、opposing family Championが不変である場合だけ、ADR 0005のlifecycle ruleに従ってOverall designationをsuccessorへ継承できる。
 
 Championがまだ存在しないfamilyでは、通常の `candidate vs current Champion` promotionを実行できない。初代Championには、通常promotionとは別のbaseline establishmentを必要とする。baseline establishmentでは少なくともevaluable artifact、reproducible provenance、valid inference / policy contract、必要なsanity checkを確認できることを想定する。
 
@@ -91,6 +91,8 @@ Heuristic Champion vs Learning Champion
 ```
 
 family内promotionでは、family固有のdevelopment gate / diagnostic / training validationを利用してよい。cross-family比較では、両familyへ共通して適用可能なformal protocolを使用し、architectureごとにseed、opponent、scoring、criterionを有利・不利に変更しない。
+
+family内promotionとcross-family evidenceが別eventであることは、winning-family successionを禁止することを意味しない。current Overall-winning familyのexact Championがvalidなfamily-internal promotionでsuccessorへ置き換わり、opposing family Championがdirect basisから変わっていない場合は、ADR 0005に従いproject-governance上のOverall designationを継承できる。この継承はstatistical transitivityの主張ではない。
 
 ### Research-track leaders
 
