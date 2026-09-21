@@ -35,44 +35,32 @@ GitHub上で確認できる現在進捗を本repositoryの恒久文書へ重複�
 
 | Repository | 主な責務 |
 | --- | --- |
-| [`lisjong`](https://github.com/lisbun/lisjong) | 麻雀AI decision core。Policy、stable AI-side contract、牌効率・HandBelief・value / risk等のstable semantics、production / public Learned Policy semantics |
+| [`lisjong`](https://github.com/lisbun/lisjong) | 麻雀AIを作るrepository。Policy / stable AI semantics、feature / action vocabulary、dataset / teacher / training、model artifact、Learned Policy / learned estimator |
 | [`lisjong-engine`](https://github.com/lisbun/lisjong-engine) | 日本式リーチ麻雀のルール、状態遷移、合法手、game / match進行、first-party deterministic execution substrate |
-| [`lisjong-arena`](https://github.com/lisbun/lisjong-arena) | external / local execution・observation、bounded experiment-local dataset / training / analysis、再現可能なPolicy / game evaluation |
+| [`lisjong-arena`](https://github.com/lisbun/lisjong-arena) | AIをconcrete environmentで実行・観測し、controlled conditionで比較・評価するrepository。raw/source record、population provenance、formal strength evaluation |
 | [`lisjong-play`](https://github.com/lisbun/lisjong-play) | first-party `lisjong-engine` を利用するHuman Play / presentation consumer。human input、action-selection UX、GUI / CLI、spectator / replay等 |
 
-## Arenaの3責務
+## Learning / Arenaの責務境界
 
-`lisjong-arena` 内では、少なくとも次の3責務を分離します。
-
-```text
-Execution / Observation
-    what happened
-
-Experiment-local Research / ML
-    bounded experimentをどうmaterialize / train / diagnoseするか
-
-Evaluation
-    candidate / Policyをどう再現可能に比較するか
-```
-
-Arenaは、bounded research questionのためのpurpose-specific feature / dataset / trainer / model / checkpoint / diagnostic artifactを所有できます。
-
-ただし、Arenaにresearch implementationが存在することと、stable AI semanticsをArenaが所有することは別です。
+短く言うと次です。
 
 ```text
-experiment-local model
-!= production Policy
+lisjong
+    = candidateを作る
+      feature / dataset / teacher / training / artifact / inference
 
-experiment-local feature schema
-!= stable PolicyInput / production feature contract
-
-experiment result
-!= stable public API
+lisjong-arena
+    = candidateを動かして測る
+      execution / observation / population provenance / evaluation
 ```
 
-stableなPolicy / HandBelief / value / feature / inference semanticsへ昇格する場合は、owner repositoryを明示的にreviewし、必要なら `lisjong` のstable contractとしてformalizeします。
+Arenaが保持するreusable raw/source recordはplayer-safe observation、legal actions、selected action、provenanceを中心とし、feature tensorやtraining objective固有labelをcanonical sourceにしません。下流の`lisjong`が新しいfeature / dataset representationを再materializeできる境界を優先します。
 
-`lisjong-play` はgame rulesやstate transitionを再実装せず、`lisjong-engine` のplayer-safe public boundaryをconsumerとして利用します。AI seatを含む場合も、必要なPolicy / execution bridgeを既存ownerからreuseし、presentation都合でAI-side semanticsやengine semanticsを複製しません。
+既存Arena-local Learning codeやartifactはhistorical / reference implementationとして残せます。ownership変更を理由にbulk migrationや遡及的なartifact改名を行いません。
+
+現在のArena AWS execution surfaceはconcrete workloadをhostできますが、training semantics / executable entry pointのcanonical ownerは`lisjong`です。hosting場所とsemantic ownershipを分離します。
+
+`lisjong-play` はgame rulesやstate transitionを再実装せず、`lisjong-engine` のplayer-safe public boundaryをconsumerとして利用します。AI seatを含む場合も、既存ownerのPolicy / execution boundaryをreuseします。
 
 ## External research source boundary
 
@@ -120,11 +108,10 @@ RiichiLabのexternal live strength recordは [RiichiLab external strength regist
 mahjong rules / progression
     -> lisjong-engine
 
-stable AI semantics / production Policy contract
+AI semantics / feature / dataset / teacher / training / Learned Policy
     -> lisjong
 
-execution / observation
-bounded experiment-local ML / analysis
+execution / observation / source record / population provenance
 Policy / game evaluation
     -> lisjong-arena
 
@@ -135,8 +122,9 @@ repository boundary / dependency / ownership rule
     -> lisjong-project
 ```
 
-repository境界そのものを変更する提案や、複数repositoryへまたがる設計判断は `lisjong-project` で扱います。
-個別repository内部の実装・設計・進捗は、それぞれのrepositoryで管理します。
+既存Arena Learning implementationのhistorical maintenanceはArenaで扱えますが、新しいcanonical Learning capabilityは`lisjong`へ置きます。
+
+repository境界そのものを変更する提案や、複数repositoryへまたがる設計判断は `lisjong-project` で扱います。個別repository内部の実装・設計・進捗は、それぞれのrepositoryで管理します。
 
 ## Architecture Decision Records
 
@@ -149,6 +137,7 @@ repository境界そのものを変更する提案や、複数repositoryへまた
 - [ADR 0005: Overall Champion determination by AABB half-game](docs/decisions/0005-overall-champion-aabb-half.md)
 - [ADR 0006: RiichiLab external strength registry](docs/decisions/0006-riichilab-external-strength-registry.md)
 - [ADR 0007: Cross-repository development environment identity](docs/decisions/0007-cross-repo-development-environment-identity.md)
+- [ADR 0008: Learning and Learned Policy ownership](docs/decisions/0008-learning-and-learned-policy-ownership.md)
 
 ADRはhistorical decision recordです。現在のtarget architectureは [Architecture](docs/architecture.md) を正本とします。
 
