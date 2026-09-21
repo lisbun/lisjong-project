@@ -13,40 +13,39 @@ historicalなrepository boundary decisionは `docs/decisions/` のADRへ残し�
 
 ### `lisjong`
 
-`lisjong` は、観測可能な麻雀状態からActionを選ぶ **AI decision core** と、production / stableなAI-side semanticsを担当します。
+`lisjong` は、観測可能な麻雀状態からActionを選ぶ **AI decision core** と、Heuristic / Learnedを問わない **canonical AI Learning capability** を担当します。
 
 主な責務:
 
 - Policy / AI戦略
-- `DecisionContext` / `PolicyInput` / Policy contract
-- `InternalAction` 等のAI-side contract
-- 実行時に利用するPolicy / AI configurationの選択
-- Policy返却値の合法性・semantic identity validation
-- 向聴数、受け入れ枚数、牌効率、lookahead
-- remaining tile information、HandBelief等のhidden-state inference semantics
-- 打点・offensive value、守備・defensive risk、押し引き、utility-aware decision等のstable AI semantics
-- Policy内部analysis schema / meaning
-- production / public Learned Policyの意味契約
-- stable feature / inference / estimator contract
-- componentのcorrectness / physical-validity semantics
+- `DecisionContext` / `PolicyInput` / `InternalAction` 等のAI-side contract
+- 向聴数、受け入れ枚数、牌効率、HandBelief、value / risk等のstable AI semantics
+- model-facing feature representation / action vocabulary
+- Learning用 dataset semantics
+- teacher / label generation
+- model architecture / training objective / trainer
+- model artifact / checkpoint identity
+- Learned Policy inference / learned estimator
+- Learning objective固有のdiagnostics / intrinsic metric definition
+- component correctness / physical-validity semantics
 
-lisjongの中心的な境界は概念上次とします。
+中心的な境界は次です。
 
 ```text
 DecisionContext / PolicyInput
         |
         v
-      Policy
+Heuristic / Learned Policy
         |
         v
 InternalAction
 ```
 
-RiichiEnv / RiichiLab等の外部environment固有型、WebSocket、credential、matchmaking、retry / reconnect、continuous participation、game record persistence等のexecution concernをPolicy contractへ持ち込みません。
+Learningでは、player-safe sourceからの解釈・feature化・labeling・training・artifact・inferenceを同じownerへ置きます。training semanticsとexecutable entry pointは`lisjong`が所有し、外部environment固有のrunnerやformal strength evaluationは所有しません。
 
-`lisjong` は麻雀ルールそのものを進行するgame engineでも、外部環境へのstandalone runner / clientの長期的な所有者でも、複数trialの評価計画・集計を行うrepositoryでもありません。
+`lisjong` core（Policy contract / hand evaluation / belief / action vocabulary等）はML framework非依存を維持します。ML runtimeはoptional dependency + lazy importとし、weights / checkpointはrepository外のoperator-owned artifactとして扱います。model artifactはimmutable snapshotとし、arbitrary factory / callableを復元せず、identity不整合はload時にfail closedします。
 
-また、研究用dataset / trainer / checkpointが存在するだけで、それを `lisjong` のstable contractへ自動昇格させません。production / stable semanticsへのpromotionは明示的に判断します。
+RiichiEnv / RiichiLab固有型、WebSocket、credential、matchmaking、retry / reconnect、continuous participation、game record persistence等のexecution concernをPolicy / Learning contractへ持ち込みません。
 
 ### `lisjong-engine`
 
@@ -73,159 +72,69 @@ RiichiEnv / RiichiLab等の外部environment固有型、WebSocket、credential�
 
 ### `lisjong-arena`
 
-`lisjong-arena` は、lisjongをconcrete environmentで実行・観測し、bounded research candidateを再現可能に生成・診断し、そのcandidate / Policyをcontrolled conditionで比較・評価するarena基盤を担当します。
+`lisjong-arena` は、AIをconcrete environmentで **実行・観測** し、controlled conditionで **比較・評価** するrepositoryです。
 
-Arena内部では、少なくとも次の **3責務** を分離します。
+target responsibilityは次の2本柱です。
 
 ```text
 Execution / Observation
     what happened
         |
         v
-objective execution data
+player-safe / objective evidence
         |
         +------------------------------+
         |                              |
         v                              v
-Experiment-local Research          Evaluation
-bounded dataset / training        matchup / seeds / rotation
-analysis / model artifact         metrics / artifact / provenance
-        |                              ^
-        v                              |
-research candidate -------------------+
-```
-
-重要な境界:
-
-```text
-Arena may own experiment-local ML
-!=
-Arena owns stable AI semantics
+lisjong Learning                 Arena Evaluation
+builds the candidate             measures the candidate
 ```
 
 #### Execution / observation
 
 主な責務:
 
-- environment-specific integration
-- RiichiLab client / Adapter等のexternal participation能力
-- local / external execution runner
-- matchmaking participation
-- repeated / continuous participation
+- RiichiEnv / RiichiLab / first-party engine integration
+- local / external runner、matchmaking、session lifecycle
 - retry / reconnect / backoff等のexecution resilience
-- execution profile / credential source resolution
-- protocol trace
-- raw game record / objective execution eventの取得
+- protocol trace / durable game record
 - environmentへ実際に送信・適用したActionの記録
 - external representationからlisjong-owned Policy contractへのprojection
-- `InternalAction`からexternal legal Actionへのmapping / revalidation
+- Arenaが実行するpopulationのseed / seat / allocation provenance
+- reusable player-safe source-record schemaとversioned read/write contract
 
-このlayerは研究仮説やPolicy performance metric、comparison protocol、Arena固有seed / seat rotation semanticsを知らなくても成立する構造とします。
-
-AI判断ロジックや麻雀ruleを再実装しません。
-
-#### Experiment-local research / ML
-
-Arenaは、**bounded research questionを検証するために必要なpurpose-specific dataset / training / model / analysis implementation** を所有できます。
-
-主な例:
-
-- experiment-local player-safe feature / tensor representation
-- purpose-specific dataset schema / split / manifest
-- data generation / materialization harness
-- bounded training harness
-- fixed experiment model architecture / loss / optimizer configuration
-- checkpoint / result / diagnostic artifact
-- offline failure diagnosis
-- experiment-local Learned Policy adapter
-- experiment固有のclassification / decision rule
-
-この責務は、次の条件を満たす場合に限定します。
-
-```text
-bounded research question
-+ explicit provenance / reproducibility
-+ purpose-specific schema
-+ clear promotion boundary
-+ no silent production adoption
-```
-
-Arenaのexperiment-local researchが利用するshanten / HandBelief / value等の**stable meaning**は、必要に応じて `lisjong` owned semanticsをreuseします。Arena都合で同じdomain semanticsを別定義しません。
-
-一方、experiment-local metric、dataset split、training protocol、checkpoint selection、bounded calibration study等は、そのexperimentのevidence contractとしてArenaが所有できます。
+reusable source recordは、PolicyInput相当のplayer-safe observation、legal actions、selected action、source provenanceを保持し、feature tensorやtraining objective固有labelをcanonical sourceにしません。downstreamの`lisjong`がfeature / datasetを再materializeできることを境界条件とします。
 
 #### Evaluation
 
 主な責務:
 
-- Policy / agentのmatchup定義
-- evaluation用seed集合
-- deterministicなseat rotation
-- round / game等のevaluation scopeに応じた実行計画
-- Policy / agent assignmentの記録
+- Policy / agent matchup
+- evaluation用seed集合とdeterministic seat rotation
 - raw result収集
 - evaluation artifact / provenance
-- 評価scopeに応じたmetrics
-- 再現可能なcomparison protocol
 - statistical comparison
-- external benchmark / report
-- evaluation目的のexternal competitor integration / orchestration
+- formal holdout / Champion evaluation
+- external benchmark
+- evaluation固有diagnostics
 
-Evaluationはexecution / observation能力をconsumerとして利用できます。
-Experiment-local Researchが生成したcandidateを評価できますが、評価結果を見てtraining conditionを暗黙に変更しません。
+Evaluationはexecution / observationをconsumerとして利用しますが、評価結果を見てtraining conditionを暗黙に変更しません。
 
-逆方向にcomparison semanticsをexecution / observationへ漏らしません。
+#### Existing Arena Learning implementation
 
-### Experiment-local research promotion boundary
-
-研究用implementationは、最初からproduction-quality generic frameworkへ昇格させません。
+既存のArena-local dataset / trainer / model / checkpoint / diagnostic implementationは、historical experimentまたは既にlockされたin-flight workloadとして残してよいものとします。これは新しいcanonical ownershipを意味しません。
 
 ```text
-bounded experiment
-    |
-    v
-experiment-local implementation
-    |
-    v
-result / evidence
-    |
-    +--> negative / inconclusive
-    |       keep as historical experiment record
-    |
-    `--> repeatedly useful / promoted principle
-            |
-            v
-       owner repository review
-            |
-            +--> remain Arena experiment infrastructure
-            `--> formalize as lisjong stable AI contract
+existing Arena experiment
+    = historical/reference implementation
+
+new canonical Learning capability
+    = lisjong
 ```
 
-次はそれぞれ別物です。
+既存Arena implementationからは、invariants、failure modes、provenance requirements、scientific guardrailsを抽出して再利用します。bulk code migrationやArena code deletionをarchitecture変更の完了条件にしません。
 
-```text
-experiment-local model
-!= canonical production model architecture
-
-experiment-local feature schema
-!= stable PolicyInput / production feature contract
-
-experiment-local checkpoint
-!= production Policy
-
-experiment result
-!= stable public API
-```
-
-promotion時には少なくとも次を確認します。
-
-- semanticsが特定experimentを超えてstableか
-- production / multiple consumerで必要か
-- Arena evidence concernとAI decision concernのどちらがownerとして自然か
-- experiment-local identityをそのままstable contractへ流用してよいか
-- versioning / compatibility / breaking-change policyを新たに定義すべきか
-
-「研究で使えた」だけではpromotion理由にしません。
+現在すでに成立しているArena AWS execution surfaceは、#331 / #332等のconcrete workloadをhostできます。ただし、all training / all rollout hostingをArenaの恒久責務にはしません。
 
 ### `lisjong-play`
 
@@ -304,21 +213,28 @@ lisjong Policy
 
 selected game environmentはexternal environmentでも `lisjong-engine` のfirst-party pathでも構いません。
 
-### Research execution
+### Learning / research execution
 
-Experiment-local Researchは、必要な場合にArena execution / observationやdurable raw evidenceを利用してdataset / diagnostic artifactを構成できます。
+新しいcanonical Learning flowは次を基本とします。
 
 ```text
-execution / observation
+Arena execution / observation
         |
         v
-player-safe / objective raw evidence
+versioned player-safe source record
         |
         v
-experiment-local materialization / training / diagnosis
+lisjong
+    materialization / feature / label
+    training / artifact / LearnedPolicy
+        |
+        v
+Arena evaluation
 ```
 
-training-only ground truthやomniscient labelを使う場合、serving inputと明確に分離します。
+training / data-collection rolloutは、concrete consumerに応じて`lisjong` + `lisjong-engine`等で成立し得ます。formal strength-evaluation rolloutは`lisjong-arena`が所有します。
+
+既存Arena operational surfaceで`lisjong`所有のtraining entry pointを実行することは可能ですが、hosting locationからtraining semanticsのownerを推論しません。
 
 ### Live / standalone participation
 
@@ -358,9 +274,9 @@ lisjong-engine -X-> lisjong-play
 lisjong -X-> lisjong-arena
 ```
 
-`lisjong-arena -> lisjong` は、stable Policy / feature / belief / value semanticsをconsumerとして利用する方向です。Arenaのexperiment-local research codeが存在しても、`lisjong -> lisjong-arena` の逆依存を作りません。
+`lisjong-arena -> lisjong` は、stable Policy / feature / belief / value semanticsをconsumerとして利用する方向です。historicalなArena-local Learning codeが存在しても、`lisjong -> lisjong-arena` の逆依存を作りません。
 
-`lisjong-arena -> lisjong-engine` はfirst-party execution backend利用のために許可します。Arena固有のevaluation / training semanticsをengineへ持ち込みません。
+`lisjong-arena -> lisjong-engine` はfirst-party execution backend利用のために許可します。Arena固有のevaluation semanticsやlisjong-owned Learning semanticsをengineへ持ち込みません。
 
 `lisjong-play -> lisjong-arena` は、Arena-owned bridge等をconcrete consumerとしてreuseする場合に許可しますが、Arena evaluation semanticsをHuman Playへ持ち込むことを意味しません。別のnon-Arena consumerも同じbridgeを必要とする等のconcrete needが生じた場合にplacement / extractionを再評価します。
 
@@ -382,47 +298,44 @@ correctness validationで複数実装を比較する場合は、実装系譜・a
 
 性能最適化はcorrectness、independent validation、regression protectionの後に行います。Python実装であることだけを理由にnative backendへ移行せず、実測されたbottleneckとsemantic compatibilityを確認してから最適化を判断します。
 
-## Evaluation and research ownership
+## Learning and evaluation ownership
 
-component quality、research evidence、Policy decision quality、game performanceは異なるclaimとして扱います。
-
-```text
-Stable component semantics / production correctness
-    -> component owning repository (`lisjong` / `lisjong-engine`)
-
-Experiment-local training / measurement / diagnosis
-    -> lisjong-arena experiment-local research
-
-Policy / game performance evaluation
-    -> lisjong-arena evaluation
-
-External benchmark for evaluation
-    -> lisjong-arena evaluation
-
-Live / standalone participation
-    -> lisjong-arena execution / observation
-```
-
-例えばHandBeliefについて:
+component correctness、Learning objective固有metric、Policy decision quality、game performanceは別のclaimとして扱います。
 
 ```text
-HandBeliefのstable field / meaning / physical semantics
+Stable AI semantics / canonical Learning capability
     -> lisjong
 
-bounded dataset / training / MAE / calibration study / artifact
-    -> Arena experiment-local research
+Learning objective / intrinsic metric definition
+    -> lisjong
 
-HandBelief-aware Policyが対局上強くなったか
-    -> Arena evaluation
+Arena-executed population / rotation / seed provenance
+    -> lisjong-arena
+
+Policy / game performance evaluation
+    -> lisjong-arena
+
+External benchmark
+    -> lisjong-arena
 ```
 
-同様に、Learned Policyのexperiment-local model / checkpointはArenaで研究できても、production Policy semanticsへ自動昇格しません。
+intrinsic metricがinteractive executionを必要とする場合は、definition / execution / artifactを分離します。
 
-prediction improvement、decision improvement、game-strength improvementを同一claimとして扱いません。
+```text
+metric definition / semantic threshold
+    -> lisjong
 
-評価scopeは対象に対してminimum sufficientなものを選びます。cheap diagnostic / round-level development evaluationから始め、placementやlong-horizon objectiveが重要な段階でhanchan等のgame-level validationへ拡張できます。
+population / execution / rotation / seed
+    -> execution owner
+    -> formal Arena evaluationなら lisjong-arena
 
-具体的なseed / seat rotation / sample size / variance / confidence interval / paired comparison等はproject-wide architectureでは固定せず、Arena側のpurpose-specific contractへ委ねます。
+artifact
+    -> producerが書き、schema ownerを明示
+```
+
+例えばHandBeliefでは、field / physical semanticsとcanonical learned-estimator Learningは`lisjong`、Arenaが実行するgame-strength comparisonは`lisjong-arena`です。prediction improvement、decision improvement、game-strength improvementを同一claimとして扱いません。
+
+historical Arena experimentのartifact / identity / evidenceは、その時点のprovenanceを維持し、ownership変更を理由に遡及改名・再指定しません。
 
 ## Champion governance
 
@@ -571,17 +484,15 @@ first-party engine / external environment / live integration
                raw execution data
                  /          \
                 v            v
-       Arena evaluation   Arena experiment-local research
-                                |
-                                v
-                         research evidence / candidate
-                                |
-                                +----> evaluation
-                                |
-                                `----> promotion review
-                                         |
-                                         v
-                                   lisjong stable contract
+       Arena evaluation      reusable source record
+                                  |
+                                  v
+                            lisjong Learning
+                                  |
+                                  v
+                         candidate / artifact
+                                  |
+                                  `----> Arena evaluation
 
 Policy decision / analysis data --------+
 Arena result / provenance / artifact ---+--> analysis / viewer consumer
@@ -661,8 +572,11 @@ game runner
 integration runner / client
     -> lisjong-arena execution / observation
 
-experiment runner / training harness
-    -> lisjong-arena experiment-local research
+training entry point
+    -> lisjong
+
+training execution host
+    -> concrete workload owner / existing Arena operational surface when explicitly reused
 
 comparison runner
     -> lisjong-arena evaluation
@@ -676,9 +590,11 @@ comparison runner
 
 RiichiEnv、RiichiLab、first-party engine等へlisjong Policyを接続します。外部Observation / Action表現とPolicy contractの境界、およびsession lifecycleを扱いますが、麻雀ruleやPolicy判断ロジックは再実装しません。
 
-### Experiment runner / training harness
+### Training entry point / execution host
 
-bounded research questionのためにdata materialization、training、checkpoint selection、diagnostic artifact等を実行します。purpose-specific contractとして設計し、generic ML platformへ自動昇格させません。
+Learning semantics、dataset interpretation、training objective、executable training entry pointは`lisjong`が所有します。
+
+実際のcomputeをどこでhostするかは別のoperational concernです。既存Arena AWS surfaceをconcrete workloadで再利用できますが、これをproject-wideな恒久hosting責務にはしません。future hosting ownerは具体的なconsumer / operational needが生じた時点で決めます。
 
 ### Arena / comparison runner
 
@@ -686,21 +602,18 @@ bounded research questionのためにdata materialization、training、checkpoin
 
 ## Issue placement rules
 
-新しい課題のplacementは「どのrepositoryの目的を成立させるために必要な責務か」で判断します。
+新しい機能や設計課題は、主たる意味契約のownerへ置きます。
 
-- 麻雀ゲームを正しく進行するために必要なら `lisjong-engine`
-- stableなAI decision semantics、Policy、Policy内部component、production feature / inference / model contractなら `lisjong`
-- environment接続、live participation、session lifecycle、retry / reconnect、raw execution observationなら `lisjong-arena` Execution / Observation
-- bounded research questionのdataset / training / checkpoint / diagnostic / experiment-local modelなら `lisjong-arena` Experiment-local Research
-- Policy / agent matchup、seed、seat rotation、strength / benchmark comparisonなら `lisjong-arena` Evaluation
-- Human-facing presentation / input / action-selection UX / Human Play / spectator / replay consumerなら `lisjong-play`
-- repository境界、依存方向、ownership、promotion boundary等のproject-wide原則を変更するなら `lisjong-project`
+- 麻雀rules / state transition / scoringなら `lisjong-engine`
+- Policy / AI semantics、feature / action vocabulary、dataset semantics、teacher / label、training、model artifact、Learned Policy / learned estimatorなら `lisjong`
+- environment接続、live participation、raw observation、Arena-executed population provenanceなら `lisjong-arena` Execution / Observation
+- Policy / agent matchup、seed / seat rotation、formal strength comparison、external benchmarkなら `lisjong-arena` Evaluation
+- Human-facing presentation / input / Human Play / spectator / replay consumerなら `lisjong-play`
+- repository boundary / dependency / ownership ruleの変更なら `lisjong-project`
 
-experiment-local researchで新しいfeature / modelを作る場合も、stable semanticsのownerを同時に変更したとはみなしません。
+既存Arena Learning implementationの保守・historical compatibilityはArena Issueで扱えますが、それを理由に新しいcanonical Learning capabilityをArenaへ追加しません。
 
-複数repositoryに変更が必要な機能でも、同じ仕様を複数repoへ重複して持たせません。横断契約をどこが所有するかを先に決め、各repoは自分の内部実装だけを持ちます。
-
-execution / research infrastructureがArena外の複数consumerから必要になった場合は、その時点で共通runtime / repositoryへの抽出を再検討します。将来のconsumerを推測してgeneric platformを先行設計しません。
+複数repositoryに変更が必要でも、同じsemantic contractを重複所有しません。cross-repository artifactはowner / version / provenanceを明示し、artifact経由のhidden reverse dependencyを作りません。
 
 ## Source-of-truth boundary
 
