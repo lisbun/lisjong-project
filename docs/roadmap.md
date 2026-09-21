@@ -446,6 +446,9 @@ Hidden-state inference      Value estimation
 - offensive / defensive valueを統合したvalue-aware decision
 - 将来の順位価値やgame-level objectiveを含み得るutility-aware decision
 - stable production Policy / inference semantics
+- player-safe feature representation / action vocabulary
+- Learning dataset semantics / teacher labeling
+- model training / artifact / Learned Policy inference
 
 Expected valueは重要な候補ですが、単一の局収支EVをproject-wideな最終目的関数として固定しません。
 
@@ -484,31 +487,33 @@ execution / observation
 
 raw execution dataとAI意味付けを分離します。privileged offline / ground-truth dataをonline Policy inputへ混ぜず、Policy-internal analysisをobjective raw recordへ暗黙に混在させません。
 
-## Arena Research / Evaluation Track
+## Learning / Arena Evaluation Track
 
-bounded experimentのownerがArenaである場合、experiment-localなdataset construction、training harness、diagnostic analysis、candidate artifact、controlled evaluationを、stable production Policy semanticsと分離して扱えます。
+Learning capabilityは`lisjong`で段階的に構築し、Arenaはsource executionとstrength evaluationを担います。
 
 ```text
-raw / retained evidence
+Arena execution / observation
         ↓
-experiment-local feature / dataset
+versioned player-safe source record
         ↓
-bounded training / candidate
+lisjong Learning
+    feature / dataset / teacher
+    training / artifact / inference
         ↓
-diagnostic / evaluation
+Arena evaluation
         ↓
-validated research result
-        ↓
-justified stable semantics only -> owning repository
+validated game-strength evidence
 ```
 
-experiment-local modelやfeatureが存在することだけで、`lisjong`のstable production schemaへ昇格させません。production integrationが必要になった時点でowner repository、dependency、artifact delivery、runtime semanticsを改めてlockします。
+最初からgeneric ML platformを作らず、offense foundation、defense、calls、value / placement、opponent-state representation等のconcrete use caseから必要なcapabilityだけをcanonicalizeします。
 
-Evaluation layerはPolicy / game performanceを再現可能な条件で比較・評価します。multi-fidelity ladderを利用できますが、specific protocol、seed / seat rotation、sample size、metric、confidence interval、artifact schemaは`lisjong-arena`側の正本に委ねます。
+既存Arena-local dataset / trainer / checkpoint / diagnosticsはreference / historical implementationとして扱い、bulk migrationを行いません。既にlockされたscientific workloadはhistorical identityを維持したまま完了させられます。
+
+Arena Evaluation layerはPolicy / game performanceを再現可能な条件で比較・評価します。specific protocol、seed / seat rotation、sample size、metric、confidence interval、artifact schemaは`lisjong-arena`側のpurpose-specific contractへ委ねます。
 
 ### Development evidence
 
-state / decision / round-levelのcheap evidenceは、rapid feedback、regression detection、failure diagnosis、candidate filteringに利用します。
+state / decision / round-levelのcheap evidenceは、rapid feedback、regression detection、failure diagnosis、candidate filteringに利用します。Learning objective固有metricの意味とthresholdは`lisjong`、Arena-executed populationのseed / rotation / provenanceはArenaが所有します。
 
 ### Hanchan / external evidence
 
@@ -563,13 +568,33 @@ Visualization / Analysisはread-orientedなconsumerとして位置付けます�
 
 ## Learning Policy
 
-Learning Policyは、再現可能なPolicy comparisonと安全なPolicy-visible input boundaryが成立した段階から導入・発展させます。
+Learning Policyは`lisjong`のcanonical AI capabilityとして、再現可能なPolicy comparisonと安全なPolicy-visible input boundaryの上に段階的に構築します。
 
-既存のPolicy contract、execution / observation、round / hanchan evaluation、artifact、replay / analysisを可能な限り再利用し、学習Policyだけを特別扱いする別系統の実行基盤を作りません。
+最初のvertical sliceはconcreteなoffense-foundation use caseから必要なものだけを実装します。
 
-初期Learned Policyでは、teacher agreementやtraining lossだけをstrength claimにしません。cheap hand-progression / decision diagnostics、partial environment、round-level evidenceを利用して基本能力を確認し、必要なcandidateだけhanchan evaluationへ進めます。
+```text
+player-safe source
+    ↓
+lisjong-owned feature / dataset semantics
+    ↓
+teacher / label
+    ↓
+training
+    ↓
+immutable model artifact
+    ↓
+LearnedPolicy
+    ↓
+Arena strength evaluation
+```
 
-学習アルゴリズム、model形式、training data、self-play方式、計算基盤をproject-wideに先固定しません。reference-guided principle inventoryとlisjong evidenceから、次に切り分ける価値が高い軸を選択します。
+`lisjong` coreはML framework非依存を維持し、training / learned inferenceはoptional dependency + lazy importとします。weights / checkpointはrepository外artifactとし、load時はidentity不整合をfail closedします。
+
+既存のPolicy contract、execution / observation、round / hanchan evaluation、artifact provenanceを可能な限り再利用し、Learning専用の別系統game runtimeを作りません。
+
+teacher agreementやtraining lossだけをstrength claimにせず、intrinsic capability metricとArena game-strength evidenceを分離します。training / data-collection rolloutとformal strength-evaluation rolloutも同一責務として固定しません。
+
+学習アルゴリズム、model形式、self-play方式、長期compute hostingをproject-wideに先固定しません。concrete consumerと実測上の必要性から順に決めます。
 
 ## OSS / external ecosystem and validation strategy
 
