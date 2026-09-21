@@ -484,17 +484,15 @@ first-party engine / external environment / live integration
                raw execution data
                  /          \
                 v            v
-       Arena evaluation   Arena experiment-local research
-                                |
-                                v
-                         research evidence / candidate
-                                |
-                                +----> evaluation
-                                |
-                                `----> promotion review
-                                         |
-                                         v
-                                   lisjong stable contract
+       Arena evaluation      reusable source record
+                                  |
+                                  v
+                            lisjong Learning
+                                  |
+                                  v
+                         candidate / artifact
+                                  |
+                                  `----> Arena evaluation
 
 Policy decision / analysis data --------+
 Arena result / provenance / artifact ---+--> analysis / viewer consumer
@@ -574,8 +572,11 @@ game runner
 integration runner / client
     -> lisjong-arena execution / observation
 
-experiment runner / training harness
-    -> lisjong-arena experiment-local research
+training entry point
+    -> lisjong
+
+training execution host
+    -> concrete workload owner / existing Arena operational surface when explicitly reused
 
 comparison runner
     -> lisjong-arena evaluation
