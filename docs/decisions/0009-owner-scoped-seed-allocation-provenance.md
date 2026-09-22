@@ -35,7 +35,7 @@ Arena-owned ledger      lisjong-owned ledger when needed
 - ownerはcanonical authority ref / storeを明示し、concurrent mutationとstale baseをfail closedする。
 - live allocation stateをscientific code revisionと同一Git revisionへ結合することは要求しない。
 - failed / incomplete executionでreservationを自動解放しない。
--通常allocationでrepository / Issue / artifact全文scanをauthorityとしない。
+- 通常allocationでrepository / Issue / artifact全文scanをauthorityとしない。
 
 Normative details are defined in [Seed allocation / provenance contract](../seed-allocation-provenance.md).
 
