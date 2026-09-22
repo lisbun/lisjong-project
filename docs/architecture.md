@@ -615,6 +615,26 @@ Learning semantics、dataset interpretation、training objective、executable tr
 
 複数repositoryに変更が必要でも、同じsemantic contractを重複所有しません。cross-repository artifactはowner / version / provenanceを明示し、artifact経由のhidden reverse dependencyを作りません。
 
+## Seed allocation / provenance
+
+scientific / qualification / evaluation / training populationのseed allocationは、ecosystem-wide single registryではなく **owner-scoped authoritative ledger** で管理します。
+
+```text
+lisjong-project
+    seed allocation / provenance contract
+        |
+        +--------------------+
+        |                    |
+        v                    v
+lisjong-arena             lisjong
+Arena-executed            lisjong-produced
+population owner          population owner when needed
+```
+
+seed integer単体をglobal identityとせず、generator / environment / producer / derivation semanticsを含むversioned `seed_domain` をcollision scopeとします。同一domain内ではowner ledgerがreuseをfail closedし、cross-owner / cross-domain non-overlapはscientific protocolが要求する場合だけexplicit provenance contractで検証します。
+
+project-wide interoperabilityでは、少なくとも `allocation_identity`、`seed_domain`、authorizing ledger revision、`seed_membership_identity` を照合可能にします。`RESERVED / COMMITTED / RETIRED` のstate semantics、freshness、authority publication、concurrency、historical bootstrapを含む詳細は [Seed allocation / provenance contract](seed-allocation-provenance.md) を正本とします。判断の背景は [ADR 0009: Owner-scoped seed allocation and provenance](decisions/0009-owner-scoped-seed-allocation-provenance.md) を参照してください。
+
 ## Source-of-truth boundary
 
 ```text

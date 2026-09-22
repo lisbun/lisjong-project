@@ -97,6 +97,7 @@ output may be retained
 長期的な能力ロードマップは [Roadmap](docs/roadmap.md) を参照してください。
 RiichiLabのexternal live strength recordは [RiichiLab external strength registry](docs/riichilab-strength-registry.md) を参照してください。
 麻雀評価のsample size・uncertainty・cluster bootstrap・探索/検証の横断原則は [Mahjong evaluation statistics](docs/mahjong-evaluation-statistics.md) を参照してください。
+seed allocation / freshness / cross-owner provenanceの横断contractは [Seed allocation / provenance contract](docs/seed-allocation-provenance.md) を参照してください。
 
 ## Issue placement
 
@@ -138,6 +139,7 @@ repository境界そのものを変更する提案や、複数repositoryへまた
 - [ADR 0006: RiichiLab external strength registry](docs/decisions/0006-riichilab-external-strength-registry.md)
 - [ADR 0007: Cross-repository development environment identity](docs/decisions/0007-cross-repo-development-environment-identity.md)
 - [ADR 0008: Learning and Learned Policy ownership](docs/decisions/0008-learning-and-learned-policy-ownership.md)
+- [ADR 0009: Owner-scoped seed allocation and provenance](docs/decisions/0009-owner-scoped-seed-allocation-provenance.md)
 
 ADRはhistorical decision recordです。現在のtarget architectureは [Architecture](docs/architecture.md) を正本とします。
 
