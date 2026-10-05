@@ -36,6 +36,18 @@
 - 学習Policyは既存のPolicy contract、execution、evaluation、analysis基盤を可能な限り再利用し、学習専用の別世界を作らない
 - 自動化は小さく決定的なloopから始め、actual bottleneckが確認された範囲だけremote execution、candidate search、self-play、LLM-assisted researchへ広げる
 
+## 本番基盤の段階移行
+
+対局・判断はRustへ集約し、学習・分析はPythonを継続します。言語移行はrepository ownershipを変えず、計算coreとbinding、入力・Action、特徴量・評価、Policy、engine/runner接続の依存順に限定した工程へ分けます。移植と戦術変更を同時に評価せず、各段階で意味の一致と実行品質を確認します。
+
+## 開発比較から正式評価へ
+
+個々の改修は安価な開発比較で選別し、別の開発seed・別相手構成で再確認してから、通過した改修をまとめた候補を正式評価します。正式結果は組合せ候補全体の強さを示し、個別改修の因果効果とは区別します。
+
+Heuristicの正式半荘評価は、ルール差分・接続整合・校正を満たしたfirst-party engineの新protocolへ段階移行します。既存の正式証拠は当時のprotocolに保持し、移行で過去結果を再分類しません。標本数は狙う効果・分散・費用から事前固定し、固定半荘数を目的にしません。
+
+学習では全件検証済みsourceをidentity・hash・検証証跡付きで保持・再利用し、特徴量datasetはlisjong所有の派生物として再生成します。規模拡大は変換・学習・検証・保存を含む全工程の資源量を段階的に確認して進めます。費用の暫定配分・現在の着手順はGitHubのcontrollerを正本とします。
+
 ## How to read this roadmap
 
 長期的な能力の発展は、概ね次の構造で捉えます。

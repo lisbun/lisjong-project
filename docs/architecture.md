@@ -296,7 +296,23 @@ correctness validationで複数実装を比較する場合は、実装系譜・a
 
 複数実装のagreementは強いevidenceになり得ますがproofとは扱いません。差異が発生した場合も多数決をoracleとせず、semantic difference、rule configuration、bug、unsupported case等を調査します。
 
-性能最適化はcorrectness、independent validation、regression protectionの後に行います。Python実装であることだけを理由にnative backendへ移行せず、実測されたbottleneckとsemantic compatibilityを確認してから最適化を判断します。
+性能最適化はcorrectness、independent validation、regression protectionの後に行います。高速化の対象と効果は実測で判断します。本番基盤のRust移行は、下記のarchitecture方針として別に進めます。
+
+## 本番基盤と研究の言語境界
+
+本番の対局処理とPolicy判断はRustへ段階移行し、Python runtimeなしで完結する構成を目指します。学習・統計分析・実験はPythonを継続し、薄いbindingから同じRust計算coreを利用します。
+
+- lisjong: 入力・Action契約、特徴量、牌効率・探索・belief・risk/value、Policy、本番推論。
+- lisjong-engine: ルール、合法手、状態遷移。
+- lisjong-arena: 環境アダプター、対局接続、本番runner。評価・分析・AWS運用は必要に応じPython等を維持。
+
+言語移行でownership・依存方向を変更しません。coreはPython / ML framework非依存とし、学習専用truthはonline入力に混入させません。NN推論形式はモデル採用時に決めます。
+
+移植と戦術変更を分離し、Python版を移行中のoracleとして固定入力・判断・精算の一致を検査します。各段階の高速化は必須とせず、時間・メモリ・配布・障害時動作を測定します。consumer確認後に旧計算経路を廃止またはreferenceへ隔離します。根拠は [ADR 0010](decisions/0010-rust-production-python-research.md) を参照してください。
+
+## Evaluation substrate transition
+
+Heuristic family-internalの次期正式半荘評価は、first-party engine上の新protocolを目標とします。切替にはルール差分・bridge/backend整合・校正・事前固定の統計条件が必要です。[移行方針](engine-evaluation-transition.md)を参照してください。過去証拠とChampionの根拠は当時のprotocolに残し、新旧の結果を混合しません。Overall等は別の移行判断とします。
 
 ## Learning and evaluation ownership
 

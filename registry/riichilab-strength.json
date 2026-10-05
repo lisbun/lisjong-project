@@ -99,6 +99,275 @@
         "The 2026-09-14 same-policy cohort increases the verified Policy-identity lower bound but does not prove a single exact lisjong source revision for every game.",
         "This record is external live evidence only and is not Champion promotion evidence."
       ]
+    },
+    {
+      "deployment_id": "riichilab-313-placement-aware-speed-call-2026-09-30",
+      "record_status": "PARTIAL_EVIDENCE",
+      "policy_family": "Heuristic",
+      "policy_name": "PlacementAwareSpeedCallPolicy",
+      "policy_identity": "PlacementAwareSpeedCallPolicy",
+      "repository": "lisbun/lisjong",
+      "source_revision": "51e832e50a0ee71eac65e4a017f46590e7438c04",
+      "behavior_config_identity": null,
+      "checkpoint_digest": null,
+      "riichilab_bot_name": "lisjong-dev",
+      "riichilab_bot_identity": "313",
+      "deployment_started_at": null,
+      "deployment_boundary": {
+        "exact_start_known": false,
+        "basis": "Run-window/count consistency and continuous self-history reported in project #85. UTC interpretation of timezone-naive played_at is inferred; not independent game-ID linkage.",
+        "reported_first_ranked_game_at_assuming_utc": "2026-09-30T15:04:13Z",
+        "reported_last_ranked_game_at_assuming_utc": "2026-10-01T07:19:36Z"
+      },
+      "deployment_ended_at": null,
+      "rating_at_deployment": null,
+      "games_since_deployment": null,
+      "server_total_games_at_current_observation": null,
+      "verified_exact_revision_games_lower_bound": null,
+      "verified_policy_identity_games_lower_bound": null,
+      "current_rating": null,
+      "current_rating_observed_at": null,
+      "last_ranked_game_at": null,
+      "maturity_status": null,
+      "canonical_200_rating": null,
+      "canonical_200_observed_at": null,
+      "canonical_200_quality": null,
+      "clean_games": null,
+      "dc_games": null,
+      "timeout_games": null,
+      "invalid_action_games": null,
+      "chombo_games": null,
+      "defaulted_action_count": null,
+      "fresh_bot_initialization": false,
+      "evidence": {
+        "assessment_date": "2026-10-06",
+        "basis": "Transcription of cited GitHub evidence reports; no raw-history recomputation in this documentation update.",
+        "sources": [
+          "https://github.com/lisbun/lisjong-project/issues/85#issuecomment-5968478626"
+        ],
+        "reported_snapshot": {
+          "history_total_games": 630,
+          "games_since_deployment": 209,
+          "canonical_200_rating": 1753,
+          "mean_rating_games_101_to_200": 1745.6,
+          "last_game_post_update_rating": 1742,
+          "maturity_if_boundary_confirmed": "MATURE",
+          "r1800_rating_thresholds_met": false,
+          "assumptions": [
+            "played_at interpreted as UTC by consistency with run windows and counts",
+            "exact deployment/behavior continuity as reported in cited evidence"
+          ],
+          "canonical_200_observed_at": null
+        },
+        "runtime": {
+          "arena_revision": "b8458bdaf1f49dabe493caf1399b260eba55dbb0",
+          "backend": "rust",
+          "native_api_version": 3,
+          "wheel_sha256": null,
+          "reported_wheel_digest_prefix": "802d19e4"
+        },
+        "run_quality": [
+          {
+            "run_id_suffix": "db87e04e",
+            "completed_games": 6,
+            "ack_accepted": 959,
+            "status": "PASS",
+            "defaulted": 0,
+            "stale": 0,
+            "unanswered": 0,
+            "failed": 0,
+            "disconnect_reported": false,
+            "retry_reported": false,
+            "readback_failures": 0
+          },
+          {
+            "run_id_suffix": "3ac0b7c7",
+            "completed_games": 97,
+            "ack_accepted": 15910,
+            "status": "PASS",
+            "defaulted": 0,
+            "stale": 0,
+            "unanswered": 0,
+            "failed": 0,
+            "disconnect_reported": false,
+            "retry_reported": false,
+            "readback_failures": 0
+          },
+          {
+            "run_id_suffix": "66f92d3b",
+            "completed_games": 1,
+            "ack_accepted": 182,
+            "status": "PASS",
+            "defaulted": 0,
+            "stale": 0,
+            "unanswered": 0,
+            "failed": 0,
+            "disconnect_reported": false,
+            "retry_reported": false,
+            "readback_failures": 0
+          },
+          {
+            "run_id_suffix": "d90a7240",
+            "completed_games": 105,
+            "ack_accepted": 16894,
+            "status": "PASS",
+            "defaulted": 0,
+            "stale": 0,
+            "unanswered": 0,
+            "failed": 0,
+            "disconnect_reported": false,
+            "retry_reported": false,
+            "readback_failures": 0
+          }
+        ],
+        "history_quality": {
+          "is_disconnected_count": 0,
+          "is_penalized_count": 0
+        }
+      },
+      "notes": [
+        "Conditional values remain under evidence.reported_snapshot; canonical count, maturity, Rating and quality fields remain null until exact attribution is confirmed under ADR 0006.",
+        "Run PASS and zero reported ACK/transport failures do not independently establish every canonical quality field. Missing counts remain unknown.",
+        "The two bots are counted separately. Shared games do not make their observations independent.",
+        "No promotion or new deployment is authorized by this record.",
+        "Current/live fields remain null: the retained historical final rating is not a fresh live observation."
+      ]
+    },
+    {
+      "deployment_id": "riichilab-394-placement-aware-speed-call-2026-09-30",
+      "record_status": "PARTIAL_EVIDENCE",
+      "policy_family": "Heuristic",
+      "policy_name": "PlacementAwareSpeedCallPolicy",
+      "policy_identity": "PlacementAwareSpeedCallPolicy",
+      "repository": "lisbun/lisjong",
+      "source_revision": "51e832e50a0ee71eac65e4a017f46590e7438c04",
+      "behavior_config_identity": null,
+      "checkpoint_digest": null,
+      "riichilab_bot_name": "lisjong-baseline",
+      "riichilab_bot_identity": "394",
+      "deployment_started_at": null,
+      "deployment_boundary": {
+        "exact_start_known": false,
+        "basis": "Run-window/count consistency and continuous self-history reported in project #85. UTC interpretation of timezone-naive played_at is inferred; not independent game-ID linkage.",
+        "reported_first_ranked_game_at_assuming_utc": "2026-09-30T15:04:13Z",
+        "reported_last_ranked_game_at_assuming_utc": "2026-10-01T07:19:36Z"
+      },
+      "deployment_ended_at": null,
+      "rating_at_deployment": null,
+      "games_since_deployment": null,
+      "server_total_games_at_current_observation": null,
+      "verified_exact_revision_games_lower_bound": null,
+      "verified_policy_identity_games_lower_bound": null,
+      "current_rating": null,
+      "current_rating_observed_at": null,
+      "last_ranked_game_at": null,
+      "maturity_status": null,
+      "canonical_200_rating": null,
+      "canonical_200_observed_at": null,
+      "canonical_200_quality": null,
+      "clean_games": null,
+      "dc_games": null,
+      "timeout_games": null,
+      "invalid_action_games": null,
+      "chombo_games": null,
+      "defaulted_action_count": null,
+      "fresh_bot_initialization": false,
+      "evidence": {
+        "assessment_date": "2026-10-06",
+        "basis": "Transcription of cited GitHub evidence reports; no raw-history recomputation in this documentation update.",
+        "sources": [
+          "https://github.com/lisbun/lisjong-project/issues/85#issuecomment-5968808250",
+          "https://github.com/lisbun/lisjong-project/issues/85#issuecomment-5968690816",
+          "https://github.com/lisbun/lisjong-project/issues/85#issuecomment-5968820108"
+        ],
+        "reported_snapshot": {
+          "history_total_games": 219,
+          "games_since_deployment": 214,
+          "canonical_200_rating": 1717,
+          "mean_rating_games_101_to_200": 1735.34,
+          "last_game_post_update_rating": 1697,
+          "maturity_if_boundary_confirmed": "MATURE",
+          "r1800_rating_thresholds_met": false,
+          "assumptions": [
+            "played_at interpreted as UTC by consistency with run windows and counts",
+            "exact deployment/behavior continuity as reported in cited evidence"
+          ],
+          "canonical_200_observed_at": null
+        },
+        "runtime": {
+          "arena_revision": "b8458bdaf1f49dabe493caf1399b260eba55dbb0",
+          "backend": "rust",
+          "native_api_version": 3,
+          "wheel_sha256": null,
+          "reported_wheel_digest_prefix": "802d19e4"
+        },
+        "run_quality": [
+          {
+            "run_id_suffix": "db87e04e",
+            "completed_games": 7,
+            "ack_accepted": null,
+            "status": "PASS",
+            "defaulted": 0,
+            "stale": 0,
+            "unanswered": 0,
+            "failed": 0,
+            "disconnect_reported": null,
+            "retry_reported": null,
+            "readback_failures": null
+          },
+          {
+            "run_id_suffix": "3ac0b7c7",
+            "completed_games": 90,
+            "ack_accepted": null,
+            "status": "PASS",
+            "defaulted": 0,
+            "stale": 0,
+            "unanswered": 0,
+            "failed": 0,
+            "disconnect_reported": null,
+            "retry_reported": null,
+            "readback_failures": null
+          },
+          {
+            "run_id_suffix": "66f92d3b",
+            "completed_games": 1,
+            "ack_accepted": 192,
+            "status": "PASS",
+            "defaulted": 0,
+            "stale": 0,
+            "unanswered": 0,
+            "failed": 0,
+            "disconnect_reported": false,
+            "retry_reported": false,
+            "readback_failures": 0
+          },
+          {
+            "run_id_suffix": "d90a7240",
+            "completed_games": 116,
+            "ack_accepted": 18130,
+            "status": "PASS",
+            "defaulted": 0,
+            "stale": 0,
+            "unanswered": 0,
+            "failed": 0,
+            "disconnect_reported": false,
+            "retry_reported": false,
+            "readback_failures": 0
+          }
+        ],
+        "history_identity": "72e4cab87684e84c73c99001399c4136c67bd7d8cf1233f6814dd51d2e49c095",
+        "history_quality": {
+          "is_disconnected_count": 0,
+          "is_penalized_count": 0
+        }
+      },
+      "notes": [
+        "Conditional values remain under evidence.reported_snapshot; canonical count, maturity, Rating and quality fields remain null until exact attribution is confirmed under ADR 0006.",
+        "Run PASS and zero reported ACK/transport failures do not independently establish every canonical quality field. Missing counts remain unknown.",
+        "The two bots are counted separately. Shared games do not make their observations independent.",
+        "No promotion or new deployment is authorized by this record.",
+        "Current/live fields remain null: the retained historical final rating is not a fresh live observation."
+      ]
     }
   ]
 }
