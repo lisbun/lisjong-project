@@ -2,6 +2,10 @@
 
 Project-wide architecture, repository boundaries, and roadmap for the lisjong ecosystem.
 
+## 作業を再開する入口
+
+現在の作業と次actionは [STATE.md](STATE.md)、関連する待ち条件は [BLOCKING.md](BLOCKING.md)、人の対応が必要な項目は [HUMAN.md](HUMAN.md) を参照してください。[AGENTS.md](AGENTS.md) にkickoff / handoffの最小手順を定めます。これらは小さな入口で、Issue / PRの正本を置き換えません。
+
 ## 目的
 
 `lisjong-project` は、lisjong ecosystem 全体の設計・repository責務・依存方向・長期ロードマップを管理する documentation / project coordination repository です。
@@ -29,7 +33,7 @@ GitHub Issues / PRs
     進捗・完了状態
 ```
 
-GitHub上で確認できる現在進捗を本repositoryの恒久文書へ重複して記録しません。
+GitHub上で確認できる現在進捗を本repositoryの恒久文書へ重複して記録しません。STATEは現在作業への短い索引に限定し、完了履歴を蓄積しません。
 
 ## Repository
 
@@ -140,6 +144,10 @@ repository境界そのものを変更する提案や、複数repositoryへまた
 - [ADR 0007: Cross-repository development environment identity](docs/decisions/0007-cross-repo-development-environment-identity.md)
 - [ADR 0008: Learning and Learned Policy ownership](docs/decisions/0008-learning-and-learned-policy-ownership.md)
 - [ADR 0009: Owner-scoped seed allocation and provenance](docs/decisions/0009-owner-scoped-seed-allocation-provenance.md)
+
+- [ADR 0010: Rust production core and Python research](docs/decisions/0010-rust-production-python-research.md)
+
+Heuristic正式評価の切替条件は [engine移行方針](docs/engine-evaluation-transition.md) を参照してください。
 
 ADRはhistorical decision recordです。現在のtarget architectureは [Architecture](docs/architecture.md) を正本とします。
 
