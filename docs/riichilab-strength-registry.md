@@ -109,7 +109,7 @@ Policyは `PlacementAwareSpeedCallPolicy`、lisjong `51e832e50a0ee71eac65e4a017f
 - [baselineの先行2 run原本照合](https://github.com/lisbun/lisjong-project/issues/85#issuecomment-5968690816)
 - [baselineの残り2 run原本照合](https://github.com/lisbun/lisjong-project/issues/85#issuecomment-5968820108)
 
-各botの4 runについてdefaulted / stale / unanswered / failed、再試行・切断、readback失敗なしが報告され、履歴のis_disconnected / is_penalizedも0。arena #434が直接覆うのは `3ac0b7c7` だけで、他runへ品質を外挿しない。高負荷局面の網羅、CPU/RSS余裕、追加bot数の適合はこの記録では保証しない。
+各botの4 runについてdefaulted / stale / unanswered / failedは0と報告され、履歴のis_disconnected / is_penalizedも0。再試行・切断・readbackのrun別項目は、引用報告に明記された範囲だけ値を記録し、baselineの先行2 runで数値を転記できない項目はnullとする。arena #434が直接覆うのは `3ac0b7c7` だけで、他runへ品質を外挿しない。高負荷局面の網羅、CPU/RSS余裕、追加bot数の適合はこの記録では保証しない。
 
 **記録の確定度:** timezone-naiveなplayed_atのUTC解釈と版内対象集合はrun窓・件数の整合による。直接game ID照合・API時刻仕様による確定ではない。ADR 0006に従い、JSONのcanonical count / maturity / Rating / qualityはnullのまま、上表は `evidence.reported_snapshot` に条件付きで保持する。run PASSを未知のinvalid action / chombo等の全項目へ自動変換しない。正確な200戦目観測時刻、完全なwheel hash・behavior configuration等も推測しない。
 

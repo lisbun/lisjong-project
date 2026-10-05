@@ -3,7 +3,7 @@
 ## H-001
 
 Priority: medium
-Related: project #81 / #85 / #87、今回の文書PR
+Related: project #81 / #85 / #87、[文書PR #88](https://github.com/lisbun/lisjong-project/pull/88)
 
 Question: 文書PRをレビューし、merge可否を判断する。
 Default: PRをopenに保ち、Issue整理と次工程の設計を進める。

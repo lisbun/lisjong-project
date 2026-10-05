@@ -311,9 +311,9 @@
             "stale": 0,
             "unanswered": 0,
             "failed": 0,
-            "disconnect_reported": false,
-            "retry_reported": false,
-            "readback_failures": 0
+            "disconnect_reported": null,
+            "retry_reported": null,
+            "readback_failures": null
           },
           {
             "run_id_suffix": "3ac0b7c7",
@@ -324,9 +324,9 @@
             "stale": 0,
             "unanswered": 0,
             "failed": 0,
-            "disconnect_reported": false,
-            "retry_reported": false,
-            "readback_failures": 0
+            "disconnect_reported": null,
+            "retry_reported": null,
+            "readback_failures": null
           },
           {
             "run_id_suffix": "66f92d3b",
