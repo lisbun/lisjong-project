@@ -1,20 +1,24 @@
 # Current focus
 
-R1800に向けたH2設計と、engine正式評価への移行条件の具体化。
-確認日: 2026-10-07 JST。ライブ状態はリンク先の最新記録を優先する。
+HandBeliefの副露者待ち推定、聴牌PUSH/FOLD設計、小規模L2a設計。
+確認日: 2026-10-07 夜 JST。ライブ状態はリンク先の最新記録を優先する。
 
 # Now
 
 - [#84](https://github.com/lisbun/lisjong-project/issues/84): 全体目標・予算・月次判断。
-- [lisjong #254](https://github.com/lisbun/lisjong/issues/254): 単独リーチ下の聴牌PUSH/FOLD設計。#249は両候補不採用で完了。閾値調整で再開しない。
-- [#83](https://github.com/lisbun/lisjong-project/issues/83): 移行仕様の担当は[Arena #452](https://github.com/lisbun/lisjong-arena/issues/452)。正式実行は未解禁。
-- [#85](https://github.com/lisbun/lisjong-project/issues/85): 条件付きregistry反映済み。上位botの観測日時付き表示レートが残る。
-- [#74](https://github.com/lisbun/lisjong-project/issues/74): first-party C0による小規模L2aの設計。
+- [lisjong #255](https://github.com/lisbun/lisjong/issues/255): 推定精度の親。次は[#259](https://github.com/lisbun/lisjong/issues/259)の副露者推定（[PR #266](https://github.com/lisbun/lisjong/pull/266)、open）。
+- [lisjong #254](https://github.com/lisbun/lisjong/issues/254): 単独リーチ下の聴牌PUSH/FOLD設計。完成手の点数計算と和了・放銃の見込みを区別する。
+- [#74](https://github.com/lisbun/lisjong-project/issues/74): 学習の順序。設計担当は[lisjong #267](https://github.com/lisbun/lisjong/issues/267)。
+- [#83](https://github.com/lisbun/lisjong-project/issues/83): engine移行仕様は[Arena #452](https://github.com/lisbun/lisjong-arena/issues/452)。正式実行は未解禁。
+- [lisjong #262](https://github.com/lisbun/lisjong/issues/262): ロン合法確率の表現・フリテン追加fact・正解・baseline測定。
+- [Arena #455](https://github.com/lisbun/lisjong-arena/issues/455): 危険局面の打牌不一致を記述。実行前の判断はHUMANを参照。
 - [#87](https://github.com/lisbun/lisjong-project/issues/87): Rust移行の次段階はartifact供給と検証付き入力境界。
 
 # Next
 
-1. #254で聴牌gate・PUSH/FOLDの共通単位/時間範囲・優先規則を固定する。比較の再起動や新規対局は設計から自動的に行わない。
-2. Arena #452で差分fixture、protocol/保存物仕様、bridge/backend確認計画を固定し、実装・校正を別工程へ渡す。
-3. #85の上位bot観測は[Arena #441最新手順](https://github.com/lisbun/lisjong-arena/issues/441#issuecomment-6018456067)を使う。取得・受渡しはHUMANの担当・手順を参照。回収物を受領・検証してから上位bot比較と観測値記録へ進む。
-4. #74で#86の利用条件と#442の校正を使い、教師・分割・行動別成立条件・全工程費用を固定する。
+1. #259の事前登録を維持してPR #266・select結果を確認し、選択を固定して新seedのformal testへ進む。933000..933399は開発専用。#260は後続、#258は独立に設計できる。
+2. #254で対象gate・PUSH/FOLDの共通単位/時間範囲・優先規則・不足する推定を固定する。
+3. #267で教師・source・分割・行動別成立条件・全工程費用を固定し、実装/生成/学習を後続へ分ける。
+4. Arena #452の仕様固定と、#262の追加fact契約を各ownerで進める。未確定の契約を先行実装しない。
+
+推定精度、判断の質、対局の強さ、運用品質を区別する。新しい課金実行・Champion変更は各ownerの手順で別判断する。
