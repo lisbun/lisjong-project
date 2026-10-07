@@ -369,5 +369,346 @@
         "Current/live fields remain null: the retained historical final rating is not a fresh live observation."
       ]
     }
+  ],
+  "reference_rating_observations": [
+    {
+      "observation_id": "riichilab-leaderboard-top-bots-2026-10-07",
+      "purpose": "Comparison context for project #85 / arena #441. Not a deployment record, not an Arena evaluation result, and not an R1800 judgment.",
+      "observed_at": "2026-10-07T06:05:21.248281Z",
+      "source": {
+        "kind": "public RiichiLab leaderboard via lisjong_arena.riichilab_coplayer select",
+        "arena_revision": "db6e38690c0afb5879e666c561718ca0be28cfe9",
+        "selection_schema": "lisjong-arena-riichilab-coplayer-selection",
+        "selection_schema_version": 1,
+        "selection_json_sha256": "96679302397519f417845b72f76255f689e542d645dbd498deb09ef5ef57cad6",
+        "reports": [
+          "https://github.com/lisbun/lisjong-arena/issues/441#issuecomment-6034292374"
+        ],
+        "rule_definition": "https://github.com/lisbun/lisjong-arena/issues/441#issuecomment-6018456067"
+      },
+      "selection_rule": {
+        "min_rating_inclusive": 1800,
+        "min_total_games_exclusive": 1000,
+        "max_idle_days": 30
+      },
+      "candidate_count_at_or_above_min_rating": 102,
+      "excluded_counts": {
+        "total_games_and_idle": 40,
+        "idle_only": 15,
+        "total_games_only": 9
+      },
+      "last_played_at_timezone": "as returned by the API (timezone-naive); not converted",
+      "selected_bots": [
+        {
+          "leaderboard_rank": 9,
+          "bot_id": 323,
+          "bot_name": "NO.24",
+          "display_rating": 1985.0,
+          "total_games": 4418,
+          "last_played_at": "2026-09-25T15:52:53"
+        },
+        {
+          "leaderboard_rank": 14,
+          "bot_id": 386,
+          "bot_name": "Deckard",
+          "display_rating": 1981.0,
+          "total_games": 1655,
+          "last_played_at": "2026-09-29T01:35:40"
+        },
+        {
+          "leaderboard_rank": 15,
+          "bot_id": 305,
+          "bot_name": "MahjongAI-S70",
+          "display_rating": 1965.0,
+          "total_games": 5866,
+          "last_played_at": "2026-09-11T02:12:41"
+        },
+        {
+          "leaderboard_rank": 16,
+          "bot_id": 241,
+          "bot_name": "test",
+          "display_rating": 1953.0,
+          "total_games": 5994,
+          "last_played_at": "2026-09-13T14:58:55"
+        },
+        {
+          "leaderboard_rank": 17,
+          "bot_id": 275,
+          "bot_name": "LuckyJK",
+          "display_rating": 1935.0,
+          "total_games": 2457,
+          "last_played_at": "2026-09-19T21:06:25"
+        },
+        {
+          "leaderboard_rank": 19,
+          "bot_id": 31,
+          "bot_name": "doge",
+          "display_rating": 1927.0,
+          "total_games": 6033,
+          "last_played_at": "2026-10-04T22:36:38"
+        },
+        {
+          "leaderboard_rank": 20,
+          "bot_id": 203,
+          "bot_name": "みーにょ6段",
+          "display_rating": 1926.0,
+          "total_games": 24179,
+          "last_played_at": "2026-10-07T06:04:23"
+        },
+        {
+          "leaderboard_rank": 29,
+          "bot_id": 120,
+          "bot_name": "Mortal-v4b",
+          "display_rating": 1893.0,
+          "total_games": 7104,
+          "last_played_at": "2026-10-07T06:04:23"
+        },
+        {
+          "leaderboard_rank": 31,
+          "bot_id": 292,
+          "bot_name": "Momochan",
+          "display_rating": 1891.0,
+          "total_games": 5616,
+          "last_played_at": "2026-10-07T06:00:48"
+        },
+        {
+          "leaderboard_rank": 33,
+          "bot_id": 350,
+          "bot_name": "old",
+          "display_rating": 1889.0,
+          "total_games": 9491,
+          "last_played_at": "2026-10-07T06:03:42"
+        },
+        {
+          "leaderboard_rank": 37,
+          "bot_id": 355,
+          "bot_name": "a",
+          "display_rating": 1879.0,
+          "total_games": 1260,
+          "last_played_at": "2026-10-03T17:34:28"
+        },
+        {
+          "leaderboard_rank": 38,
+          "bot_id": 125,
+          "bot_name": "Nshinki",
+          "display_rating": 1877.0,
+          "total_games": 9542,
+          "last_played_at": "2026-09-14T15:16:24"
+        },
+        {
+          "leaderboard_rank": 39,
+          "bot_id": 398,
+          "bot_name": "一号机",
+          "display_rating": 1876.0,
+          "total_games": 2744,
+          "last_played_at": "2026-10-07T06:04:11"
+        },
+        {
+          "leaderboard_rank": 40,
+          "bot_id": 299,
+          "bot_name": "nodoka-latest",
+          "display_rating": 1873.0,
+          "total_games": 7312,
+          "last_played_at": "2026-10-07T06:03:42"
+        },
+        {
+          "leaderboard_rank": 41,
+          "bot_id": 123,
+          "bot_name": "Mamba Out",
+          "display_rating": 1872.0,
+          "total_games": 9539,
+          "last_played_at": "2026-09-14T15:16:24"
+        },
+        {
+          "leaderboard_rank": 42,
+          "bot_id": 381,
+          "bot_name": "RIN",
+          "display_rating": 1872.0,
+          "total_games": 1694,
+          "last_played_at": "2026-09-24T19:50:07"
+        },
+        {
+          "leaderboard_rank": 43,
+          "bot_id": 418,
+          "bot_name": "RLActor-170",
+          "display_rating": 1871.0,
+          "total_games": 1194,
+          "last_played_at": "2026-10-07T06:04:23"
+        },
+        {
+          "leaderboard_rank": 45,
+          "bot_id": 22,
+          "bot_name": "cherry",
+          "display_rating": 1869.0,
+          "total_games": 35792,
+          "last_played_at": "2026-10-06T08:10:00"
+        },
+        {
+          "leaderboard_rank": 50,
+          "bot_id": 337,
+          "bot_name": "baseline_bot1",
+          "display_rating": 1863.0,
+          "total_games": 1566,
+          "last_played_at": "2026-09-11T08:27:38"
+        },
+        {
+          "leaderboard_rank": 54,
+          "bot_id": 127,
+          "bot_name": "花大荔",
+          "display_rating": 1855.0,
+          "total_games": 9548,
+          "last_played_at": "2026-09-14T15:15:59"
+        },
+        {
+          "leaderboard_rank": 55,
+          "bot_id": 278,
+          "bot_name": "COEDO緑",
+          "display_rating": 1855.0,
+          "total_games": 6397,
+          "last_played_at": "2026-10-07T05:51:01"
+        },
+        {
+          "leaderboard_rank": 58,
+          "bot_id": 354,
+          "bot_name": "Epsilon-Nano",
+          "display_rating": 1853.0,
+          "total_games": 2638,
+          "last_played_at": "2026-09-20T21:43:38"
+        },
+        {
+          "leaderboard_rank": 59,
+          "bot_id": 129,
+          "bot_name": "荔猪",
+          "display_rating": 1849.0,
+          "total_games": 9600,
+          "last_played_at": "2026-09-14T15:15:19"
+        },
+        {
+          "leaderboard_rank": 67,
+          "bot_id": 411,
+          "bot_name": "RLActor-50",
+          "display_rating": 1838.0,
+          "total_games": 1134,
+          "last_played_at": "2026-10-04T14:51:35"
+        },
+        {
+          "leaderboard_rank": 72,
+          "bot_id": 390,
+          "bot_name": "Akasha-0923",
+          "display_rating": 1833.0,
+          "total_games": 3368,
+          "last_played_at": "2026-10-07T06:04:11"
+        },
+        {
+          "leaderboard_rank": 73,
+          "bot_id": 414,
+          "bot_name": "Akasha-cand1",
+          "display_rating": 1833.0,
+          "total_games": 1622,
+          "last_played_at": "2026-10-07T06:04:11"
+        },
+        {
+          "leaderboard_rank": 74,
+          "bot_id": 320,
+          "bot_name": "mjrl",
+          "display_rating": 1832.0,
+          "total_games": 5420,
+          "last_played_at": "2026-10-07T06:01:43"
+        },
+        {
+          "leaderboard_rank": 75,
+          "bot_id": 357,
+          "bot_name": "Epsilon-265706",
+          "display_rating": 1832.0,
+          "total_games": 2802,
+          "last_played_at": "2026-10-05T12:23:12"
+        },
+        {
+          "leaderboard_rank": 78,
+          "bot_id": 408,
+          "bot_name": "ねじまき鳥-atk",
+          "display_rating": 1828.0,
+          "total_games": 2288,
+          "last_played_at": "2026-10-07T06:01:44"
+        },
+        {
+          "leaderboard_rank": 79,
+          "bot_id": 293,
+          "bot_name": "Momochan-vvv",
+          "display_rating": 1823.0,
+          "total_games": 5839,
+          "last_played_at": "2026-10-07T06:03:42"
+        },
+        {
+          "leaderboard_rank": 80,
+          "bot_id": 269,
+          "bot_name": "Kanachan",
+          "display_rating": 1821.0,
+          "total_games": 7149,
+          "last_played_at": "2026-10-07T06:01:37"
+        },
+        {
+          "leaderboard_rank": 81,
+          "bot_id": 351,
+          "bot_name": "new_1",
+          "display_rating": 1821.0,
+          "total_games": 9571,
+          "last_played_at": "2026-10-07T06:01:43"
+        },
+        {
+          "leaderboard_rank": 84,
+          "bot_id": 128,
+          "bot_name": "花芽荔枝",
+          "display_rating": 1817.0,
+          "total_games": 9187,
+          "last_played_at": "2026-09-14T15:15:14"
+        },
+        {
+          "leaderboard_rank": 87,
+          "bot_id": 388,
+          "bot_name": "policy-170k",
+          "display_rating": 1816.0,
+          "total_games": 2892,
+          "last_played_at": "2026-10-02T00:48:40"
+        },
+        {
+          "leaderboard_rank": 90,
+          "bot_id": 322,
+          "bot_name": "Noob-bot",
+          "display_rating": 1810.0,
+          "total_games": 3997,
+          "last_played_at": "2026-09-23T06:07:49"
+        },
+        {
+          "leaderboard_rank": 94,
+          "bot_id": 291,
+          "bot_name": "serre",
+          "display_rating": 1808.0,
+          "total_games": 1386,
+          "last_played_at": "2026-09-22T00:02:48"
+        },
+        {
+          "leaderboard_rank": 98,
+          "bot_id": 124,
+          "bot_name": "PigRaichi",
+          "display_rating": 1805.0,
+          "total_games": 9583,
+          "last_played_at": "2026-09-14T15:15:19"
+        },
+        {
+          "leaderboard_rank": 100,
+          "bot_id": 277,
+          "bot_name": "吃貨小北北",
+          "display_rating": 1801.0,
+          "total_games": 6485,
+          "last_played_at": "2026-10-07T06:01:16"
+        }
+      ],
+      "notes": [
+        "Display ratings are a single snapshot at observed_at and are not refreshed in place; a later observation is appended as a new entry.",
+        "Ratings are server-reported values; no rating was recomputed.",
+        "The 38 bots are the pre-registered arena #441 group; former fixed references FuuroMaster and zero-test2 are not in it (FuuroMaster was not among the candidates at or above 1800 in this snapshot; zero-test2 was excluded by total_games and idle)."
+      ]
+    }
   ]
 }
