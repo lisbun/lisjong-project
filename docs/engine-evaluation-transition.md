@@ -60,6 +60,6 @@ Arena通常pinはengine `8735e89e1aea000ab59368d0368d476787827741`、既存#385�
 
 1. **bridge**: 現Champion系列を使い、chi/pon/daiminkan/ankan/kakan、赤牌、reach/ron/tsumo/pass、複数応答、リーチ後槓を固定局面で検査する。MinimalPolicyの半荘integrationだけで完了としない。
 2. **backend**: 同一PolicyInputでPython/Rustの合法手・選択・必要な補助出力を照合する。同じengineと初期条件の短い試行で局数・精算・終局理由まで確認する。異なるengine間の同seed同牌山は仮定しない。
-3. **記録**: 同一実行のCompletedRoundを正本とする。既存hanchan wrapperはCompletedMatchのみ返すため、driver callback/既存focal_outcome_sourceの利用範囲を固定する。局ID一意性・本場/供託・収支・最終精算の整合と欠損拒否、保存物だけからの再集計を検査する。
+3. **記録**: 同一実行のCompletedRoundを正本とする。既存hanchan wrapperが返す`CompletedMatch.history`には同一実行の全局の`CompletedRound`が含まれる。局精算・本場/供託・収支はこの履歴を起点とし、既存`focal_outcome_source/engine_source.py`の射影・整合検査の再利用範囲を固定する。履歴だけでは得られない立直/副露等のイベント情報が必要な指標についてのみ、必要なfactとdriver callbackの利用範囲を別に定義する。callback追加を局精算取得の前提にしない。局ID一意性・本場/供託・収支・最終精算の整合と欠損拒否、保存物だけからの再集計を検査する。
 4. **protocol**: #385はfocal paired 8半荘/seedの先例であり、AABBのblock設計を承認する根拠ではない。ID、rotation、participant/artifact hash、主指標、CI、採否を#452で固定する。
 5. **校正**: 実装確認後、候補に対応する時間/RSS・当月残予算・独立block分散から標本数を決める工程を別に置く。今回のソース確認だけではseed予約・正式実行へ進めない。

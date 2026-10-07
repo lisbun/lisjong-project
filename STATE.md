@@ -16,6 +16,6 @@ R1800に向けたH2設計と、engine正式評価への移行条件の具体化�
 
 1. #254で聴牌gate・PUSH/FOLDの共通単位/時間範囲・優先規則を固定する。比較の再起動や新規対局は設計から自動的に行わない。
 2. Arena #452で差分fixture、protocol/保存物仕様、bridge/backend確認計画を固定し、実装・校正を別工程へ渡す。
-3. #85の上位bot観測は[Arena #441最新手順](https://github.com/lisbun/lisjong-arena/issues/441#issuecomment-6018456067)を使う。PR #451のselect/fetchを同一UTC日に実施する工程で、結果の取得済みを推定しない。
+3. #85の上位bot観測は[Arena #441最新手順](https://github.com/lisbun/lisjong-arena/issues/441#issuecomment-6018456067)を使う。取得・受渡しはHUMANの担当・手順を参照。回収物を受領・検証してから上位bot比較と観測値記録へ進む。
 4. #74で#86の利用条件と#442の校正を使い、教師・分割・行動別成立条件・全工程費用を固定する。
 5. この更新PRをレビューし、#81の試行記録と更新負担から完了判断する。
