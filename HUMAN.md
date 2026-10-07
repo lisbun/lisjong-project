@@ -1,14 +1,5 @@
 # Human attention
 
-## 文書更新PRのレビュー
-
-Priority: medium
-Related: project #81 / #83、[PR #89](https://github.com/lisbun/lisjong-project/pull/89)
-
-Question: PR #89の修正後差分をレビューし、merge可否を判断する。
-Default: PRをopenに保ち、Arena #452の仕様整理とlisjong #254の設計を進める。
-Why human: mergeは既存のユーザー承認運用に従う。
-
 ## 上位botデータの取得と受渡し
 
 Priority: medium
