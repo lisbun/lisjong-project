@@ -6,7 +6,7 @@ HandBeliefの副露者待ち推定、聴牌PUSH/FOLD設計、小規模L2a設計�
 # Now
 
 - [#84](https://github.com/lisbun/lisjong-project/issues/84): 全体目標・予算・月次判断。
-- [lisjong #255](https://github.com/lisbun/lisjong/issues/255): 推定精度の親。次は[#259](https://github.com/lisbun/lisjong/issues/259)の副露者推定（[PR #266](https://github.com/lisbun/lisjong/pull/266)、draft）。
+- [lisjong #255](https://github.com/lisbun/lisjong/issues/255): 推定精度の親。次は[#259](https://github.com/lisbun/lisjong/issues/259)の副露者推定（[PR #266](https://github.com/lisbun/lisjong/pull/266)、open）。
 - [lisjong #254](https://github.com/lisbun/lisjong/issues/254): 単独リーチ下の聴牌PUSH/FOLD設計。完成手の点数計算と和了・放銃の見込みを区別する。
 - [#74](https://github.com/lisbun/lisjong-project/issues/74): 学習の順序。設計担当は[lisjong #267](https://github.com/lisbun/lisjong/issues/267)。
 - [#83](https://github.com/lisbun/lisjong-project/issues/83): engine移行仕様は[Arena #452](https://github.com/lisbun/lisjong-arena/issues/452)。正式実行は未解禁。
