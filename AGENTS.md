@@ -27,5 +27,3 @@
 結果と根拠をIssue / PRへ残し、STATEのNowと具体的なNextを更新する。
 新しいblocker / human actionだけを対応ファイルへ記載し、解消済みの項目は削除する。
 このファイルにsession logや完了履歴を蓄積しない。
-
-初回はproject #81のtrial。次の実sessionで、現在地の理解・履歴参照の量・人への確認・更新負担をIssueに記録してから完了判断する。
