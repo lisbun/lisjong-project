@@ -36,7 +36,7 @@ engineの `CompletedRound` 精算を正本に、和了・放銃・ツモられ�
 
 ## ソース確認による差分と検証の入口
 
-仕様固定のownerは[Arena #452](https://github.com/lisbun/lisjong-arena/issues/452)。下表はソース確認であり、対局・fixture実行による適合認証ではない。
+仕様固定のownerは[Arena #452](https://github.com/lisbun/lisjong-arena/issues/452)（closed / completed）。未確認項目のfixture検証は[Arena #472](https://github.com/lisbun/lisjong-arena/issues/472)。下表はソース確認であり、対局・fixture実行による適合認証ではない。
 
 確認対象:
 
