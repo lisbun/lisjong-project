@@ -2,6 +2,8 @@
 
 方針・残作業の正本: [project #83](https://github.com/lisbun/lisjong-project/issues/83)。本書は移行の境界を定める。Arenaのprotocol承認・実装・校正の完了を意味しない。
 
+Arena側の仕様は[Arena PR #471](https://github.com/lisbun/lisjong-arena/pull/471)で[仕様文書](https://github.com/lisbun/lisjong-arena/blob/main/docs/heuristic-candidate-engine-aabb-half.md)として固定された（2026-10-09、文書のみ）。protocol ID、block構成、主指標、RuleSet値、fixture表、record仕様の正本はその文書である。fixtureの実施、実装、校正、標本数の決定は未了で、正式評価は引き続き未解禁。
+
 ## 範囲と切替条件
 
 次のHeuristic family-internal正式半荘評価は、lisjong-engine上の新protocolを目標にする。既存の開発比較は固定済みの条件で継続し、新protocolの完成を待たせない。
@@ -42,7 +44,7 @@ engineの `CompletedRound` 精算を正本に、和了・放銃・ツモられ�
 - [engine rules](https://github.com/lisbun/lisjong-engine/blob/96b9796c76ef5db8f3968f689a1ca6f3dfc9aa3b/src/lisjong_engine/rules.py)、同revisionの `match_state.py` / `final_score.py`。
 - [Arena旧protocol](https://github.com/lisbun/lisjong-arena/blob/db6e38690c0afb5879e666c561718ca0be28cfe9/src/lisjong_arena/heuristic_candidate_aabb/protocol.py)、同revisionの `pyproject.toml` / `lisjong_engine/hanchan.py`。
 
-Arena通常pinはengine `8735e89e1aea000ab59368d0368d476787827741`、既存#385は `96b9796c76ef5db8f3968f689a1ca6f3dfc9aa3b`。この2版でrules/final_scoreは同じだがdriverは異なる。新protocolは採用revisionを明示し、通常pinの暗黙継承や#385の存在だけで対応済みとしない。
+上のソース確認時点のArena通常pinはengine `8735e89e1aea000ab59368d0368d476787827741`、既存#385は `96b9796c76ef5db8f3968f689a1ca6f3dfc9aa3b`。その後Arena #457 / PR #458で通常pinは `91af75e3aa11520c3b0543719dc74bb4c517ee06` へ更新された。この3版でrules / final_score / match_state / settlementは同じだが、driverと観測hookは異なる（Arena PR #471でのソース差分確認。対局結果の一致確認ではない）。新protocolは `91af75e…` を予定値として明示的に固定し、installed revisionと照合する。通常pinの暗黙継承や#385の存在だけで対応済みとしない。
 
 | 項目 | 旧RiichiEnv/Arena v1 | engine project-standard-v1 | 移行時の扱い |
 | --- | --- | --- | --- |
@@ -61,5 +63,5 @@ Arena通常pinはengine `8735e89e1aea000ab59368d0368d476787827741`、既存#385�
 1. **bridge**: 現Champion系列を使い、chi/pon/daiminkan/ankan/kakan、赤牌、reach/ron/tsumo/pass、複数応答、リーチ後槓を固定局面で検査する。MinimalPolicyの半荘integrationだけで完了としない。
 2. **backend**: 同一PolicyInputでPython/Rustの合法手・選択・必要な補助出力を照合する。同じengineと初期条件の短い試行で局数・精算・終局理由まで確認する。異なるengine間の同seed同牌山は仮定しない。
 3. **記録**: 同一実行のCompletedRoundを正本とする。既存hanchan wrapperが返す`CompletedMatch.history`には同一実行の全局の`CompletedRound`が含まれる。局精算・本場/供託・収支はこの履歴を起点とし、既存`focal_outcome_source/engine_source.py`の射影・整合検査の再利用範囲を固定する。履歴だけでは得られない立直/副露等のイベント情報が必要な指標についてのみ、必要なfactとdriver callbackの利用範囲を別に定義する。callback追加を局精算取得の前提にしない。局ID一意性・本場/供託・収支・最終精算の整合と欠損拒否、保存物だけからの再集計を検査する。
-4. **protocol**: #385はfocal paired 8半荘/seedの先例であり、AABBのblock設計を承認する根拠ではない。ID、rotation、participant/artifact hash、主指標、CI、採否を#452で固定する。
+4. **protocol**: #385はfocal paired 8半荘/seedの先例であり、AABBのblock設計を承認する根拠ではない。ID、rotation、participant/artifact hash、主指標、CI、採否を#452で固定する。Arena PR #471での固定内容: ID `arena-heuristic-candidate-engine-aabb-half-v1`、1 block = 1 seed × 6配置（4席から候補の2席を選ぶ全通り、6半荘。旧v1の4 rotationsではない）、主指標は `RuleSet.default()` でのengine `final_points`、判定は旧v1と同じ型の両側95%正規近似区間（非劣性判定なし）、正式実行はRust backendでPythonを照合基準とする。block数はprotocol定数にせず、校正後・結果を見る前にeventごとのlockへ固定する。
 5. **校正**: 実装確認後、候補に対応する時間/RSS・当月残予算・独立block分散から標本数を決める工程を別に置く。今回のソース確認だけではseed予約・正式実行へ進めない。
