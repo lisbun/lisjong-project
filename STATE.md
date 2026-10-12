@@ -1,24 +1,25 @@
 # Current focus
 
-聴牌PUSH/FOLD設計、小規模L2a設計、engine新protocolの前提検証。
-確認日: 2026-10-09 JST。ライブ状態はリンク先の最新記録を優先する。
+自律強化ループPhase 1の前提部品、engine新protocolの前提検証、小規模L2a設計。
+確認日: 2026-10-12 JST。ライブ状態はリンク先の最新記録を優先する。
 
 # Now
 
-- [#84](https://github.com/lisbun/lisjong-project/issues/84): 全体目標・予算・月次判断。
-- [lisjong #285](https://github.com/lisbun/lisjong/issues/285): リーチ者の待ち推定v2（#245より精度向上、複数リーチ・観測者リーチへ提供拡大）。HandBelief推定精度の親#255はclose。門前非リーチは[#286](https://github.com/lisbun/lisjong/issues/286)でDEFERRED。
-- [lisjong #254](https://github.com/lisbun/lisjong/issues/254): 単独リーチ下の聴牌PUSH/FOLD設計。完成手の点数計算と和了・放銃の見込みを区別する。
-- [#74](https://github.com/lisbun/lisjong-project/issues/74): 学習の順序。設計担当は[lisjong #267](https://github.com/lisbun/lisjong/issues/267)。
-- [#83](https://github.com/lisbun/lisjong-project/issues/83): engine移行仕様はArena #452（closed）で[文書化済み](https://github.com/lisbun/lisjong-arena/blob/main/docs/heuristic-candidate-engine-aabb-half.md)（PR #471）。次は[Arena #472](https://github.com/lisbun/lisjong-arena/issues/472)のfixture検証。実装・校正は未起票、正式実行は未解禁。
-- [Arena #455](https://github.com/lisbun/lisjong-arena/issues/455): 危険局面の打牌不一致を記述。実行前の判断はHUMANを参照。
+- [#84](https://github.com/lisbun/lisjong-project/issues/84): 全体目標・予算・月次判断。H2（[lisjong #254](https://github.com/lisbun/lisjong/issues/254)）は2026-10-12に開発比較不通過でclose。Championは維持し、H3/H4は未起票。
 - [#97](https://github.com/lisbun/lisjong-project/issues/97): 自律強化ループ。権限はADR 0011（[#98](https://github.com/lisbun/lisjong-project/issues/98)）でHUMAN判断待ち。判断なしで着手可能なのは[lisjong #296](https://github.com/lisbun/lisjong/issues/296)・[Arena #479](https://github.com/lisbun/lisjong-arena/issues/479)。
+- [#83](https://github.com/lisbun/lisjong-project/issues/83): engine移行仕様はArena #452（closed）で[文書化済み](https://github.com/lisbun/lisjong-arena/blob/main/docs/heuristic-candidate-engine-aabb-half.md)（PR #471）。次は[Arena #472](https://github.com/lisbun/lisjong-arena/issues/472)のfixture検証。実装・校正は未起票、正式実行は未解禁。
+- [#74](https://github.com/lisbun/lisjong-project/issues/74): 学習の順序。設計担当は[lisjong #267](https://github.com/lisbun/lisjong/issues/267)（10/7から未着手）。
+- [lisjong #285](https://github.com/lisbun/lisjong/issues/285): リーチ者の待ち推定v2。H2候補の再開条件の1つ（`p` の校正改善）。門前非リーチは[#286](https://github.com/lisbun/lisjong/issues/286)でDEFERRED。
+- [Arena #455](https://github.com/lisbun/lisjong-arena/issues/455): 危険局面の打牌不一致を記述。実行前の判断はHUMANを参照。
 - [#87](https://github.com/lisbun/lisjong-project/issues/87): Rust移行の次段階はartifact供給と検証付き入力境界。
 
 # Next
 
-1. #254で対象gate・PUSH/FOLDの共通単位/時間範囲・優先規則・不足する推定を固定する。放銃側の入力候補はlisjong #277のリーチ者ロン合法推定器（推定精度のみ確認済み、強さは未評価）。
-2. #267で教師・source・分割・行動別成立条件・全工程費用を固定し、実装/生成/学習を後続へ分ける。
-3. Arena #472でengine新protocolの前提（RuleSet・最終得点・Champion bridge・Python/Rust）をfixtureで検証する。実装・校正はその結果を見てから起票する。
-4. #285で特徴量セット・対象条件（S1とそれ以外を別の主張）・合否を事前登録してからselectする。formal test用sourceを#277段階1の再測定と共用するかは生成前に決める。使用済みseed 933000..933399・934000..934199・936000..936399・937000..937199はformal testに再利用しない。
+1. lisjong #296で候補Policyの情報境界チェック（import制限・純粋性）を既存Policy 1件と違反fixtureで固定する。Arena #479は並行可。
+2. Arena #472でengine新protocolの前提（RuleSet・最終得点・Champion bridge・Python/Rust）をfixtureで検証する。実装・校正はその結果を見てから起票する。
+3. #267で教師・source・分割・行動別成立条件・全工程費用を固定し、実装/生成/学習を後続へ分ける。
+4. lisjong #297の探索対象を選び直す。#254の結論（打牌を替える頻度0.12〜0.14回/席・半荘、2,700半荘でも区間が0を含む）から、聴牌PUSH/FOLDの閾値は単独の探索空間としてS1で差を検出しにくい。
+5. Arena #480の前提: engine domainの開発seed 931000..931999（Arena #385、RETIRED）は#290で使い切った。以後の開発比較・S1/S2は新しいallocationが要る。
+6. #285で特徴量セット・対象条件・合否を事前登録してからselectする。使用済みseed 931000..931999・933000..933399・934000..934199・936000..936399・937000..937199はformal testに再利用しない。
 
 推定精度、判断の質、対局の強さ、運用品質を区別する。新しい課金実行・Champion変更は各ownerの手順で別判断する。
