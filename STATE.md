@@ -6,11 +6,11 @@
 # Now
 
 - [#84](https://github.com/lisbun/lisjong-project/issues/84): 全体目標・予算・月次判断。H2（[lisjong #254](https://github.com/lisbun/lisjong/issues/254)）は2026-10-12に開発比較不通過でclose。Championは維持し、H3/H4は未起票。
-- [#97](https://github.com/lisbun/lisjong-project/issues/97): 自律強化ループ。権限はADR 0011（[#98](https://github.com/lisbun/lisjong-project/issues/98)）でHUMAN判断待ち。判断なしで着手可能なのは[lisjong #296](https://github.com/lisbun/lisjong/issues/296)・[Arena #479](https://github.com/lisbun/lisjong-arena/issues/479)。
+- [#97](https://github.com/lisbun/lisjong-project/issues/97): 自律強化ループ。ADR 0011（[#98](https://github.com/lisbun/lisjong-project/issues/98)）は項目1〜3が回答済み（自動merge・leader / Championの自動更新を許可）、項目4〜6はHUMAN判断待ち。判断なしで着手可能なのは[lisjong #296](https://github.com/lisbun/lisjong/issues/296)・[Arena #479](https://github.com/lisbun/lisjong-arena/issues/479)。
 - [#83](https://github.com/lisbun/lisjong-project/issues/83): engine移行仕様はArena #452（closed）で[文書化済み](https://github.com/lisbun/lisjong-arena/blob/main/docs/heuristic-candidate-engine-aabb-half.md)（PR #471）。次は[Arena #472](https://github.com/lisbun/lisjong-arena/issues/472)のfixture検証。実装・校正は未起票、正式実行は未解禁。
 - [#74](https://github.com/lisbun/lisjong-project/issues/74): 学習の順序。設計担当は[lisjong #267](https://github.com/lisbun/lisjong/issues/267)（10/7から未着手）。
 - [lisjong #285](https://github.com/lisbun/lisjong/issues/285): リーチ者の待ち推定v2。H2候補の再開条件の1つ（`p` の校正改善）。門前非リーチは[#286](https://github.com/lisbun/lisjong/issues/286)でDEFERRED。
-- [Arena #455](https://github.com/lisbun/lisjong-arena/issues/455): 危険局面の打牌不一致を記述。実行前の判断はHUMANを参照。
+- [Arena #455](https://github.com/lisbun/lisjong-arena/issues/455): 危険局面の打牌不一致を記述。比較先（#170の3体・bot別併記）と実行場所（lisbunのlocal）は確定済み。実行はlocalで行う。
 - [#87](https://github.com/lisbun/lisjong-project/issues/87): Rust移行の次段階はartifact供給と検証付き入力境界。
 
 # Next
