@@ -373,20 +373,19 @@ Research-track leader
 
 ### Family classification boundary
 
-familyは、action selection / rankingへ影響し得るdecision logicとparameterの由来で判定します。
+[ADR 0004](decisions/0004-champion-family-separation.md)の2026-10-12改訂に従い、主たる行動選択の作り方で分類します。
 
-```text
-explicit human-authored rule / constant / exact algorithmic derivation
-    -> Heuristic
+| 構成 | family |
+| --- | --- |
+| 手書き規則・アルゴリズム（grid / optimizer / LLMによる閾値・重み調整を含む） | Heuristic |
+| 学習した待ち・危険度推定器を手書き規則へ供給 | Heuristic。「Heuristic＋学習推定器」と明記 |
+| 学習した行動・行動価値・rankingモデルが主たる判断を担う | Learning。NN・回帰・決定木等 |
 
-observation / sample / rollout / gameplay record / optimization / fittingから
-得たparameterがaction decisionへ影響し得る
-    -> Learning
-```
+学習した行動モデルを定数表へ変換してもLearningのままです。学習部品の存在だけでPolicy全体をLearningへ分類せず、学習対象・目的関数・推論での役割を記録します。独立したHybrid familyは設けません。推定器等のcanonical Learning capabilityの所有境界（ADR 0008）は変えません。
 
-formula-basedに見えるPolicyでも、action decisionへ影響するparameterがempirical data / optimization / fittingから得られている場合はLearning familyとして扱います。逆に、学習済みcomponentをdiagnostic / logging専用に使い、action decisionを変更し得ない場合はLearning familyとみなしません。
+分類と調整方法・使用データ・候補identityは別管理です。Heuristicでも開発・別seed/別相手の再確認・未使用seedの正式評価を分離し、結果を見た再調整後に同じデータを独立検証として流用しません。過去の固定済み分類・結果は変更しません。
 
-heuristicとlearned componentを組み合わせたPolicyは、learned componentが最終action decisionを変更し得る場合にLearning familyとして扱い、独立したHybrid familyを設けません。
+自律loopは両familyを支えます。確定済み権限と運用有効化の待ち条件は[ADR 0011](decisions/0011-autonomous-strength-loop.md)を参照してください。
 
 ### Promotion boundary
 

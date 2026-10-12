@@ -600,6 +600,8 @@ Visualization / Analysisはread-orientedなconsumerとして位置付けます�
 
 ## Learning Policy
 
+Policy familyとしてのLearningは、主たる行動選択を学習した行動・行動価値・rankingモデルが担うものを指します。NNに限定せず回帰・決定木等を含みます。手書き規則の閾値探索はHeuristic、学習推定器を手書き規則へ供給する構成は「Heuristic＋学習推定器」とします（[ADR 0004](decisions/0004-champion-family-separation.md)）。自律探索は両familyを支える仕組みで、閾値探索の成立を蒸留・Learned Policyの成立とは扱いません。
+
 Learning Policyは`lisjong`のcanonical AI capabilityとして、再現可能なPolicy comparisonと安全なPolicy-visible input boundaryの上に段階的に構築します。
 
 最初のvertical sliceはconcreteなoffense-foundation use caseから必要なものだけを実装します。
