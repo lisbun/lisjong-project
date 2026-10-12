@@ -15,7 +15,7 @@
 
 # Next
 
-- #98の残る項目4〜6を決め、[ADR 0011](docs/decisions/0011-autonomous-strength-loop.md)の未決部分と各ownerの運用条件を確定する。現時点で自動運用を有効化しない。
+- #98の残る項目4〜6を決め、[ADR 0011](docs/decisions/0011-autonomous-strength-loop.md)の未決部分と各ownerの運用条件を確定する。自動merge・S3自動起動・leader / Champion自動更新は未解禁。Phase 1と準備実装は進めてよい。LLM定期稼働は予算決定待ち。
 
 1. Arena #479でloop sessionからprotocol・seed・判定規則のfileを守るguardを追加する。S0の情報境界チェックはlisjong `lisjong.candidate_boundary`（#296）を使う。
 2. Arena #472でengine新protocolの前提（RuleSet・最終得点・Champion bridge・Python/Rust）をfixtureで検証する。実装・校正はその結果を見てから起票する。
