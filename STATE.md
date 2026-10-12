@@ -11,7 +11,7 @@
 - [#74](https://github.com/lisbun/lisjong-project/issues/74): 学習の順序。設計担当は[lisjong #267](https://github.com/lisbun/lisjong/issues/267)。
 - [#83](https://github.com/lisbun/lisjong-project/issues/83): engine移行仕様はArena #452（closed）で[文書化済み](https://github.com/lisbun/lisjong-arena/blob/main/docs/heuristic-candidate-engine-aabb-half.md)（PR #471）。次は[Arena #472](https://github.com/lisbun/lisjong-arena/issues/472)のfixture検証。実装・校正は未起票、正式実行は未解禁。
 - [Arena #455](https://github.com/lisbun/lisjong-arena/issues/455): 危険局面の打牌不一致を記述。実行前の判断はHUMANを参照。
-- [#97](https://github.com/lisbun/lisjong-project/issues/97): 自律強化ループ。権限はADR 0011（[#98](https://github.com/lisbun/lisjong-project/issues/98)）でHUMAN判断待ち。判断なしで着手可能なのは[lisjong #296](https://github.com/lisbun/lisjong/issues/296)・[Arena #479](https://github.com/lisbun/lisjong-arena/issues/479)。
+- [#97](https://github.com/lisbun/lisjong-project/issues/97): 自律強化ループ。権限はADR 0011（[#98](https://github.com/lisbun/lisjong-project/issues/98)）でHUMAN判断待ち。Phase 1（先行は[lisjong #296](https://github.com/lisbun/lisjong/issues/296)・[Arena #479](https://github.com/lisbun/lisjong-arena/issues/479)）は判断なしで着手可。
 - [#87](https://github.com/lisbun/lisjong-project/issues/87): Rust移行の次段階はartifact供給と検証付き入力境界。
 
 # Next

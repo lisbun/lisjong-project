@@ -25,7 +25,7 @@ Question:
 3. grid / optimizerで選んだ値と、LLMが開発評価の結果を見て変えた定数をLearning family扱いとするか（推奨）。結果を見ずに書いた規則はHeuristic familyとするか。
 4. leader 5回交代ごとのC0比較、仮説系統ごとのS3試行上限、月予算（AWSは#84の$20内、LLM利用）、AWS用secret設定、停止スイッチの場所。
 
-Default: 未回答なら自動merge・S3自動起動・leader自動更新を実装・有効化しない。人がmerge承認とS3起動を行う範囲（#97のPhase 1・L1）と、lisjong #296・Arena #479は進めてよい。
+Default: 未回答なら自動merge・S3自動起動・leader自動更新を実装・有効化しない。#97のPhase 1（lisjong #296・#297、Arena #479・#480・#481）と、L1の準備（#99・#100の実装）は進めてよい。LLM sessionの定期稼働（L1の運用開始）は、項目4の予算が決まるまで始めない。
 Why human: 各repoのAGENTS.mdはmergeにユーザーの明示承認を要求し、#44は自律loopに明示的なsafety / governance決定を求めている。課金・secret設定も個別承認の対象。
 
 外部sourceの連絡待ちは全作業の前提にしない。
