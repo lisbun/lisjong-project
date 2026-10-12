@@ -6,7 +6,7 @@
 # Now
 
 - [#84](https://github.com/lisbun/lisjong-project/issues/84): 全体目標・予算・月次判断。H2（[lisjong #254](https://github.com/lisbun/lisjong/issues/254)）は2026-10-12に開発比較不通過でclose。Championは維持し、H3/H4は未起票。
-- [#97](https://github.com/lisbun/lisjong-project/issues/97): 自律強化ループ。ADR 0011（[#98](https://github.com/lisbun/lisjong-project/issues/98)）は項目1〜3が回答済み（自動merge・leader / Championの自動更新を許可）、項目4〜6はHUMAN判断待ち。判断なしで着手可能なのは[lisjong #296](https://github.com/lisbun/lisjong/issues/296)・[Arena #479](https://github.com/lisbun/lisjong-arena/issues/479)。
+- [#97](https://github.com/lisbun/lisjong-project/issues/97): 自律強化ループ。ADR 0011（[#98](https://github.com/lisbun/lisjong-project/issues/98)）は項目1〜3が回答済み（自動merge・leader / Championの自動更新を許可）、項目4〜6はHUMAN判断待ち。S0の情報境界チェック（[lisjong #296](https://github.com/lisbun/lisjong/issues/296)）はPR #298で完了。Phase 1の残りは[Arena #479](https://github.com/lisbun/lisjong-arena/issues/479)・#480・#481、lisjong #297。
 - [#83](https://github.com/lisbun/lisjong-project/issues/83): engine移行仕様はArena #452（closed）で[文書化済み](https://github.com/lisbun/lisjong-arena/blob/main/docs/heuristic-candidate-engine-aabb-half.md)（PR #471）。次は[Arena #472](https://github.com/lisbun/lisjong-arena/issues/472)のfixture検証。実装・校正は未起票、正式実行は未解禁。
 - [#74](https://github.com/lisbun/lisjong-project/issues/74): 学習の順序。設計担当は[lisjong #267](https://github.com/lisbun/lisjong/issues/267)（10/7から未着手）。
 - [lisjong #285](https://github.com/lisbun/lisjong/issues/285): リーチ者の待ち推定v2。H2候補の再開条件の1つ（`p` の校正改善）。門前非リーチは[#286](https://github.com/lisbun/lisjong/issues/286)でDEFERRED。
@@ -15,7 +15,7 @@
 
 # Next
 
-1. lisjong #296で候補Policyの情報境界チェック（import制限・純粋性）を既存Policy 1件と違反fixtureで固定する。Arena #479は並行可。
+1. Arena #479でloop sessionからprotocol・seed・判定規則のfileを守るguardを追加する。S0の情報境界チェックはlisjong `lisjong.candidate_boundary`（#296）を使う。
 2. Arena #472でengine新protocolの前提（RuleSet・最終得点・Champion bridge・Python/Rust）をfixtureで検証する。実装・校正はその結果を見てから起票する。
 3. #267で教師・source・分割・行動別成立条件・全工程費用を固定し、実装/生成/学習を後続へ分ける。
 4. lisjong #297の探索対象を選び直す。#254の結論（打牌を替える頻度0.12〜0.14回/席・半荘、2,700半荘でも区間が0を含む）から、聴牌PUSH/FOLDの閾値は単独の探索空間としてS1で差を検出しにくい。
