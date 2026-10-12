@@ -2,7 +2,7 @@
 
 ## Status
 
-Accepted.
+Accepted. Family classification amended on 2026-10-12 by [project #98](https://github.com/lisbun/lisjong-project/issues/98), superseding the previous parameter-origin-only definition. See [ADR 0011](0011-autonomous-strength-loop.md).
 
 ## Context
 
@@ -27,33 +27,31 @@ Heuristic Champion
 Learning Champion
 ```
 
-`Heuristic Champion` は、action selection / rankingへ影響するdecision logicとparameterがexplicit human-authored rule、explicit constant、exact algorithmic derivationで定義され、empirical training / fittingへ依存しないPolicyのうち、Heuristic family内で最強と認定されたものを指す。
+`Heuristic Champion` は、主たる行動選択を手書き規則・明示的なアルゴリズムで行うPolicyのうち、Heuristic family内で最強と認定されたものを指す。規則の閾値・重みをgrid / optimizerや開発評価を見たLLMで調整しても、このfamilyとする。
 
-`Learning Champion` は、action selection / rankingへ影響するparameterの少なくとも一部がobservation、generated sample、rollout result、self-play、gameplay record、optimization / fitting等のempirical sourceから推定・最適化されたPolicyのうち、Learning family内で最強と認定されたものを指す。
+`Learning Champion` は、主たる行動選択（打牌・行動価値・押し引き）をデータから学習したモデルが担うPolicyのうち、Learning family内で最強と認定されたものを指す。NNに限定せず、回帰・決定木等を含む。
 
 ### Family classification boundary
 
-family判定はimplementationの見た目ではなく、action decisionへ影響するparameterの由来で行う。
+分類の軸は主たる行動選択の作り方であり、調整方法・model fileの有無・保存形式とは別に記録する。
 
-```text
-human-authored constant
-    -> Heuristic
+| 行動選択の構成 | family / 表記 |
+| --- | --- |
+| 手書き規則、固定した閾値・重み | Heuristic |
+| 手書き規則の閾値・重みをgrid / optimizer / LLMで調整 | Heuristic。調整方法・使用データを記録 |
+| 学習した待ち・危険度推定器を手書きの判断規則へ供給 | Heuristic＋学習推定器（familyはHeuristic） |
+| 学習モデルが行動・行動価値・候補rankingを決定 | Learning |
+| heuristic候補生成＋学習した行動scoring / reranking | Learning |
 
-empirically fitted / optimized constant
-    -> Learning
-```
+例えば手書きの `score = 3.7 * ukeire + 1.2 * dora - 2.8 * risk` の重みを開発比較で調整する場合はHeuristic。行動価値や行動rankingを目的変数として回帰モデルを学習する場合は、同じ線形式でもLearningとして扱う。学習した行動モデルを定数表へ変換してもLearningのままとする。境界が曖昧なら学習対象・目的関数・推論での役割を候補Issueへ明記して、評価前に分類を固定する。
 
-例えば次のscoring式は、係数を設計上のexplicit constantとして人間が定めた場合はHeuristic familyに含められる。
+学習部品のdiagnostic / logging専用利用はPolicy familyを変えない。独立した `Hybrid Champion` は設けない。「Heuristic＋学習推定器」は構成の説明であり第3のfamilyではない。推定器自体の学習・artifact・情報境界の責務はADR 0008に従う。
 
-```python
-score = 3.7 * ukeire + 1.2 * dora - 2.8 * risk
-```
+### Classification and evaluation provenance
 
-同じ式でも、係数をgameplay dataやoptimizerからfittingして得た場合はLearning familyとする。formula-basedな外観、model fileの有無、実行時のnetwork推論の有無はfamily判定基準にしない。
+Heuristicでも探索・評価後の調整による過適合は起こり得る。調整方法、使用データ、候補identityを記録し、開発用、別seed・別相手構成による再確認、未使用seedによる正式評価を分離する。結果を見て変更した候補に、同じデータを独立検証として流用しない。family名を理由に評価規律を緩めない。
 
-学習済みcomponentをdiagnostic / loggingのみに使用し、action decisionを変更し得ない場合はLearning familyとみなさない。
-
-heuristic candidate generationとlearned scoring / rerankingを組み合わせたPolicyは、learned componentが最終action decisionを変更し得る場合にLearning familyとする。当面、独立した `Hybrid Champion` は設けない。
+この改訂は過去の固定済み実験のfamily・artifact・判定・Champion記録を遡及変更しない。新候補の分類を評価前に固定し、既存protocolの適用条件・昇格条件は別途満たす。
 
 ### Overall Champion is a derived designation
 
@@ -118,6 +116,6 @@ research-track leaderは正式なChampion familyではない。track leaderの�
 - `learned policyがhandcrafted / mechanism-based policyをいつ正式に上回ったか` を、共通protocol上のcross-family eventとして再現可能に記録できる。
 - 片方のfamilyだけが強い状態でOverall claimが自動成立しなくなり、`Overall Champion: not established` が正常な状態になる。
 - 既存の強いheuristic Policyやexperiment-localなlearning checkpointは、このdecisionの成立だけでは初代Championにならない。designation付与にはbaseline establishmentが別途必要になる。
-- 見た目がheuristicなscoring式でも、係数の由来次第でfamily分類が変わるため、parameter provenanceを記録する必要がある。
+- Policy familyとparameter調整のprovenanceを分けて管理し、Heuristicでも開発・再確認・正式評価のデータ分離を維持する。
 - learning paradigmが増えてもChampion familyは増えず、research-track leaderとして追跡することになる。
 - Champion registry、promotion automation、cross-family evaluation runner、統計protocolは本decisionでは導入せず、必要になった時点で個別Issueとして扱う。

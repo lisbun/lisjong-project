@@ -146,6 +146,7 @@ repository境界そのものを変更する提案や、複数repositoryへまた
 - [ADR 0009: Owner-scoped seed allocation and provenance](docs/decisions/0009-owner-scoped-seed-allocation-provenance.md)
 
 - [ADR 0010: Rust production core and Python research](docs/decisions/0010-rust-production-python-research.md)
+- [ADR 0011: Autonomous strength loop decisions](docs/decisions/0011-autonomous-strength-loop.md)（部分確定・自動運用未解禁）
 
 Heuristic正式評価の切替条件は [engine移行方針](docs/engine-evaluation-transition.md) を参照してください。
 

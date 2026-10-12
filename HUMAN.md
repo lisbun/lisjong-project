@@ -6,7 +6,7 @@ Priority: medium
 Owner: lisbun（判断）、ADR起草・実装担当Agent（確定後）
 Related: [#98](https://github.com/lisbun/lisjong-project/issues/98)「決める項目」4〜6、親[#97](https://github.com/lisbun/lisjong-project/issues/97)
 
-項目1〜3は2026-10-12に回答済み（[記録](https://github.com/lisbun/lisjong-project/issues/98#issuecomment-6122880561)）。leaderとChampion昇格の自動更新、候補レーンの自動merge、探索・LLMで決めた定数をLearning familyとすることを許可した。
+項目1〜3は2026-10-12に回答済み（[記録](https://github.com/lisbun/lisjong-project/issues/98#issuecomment-6122880561)）。leaderとChampion昇格の自動更新、候補レーンの自動mergeを許可した。family分類は同日20:49 JSTの追加判断で変更済み（[#98本文](https://github.com/lisbun/lisjong-project/issues/98)、[ADR 0011](docs/decisions/0011-autonomous-strength-loop.md)）。手書き規則の閾値探索はHeuristic、主たる行動選択を学習モデルが担うPolicyはLearning。学習推定器を手書き規則へ供給する場合は「Heuristic＋学習推定器」とする。過去コメントの旧分類を現在の判断として使わない。
 
 Question:
 1. leaderが5回交代するごとに、C0とS3規模で比較することを必須にするか。
