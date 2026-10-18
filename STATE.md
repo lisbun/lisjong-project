@@ -16,14 +16,14 @@
 
 1. lisjong #267の設計を完了する。教師・行動別support・合法手とlabel・envelope・オーラス・小規模モデル・全工程費用を固定し、実装/生成/学習は後続へ分ける。
 2. Arena #472で精算・bridge/backend・固定C0のrevision差を確認する。その後に実装・校正を起票する。
-3. lisjong #302のRiichiLab規則の根拠と実対局補助証拠を整理する。未確認のままなら適用を保留し、#267/#472は続行する。
+3. lisjong #302のRiichiLab規則の根拠と実対局補助証拠を整理する。未確認のままなら適用を保留し、lisjong #267 / Arena #472は続行する。
 4. lisjong #297の探索対象を1つ選定し、Arena #480の開発A/B割当手順から#481のS0〜S2へ接続する。対象選定と割当手順の準備は独立に可能。
-5. #285、#87、#99/#100は上記の後に限定着手。#98の未決項目はHUMANに従う。
+5. lisjong #285、project #87・#99/#100は上記の後に限定着手。#98の未決項目はHUMANに従う。
 
 # 判断の前提
 
 - [Arena #503](https://github.com/lisbun/lisjong-arena/issues/503#issuecomment-6245291382)は採用条件未達・強さの優劣未確定で完了。追加評価は今は行わず、Championを維持する。基盤は保持する。
 - engine domain 931000..931999および940000..940229は使用済みと報告されている。新しい予約ではlive ledgerを確認し、独立再確認・正式評価へ再利用しない。
-- AWS月$20は既支出込み。#503費用上限見積り2.68 USDだけから月残額を推定しない。
+- AWS月$20は既支出込み。Arena #503費用上限見積り2.68 USDだけから月残額を推定しない。
 - project #57 / Arena #317 / lisjong #286はDEFERRED維持。Learningを外部source・自律loop・Heuristic候補の完了待ちにしない。
 - 自動merge・S3自動起動・leader / Champion自動更新・LLM定期稼働は未解禁。課金・稼働bot変更は別判断。
