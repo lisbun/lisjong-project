@@ -1,27 +1,29 @@
 # Current focus
 
-自律強化ループPhase 1の前提部品、engine新protocolの前提検証、小規模L2a設計。
-確認日: 2026-10-12 JST。ライブ状態はリンク先の最新記録を優先する。
+小規模Learning設計とengine正式評価の前提検証。現在地・順序提案の正本は[#84](https://github.com/lisbun/lisjong-project/issues/84)。
+確認日: 2026-10-18 JST。Issue本文・コメントを照合。実験artifactの独立再計算は行っていない。
 
 # Now
 
-- [#84](https://github.com/lisbun/lisjong-project/issues/84): 全体目標・予算・月次判断。H2（[lisjong #254](https://github.com/lisbun/lisjong/issues/254)）は2026-10-12に開発比較不通過でclose。Championは維持し、H3/H4は未起票。
-- [#97](https://github.com/lisbun/lisjong-project/issues/97): 自律強化ループ。ADR 0011（[#98](https://github.com/lisbun/lisjong-project/issues/98)）は項目1〜3が回答済み（自動merge・leader / Championの自動更新を許可）、項目4〜6はHUMAN判断待ち。familyは[ADR 0004](docs/decisions/0004-champion-family-separation.md)改訂に従い、閾値探索はHeuristic、主たる行動選択を学習モデルが担うPolicyはLearning。S0の情報境界チェック（[lisjong #296](https://github.com/lisbun/lisjong/issues/296)）はPR #298で完了。Phase 1の残りは[Arena #479](https://github.com/lisbun/lisjong-arena/issues/479)・#480・#481、lisjong #297。
-- [#83](https://github.com/lisbun/lisjong-project/issues/83): engine移行仕様はArena #452（closed）で[文書化済み](https://github.com/lisbun/lisjong-arena/blob/main/docs/heuristic-candidate-engine-aabb-half.md)（PR #471）。次は[Arena #472](https://github.com/lisbun/lisjong-arena/issues/472)のfixture検証。実装・校正は未起票、正式実行は未解禁。
-- [#74](https://github.com/lisbun/lisjong-project/issues/74): 学習の順序。設計担当は[lisjong #267](https://github.com/lisbun/lisjong/issues/267)（10/7から未着手）。
-- [lisjong #285](https://github.com/lisbun/lisjong/issues/285): リーチ者の待ち推定v2。H2候補の再開条件の1つ（`p` の校正改善）。門前非リーチは[#286](https://github.com/lisbun/lisjong/issues/286)でDEFERRED。
-- [Arena #455](https://github.com/lisbun/lisjong-arena/issues/455): 危険局面の打牌不一致を記述。比較先（#170の3体・bot別併記）と実行場所（lisbunのlocal）は確定済み。実行はlocalで行う。
-- [#87](https://github.com/lisbun/lisjong-project/issues/87): Rust移行の次段階はartifact供給と検証付き入力境界。
+- [#74](https://github.com/lisbun/lisjong-project/issues/74): 学習の次作業は[lisjong #267](https://github.com/lisbun/lisjong/issues/267)のfirst-party C0小規模L2a設計。10/17の外部AI調査コメントは設計材料であり未決。
+- [#83](https://github.com/lisbun/lisjong-project/issues/83): [Arena #472](https://github.com/lisbun/lisjong-arena/issues/472)のfixture検証待ち。正式実行は未解禁。
+- [lisjong #302](https://github.com/lisbun/lisjong/issues/302): 基盤実装済み。RiichiLab規則・環境別検証の残件を管理。候補の採否と基盤の正しさを分離する。
+- [#97](https://github.com/lisbun/lisjong-project/issues/97): Phase 1の残りはlisjong #297、Arena #480/#481。#98項目4〜6と運用条件はHUMAN判断待ち。family分類はADR 0004/0011を維持。
+- [lisjong #285](https://github.com/lisbun/lisjong/issues/285): リーチ者待ち推定v2。構造的待ちの精度向上を放銃確率の校正改善・棋力改善と同一視しない。
+- [#87](https://github.com/lisbun/lisjong-project/issues/87): Rust次段階はartifact供給と検証付き入力境界を限定して扱う。
 
-# Next
+# Next（順序の提案）
 
-- #98の残る項目4〜6を決め、[ADR 0011](docs/decisions/0011-autonomous-strength-loop.md)の未決部分と各ownerの運用条件を確定する。自動merge・S3自動起動・leader / Champion自動更新は未解禁。Phase 1と準備実装は進めてよい。LLM定期稼働は予算決定待ち。
+1. lisjong #267の設計を完了する。教師・行動別support・合法手とlabel・envelope・オーラス・小規模モデル・全工程費用を固定し、実装/生成/学習は後続へ分ける。
+2. Arena #472で精算・bridge/backend・固定C0のrevision差を確認する。その後に実装・校正を起票する。
+3. lisjong #302のRiichiLab規則の根拠と実対局補助証拠を整理する。未確認のままなら適用を保留し、#267/#472は続行する。
+4. lisjong #297の探索対象を1つ選定し、Arena #480の開発A/B割当手順から#481のS0〜S2へ接続する。対象選定と割当手順の準備は独立に可能。
+5. #285、#87、#99/#100は上記の後に限定着手。#98の未決項目はHUMANに従う。
 
-1. Arena #479でloop sessionからprotocol・seed・判定規則のfileを守るguardを追加する。S0の情報境界チェックはlisjong `lisjong.candidate_boundary`（#296）を使う。
-2. Arena #472でengine新protocolの前提（RuleSet・最終得点・Champion bridge・Python/Rust）をfixtureで検証する。実装・校正はその結果を見てから起票する。
-3. #267で教師・source・分割・行動別成立条件・全工程費用を固定し、実装/生成/学習を後続へ分ける。
-4. lisjong #297の探索対象を選び直す。#254の結論（打牌を替える頻度0.12〜0.14回/席・半荘、2,700半荘でも区間が0を含む）から、聴牌PUSH/FOLDの閾値は単独の探索空間としてS1で差を検出しにくい。
-5. Arena #480の前提: engine domainの開発seed 931000..931999（Arena #385、RETIRED）は#290で使い切った。以後の開発比較・S1/S2は新しいallocationが要る。
-6. #285で特徴量セット・対象条件・合否を事前登録してからselectする。使用済みseed 931000..931999・933000..933399・934000..934199・936000..936399・937000..937199はformal testに再利用しない。
+# 判断の前提
 
-推定精度、判断の質、対局の強さ、運用品質を区別する。新しい課金実行・Champion変更は各ownerの手順で別判断する。
+- [Arena #503](https://github.com/lisbun/lisjong-arena/issues/503#issuecomment-6245291382)は採用条件未達・強さの優劣未確定で完了。追加評価は今は行わず、Championを維持する。基盤は保持する。
+- engine domain 931000..931999および940000..940229は使用済みと報告されている。新しい予約ではlive ledgerを確認し、独立再確認・正式評価へ再利用しない。
+- AWS月$20は既支出込み。#503費用上限見積り2.68 USDだけから月残額を推定しない。
+- project #57 / Arena #317 / lisjong #286はDEFERRED維持。Learningを外部source・自律loop・Heuristic候補の完了待ちにしない。
+- 自動merge・S3自動起動・leader / Champion自動更新・LLM定期稼働は未解禁。課金・稼働bot変更は別判断。
