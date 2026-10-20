@@ -12,7 +12,7 @@ Question:
 
 1. leaderが5回交代するごとに、C0とS3規模で比較することを必須にするか。
 2. 仮説の系統ごとに、S3を何回まで試せるか。
-3. 月予算（AWSは#84の$20内の配分、LLM利用）、GitHub ActionsへのAWS用secret設定、停止スイッチの場所（#100）。
+3. 月予算（AWSは#84の通常月USD 20内の配分。2026年10月のみUSD 30、11月以降USD 20へ戻る、LLM利用）、GitHub ActionsへのAWS用secret設定、停止スイッチの場所（#100）。
 
 Default: 未回答なら、自動merge・S3自動起動・leader / Championの自動更新を有効化しない（実装は進めてよい）。#97のPhase 1残件（lisjong #297、Arena #480・#481。lisjong #296・Arena #479は完了済み）と、L1の準備（#99・#100の実装）は進めてよい。LLM sessionの定期稼働（L1の運用開始）は、上の質問3（予算）が決まるまで始めない。
 Why human: 偽陽性の累積の扱いと試行上限は、自動昇格の正しさに直結する。課金・secret設定は個別承認の対象。
