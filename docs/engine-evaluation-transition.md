@@ -2,7 +2,7 @@
 
 方針・残作業の正本: [project #83](https://github.com/lisbun/lisjong-project/issues/83)。本書は移行の境界を定める。Arenaのprotocol承認・実装・校正の完了を意味しない。
 
-Arena側の仕様は[Arena PR #471](https://github.com/lisbun/lisjong-arena/pull/471)で[仕様文書](https://github.com/lisbun/lisjong-arena/blob/main/docs/heuristic-candidate-engine-aabb-half.md)として固定された（2026-10-09、文書のみ）。protocol ID、block構成、主指標、RuleSet値、fixture表、record仕様の正本はその文書である。fixtureの実施、実装、校正、標本数の決定は未了で、正式評価は引き続き未解禁。
+Arena側の仕様は[Arena PR #471](https://github.com/lisbun/lisjong-arena/pull/471)で[仕様文書](https://github.com/lisbun/lisjong-arena/blob/main/docs/heuristic-candidate-engine-aabb-half.md)として固定された（2026-10-09、文書のみ）。protocol ID、block構成、主指標、RuleSet値、fixture表、record仕様の正本はその文書である。fixture・record・protocol実装と限定校正の現在地は#83を参照する。これらの完了だけで、候補固有の標本数・環境・実行計画まで確定したとは扱わず、正式評価の開始は別判断とする。
 
 ## 範囲と切替条件
 
@@ -36,7 +36,7 @@ engineの `CompletedRound` 精算を正本に、和了・放銃・ツモられ�
 
 ## ソース確認による差分と検証の入口
 
-仕様固定のownerは[Arena #452](https://github.com/lisbun/lisjong-arena/issues/452)（closed / completed）。未確認項目のfixture検証は[Arena #472](https://github.com/lisbun/lisjong-arena/issues/472)。下表はソース確認であり、対局・fixture実行による適合認証ではない。
+仕様固定のownerは[Arena #452](https://github.com/lisbun/lisjong-arena/issues/452)（closed / completed）。fixture検証の記録は[Arena #472](https://github.com/lisbun/lisjong-arena/issues/472)。下表はソース確認であり、対局・fixture実行による適合認証ではない。
 
 確認対象:
 
@@ -58,10 +58,14 @@ engineの `CompletedRound` 精算を正本に、和了・放銃・ツモられ�
 | 同点順位 | 終局時首位選定は若いseat優先 | final_rank_tie=SEAT_ORDER | 旧LocalGameResult全順位の経路もfixtureで確認 |
 | 役・槓・複数ロン | 上流GameRuleと生成経路に依存 | 複数ロン、三家和流局、槓ドラ遅延、リーチ後槓は待ち/構成保持などを明示 | 全項目の一致は未確認。GameRuleのPython constructorとdefault_tenhouでも三家和の既定が違うため、実際の生成経路を追う |
 
-### 最低限の検証範囲
+### 検証contract（現在の残件一覧ではない）
 
 1. **bridge**: 現Champion系列を使い、chi/pon/daiminkan/ankan/kakan、赤牌、reach/ron/tsumo/pass、複数応答、リーチ後槓を固定局面で検査する。MinimalPolicyの半荘integrationだけで完了としない。
 2. **backend**: 同一PolicyInputでPython/Rustの合法手・選択・必要な補助出力を照合する。同じengineと初期条件の短い試行で局数・精算・終局理由まで確認する。異なるengine間の同seed同牌山は仮定しない。
 3. **記録**: 同一実行のCompletedRoundを正本とする。既存hanchan wrapperが返す`CompletedMatch.history`には同一実行の全局の`CompletedRound`が含まれる。局精算・本場/供託・収支はこの履歴を起点とし、既存`focal_outcome_source/engine_source.py`の射影・整合検査の再利用範囲を固定する。履歴だけでは得られない立直/副露等のイベント情報が必要な指標についてのみ、必要なfactとdriver callbackの利用範囲を別に定義する。callback追加を局精算取得の前提にしない。局ID一意性・本場/供託・収支・最終精算の整合と欠損拒否、保存物だけからの再集計を検査する。
 4. **protocol**: #385はfocal paired 8半荘/seedの先例であり、AABBのblock設計を承認する根拠ではない。ID、rotation、participant/artifact hash、主指標、CI、採否を#452で固定する。Arena PR #471での固定内容: ID `arena-heuristic-candidate-engine-aabb-half-v1`、1 block = 1 seed × 6配置（4席から候補の2席を選ぶ全通り、6半荘。旧v1の4 rotationsではない）、主指標は `RuleSet.default()` でのengine `final_points`、判定は旧v1と同じ型の両側95%正規近似区間（非劣性判定なし）、正式実行はRust backendでPythonを照合基準とする。block数はprotocol定数にせず、校正後・結果を見る前にeventごとのlockへ固定する。
 5. **校正**: 実装確認後、候補に対応する時間/RSS・当月残予算・独立block分散から標本数を決める工程を別に置く。今回のソース確認だけではseed予約・正式実行へ進めない。
+
+## 計算backend移行との境界
+
+[lisjong #328](https://github.com/lisbun/lisjong/issues/328)の重複計算backend廃止は、既存のPython/Rust照合証拠を保持しつつ、仕様・回帰・native配布/実行provenanceへ検証を移す別作業である。廃止後までPython全対局比較を恒常的な必須条件にしない。移行範囲に応じてArenaのgateを明示的に更新するまでは、固定済み実験のcontractを守る。P3、候補固有の未確認行動、seed・protocol・記録の整合確認は省略しない。

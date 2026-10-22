@@ -308,7 +308,7 @@ correctness validationで複数実装を比較する場合は、実装系譜・a
 
 言語移行でownership・依存方向を変更しません。coreはPython / ML framework非依存とし、学習専用truthはonline入力に混入させません。NN推論形式はモデル採用時に決めます。
 
-移植と戦術変更を分離し、Python版を移行中のoracleとして固定入力・判断・精算の一致を検査します。各段階の高速化は必須とせず、時間・メモリ・配布・障害時動作を測定します。consumer確認後に旧計算経路を廃止またはreferenceへ隔離します。根拠は [ADR 0010](decisions/0010-rust-production-python-research.md) を参照してください。
+移植と戦術変更を分離します。Python版との一致は移行中の比較証拠とし、恒久的な正解oracleや全評価の全対局比較を必須にはしません。重複計算はconsumer・対応wheel・fallbackを棚卸しし、仕様由来の期待値・境界条件・性質・binding契約の検証へ移した処理から廃止します。Rustの出力をそのまま期待値の正当化に使わず、Rust利用不能時は明示的に失敗させます。PythonのPolicy・学習・実験制御・bindingは重複計算廃止と別の範囲です。各段階の高速化は必須とせず、時間・メモリ・配布・障害時動作を測定します。固定済み実験のcontractと過去artifactの検証可能性を維持し、Arena側のgateは明示的に整合させます。根拠は [ADR 0010](decisions/0010-rust-production-python-research.md) を参照してください。
 
 ## Evaluation substrate transition
 
