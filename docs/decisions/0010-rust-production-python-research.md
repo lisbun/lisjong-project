@@ -29,3 +29,11 @@ architecture上の移行を進めるために、各段階で大幅な高速化�
 本番Policy・推論・runnerがPythonなしで動作し、Python consumerが同じsemanticsを使い、配布・実行品質が確認された時点で全体移行を完了する。最初のcore分離だけでは完了しない。
 
 旧Python計算経路はconsumer確認後に廃止またはhistorical referenceへ隔離する。恒久的な二重保守を目標としない。稼働pin / wheelの変更、追加AWS予算、Champion昇格はこのADRから自動承認されない。
+
+## 2026-10-22の補足決定：重複計算backendの段階的廃止
+
+[lisjong #328](https://github.com/lisbun/lisjong/issues/328)に記録した方針により、上記のPython oracleは移行中の比較手段であり、恒久的な正本ではない。重複計算・consumer・fallback・CI・対応wheelを棚卸しし、仕様から決めた期待値、境界条件、性質・不変条件、binding契約へ検証を移す。Rust出力をそのまま期待値の正当化に使わない。
+
+対応環境を整備してRustを必須化し、利用不能時は明示的に失敗する。検証を移した処理からPython計算実装と比較専用CIを削除する。PythonのPolicy・学習・実験制御・bindingを一括廃止する決定ではない。Arena側の評価gateも明示的に整合させ、過去artifactのverifyへの影響を確認する。
+
+固定済み校正のPython/Rust照合は当初計画のまま保持し、以後の評価でPython全対局比較を毎回一律には要求しない。移行期の追加照合は影響範囲と既存証拠で判断する。seed管理・P3・候補固有の未確認事項・配布provenanceの確認は維持する。

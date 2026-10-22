@@ -68,3 +68,9 @@ research-track leaderとChampion昇格の自動更新を許可する。Champion�
 閾値探索をHeuristicの改善として追跡し、Learningでは学習モデルが判断を担う能力の進捗を追跡できる。両familyで試行履歴・データ分離・正式評価の規律を維持する。
 
 本ADRは#98の途中成果である。残る判断、S3/昇格の具体条件、各ownerの承認境界との整合が揃うまで#98をcloseしない。自律loopの実装・運用完了は#97と子Issueで確認する。
+
+## 2026-10-22の通常開発merge継続承認との関係
+
+[project #106](https://github.com/lisbun/lisjong-project/issues/106)と[AGENTS.md](../../AGENTS.md)により、通常開発のレビュー・必要CI・semantic reviewを満たしたPR mergeと、証拠を満たしたIssue closeは追加承認を不要とする。上記の「各ownerの明示承認」という記述は、決定当時の背景として読む。
+
+この継続承認は、無人loopの運用開始、S3自動起動、leader/Champion自動更新、LLM定期稼働の未決条件を解除しない。課金・secret/settings・稼働bot変更も別判断を維持する。
