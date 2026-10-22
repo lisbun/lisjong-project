@@ -8,7 +8,7 @@
 - [lisjong #297](https://github.com/lisbun/lisjong/issues/297): 次の探索対象を再選定。paijia v1は[Arena #522](https://github.com/lisbun/lisjong-arena/issues/522)でNOT-RECONFIRMED-DEVELOPMENT、追加対局・正式評価への進行を終了。
 - [#74](https://github.com/lisbun/lisjong-project/issues/74): L2aとCALL特徴追加案の評価は完了。次のLearning主実験は未選定。模倣診断の追加を目的にせず、判断変更・期待収支・検証費用へ接続する。
 - [#83](https://github.com/lisbun/lisjong-project/issues/83): engine評価のfixture・record・protocol実装と[Arena #517](https://github.com/lisbun/lisjong-arena/issues/517)の限定校正は完了。候補固有の標本数・環境・上限の計画が残り、正式評価は未解禁。
-- [lisjong #328](https://github.com/lisbun/lisjong/issues/328) / [#87](https://github.com/lisbun/lisjong-project/issues/87): Python重複計算の棚卸・仕様ベース検証への移行設計に着手可能。強化仮説選定と独立。
+- [lisjong #328](https://github.com/lisbun/lisjong/issues/328) / [#87](https://github.com/lisbun/lisjong-project/issues/87): 子Issue [#332](https://github.com/lisbun/lisjong/issues/332)（向聴の仕様検証）、[#333](https://github.com/lisbun/lisjong/issues/333)（batched discardのcore分離）、[#334](https://github.com/lisbun/lisjong/issues/334)（廃止・配布・consumer移行設計）へ分割済み。いずれも着手可能、実装未着手。
 - [lisjong #302](https://github.com/lisbun/lisjong/issues/302): RiichiLab規則・実対局補助証拠の残件。未確認環境への適用を保留する。
 - [#97](https://github.com/lisbun/lisjong-project/issues/97): 候補生成、Arena #480のseed手順、#481のS0〜S2が残る。#98項目4〜6はHUMAN判断待ち。
 
@@ -16,7 +16,7 @@
 
 1. #84 / lisjong #297 / #74で、既存証拠からHeuristic・Learningの仮説を比較し1件選ぶ。対象判断、損失の仕組み、介入、変更頻度、期待効果、検証費用、停止条件を明記してowner側の限定Issueへ渡す。
 2. 選んだ仮説だけを実装・安価な開発比較へ進める。通過時に別seed・別相手で再確認し、その後に#83で候補固有の正式計画を判断する。
-3. 並行してlisjong #328の移行範囲・代替検証・wheel対応を設計する。削除・pin変更・追加対局を先行しない。
+3. 保守作業はClaude Code（web）へlisjong #332→#333の順で依頼できる（必須依存ではなく共有testの競合回避）。#334の設計は独立に進める。子ごとにPR・CI・レビュー・mergeで完了し、親#328は維持。Python削除・Rust必須化・Arena gate変更は前提確定後の後続Issueへ分ける。
 4. lisjong #302の残る証拠を照合。Arena #480は手順を準備し、#481への実候補接続は#297の選定後。lisjong #285の推定v2は独立設計可能。
 5. #98の未決事項を整理し、#99/#100の準備を進める。11月初の#84月次見直しで成果・消費資源・H/L配分を確認する。
 
