@@ -8,5 +8,5 @@
 | #481への実候補の接続 | lisjong #297での新しい探索対象とArena #480の割当手順。#522不通過のpaijia v1を既定候補にしない | 候補identity生成とseed手順の準備 |
 | lisjong #286（DEFERRED） | 損失集中または予算配分による再開判断と、正例supportを得るpopulation設計 | リーチ者の待ち推定v2（#285）は独立に設計可能 |
 | 外部sourceの用途拡大 | #86でHOLDの用途に対する根拠 | first-party sourceを使う次のLearning仮説の設計 |
-| 確定安全牌のRiichiLab適用（lisjong #302） | server規則の確認と実対局補助検査の記録照合。「位置一致0件」「ロン違反0件」、engineとRiichiLabの証拠を分離する | 確認済み基盤を維持し、他の強化作業は続行 |
+| 確定安全牌のRiichiLab適用（lisjong #302） | server規則の確認と実対局補助検査の記録照合。「位置の不一致0件」「ロン違反0件」、engineとRiichiLabの証拠を分離する | 確認済み基盤を維持し、他の強化作業は続行 |
 | 自律loopの運用開始 | #98項目4〜6・予算等の未決判断（HUMAN.md）。通常開発mergeの継続承認では解除しない | #99/#100の準備実装、通常開発のレビュー・merge |
