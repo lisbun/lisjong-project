@@ -12,7 +12,7 @@ Arena側の仕様は[Arena PR #471](https://github.com/lisbun/lisjong-arena/pull
 
 1. engine revision・全RuleSet値・game mode・終了条件を明示し、RiichiEnv `4p-red-half`との差分を表にする。既定値への依存だけで一致を主張しない。
 2. 新protocol identityを割り当てる。旧 `arena-heuristic-candidate-aabb-half-v1` へのbackend option追加で済ませない。
-3. 現Championと候補の鳴き・槓・リーチ・和了・終局をPolicy bridgeで検証し、固定fixtureのPython/Rust判断・精算一致を確認する。未対応や説明不能な差があれば止める。
+3. 現Championと候補の鳴き・槓・リーチ・和了・終局をPolicy bridgeで検証し、固定fixtureの判断・精算と、採用するversionのbackend gateを確認する。未対応や説明不能な差があれば止める。
 4. 新protocol上で固定C0との比較基準を作る。実行時間・RSS・費用を候補に対応する小規模校正で測る。開発用の分散推定と正式評価populationは分離する。
 5. 狙う効果、独立なblock差の分散、検出力、標本数、主指標、判定法、費用上限を結果を見る前に固定する。
 
@@ -61,11 +61,13 @@ engineの `CompletedRound` 精算を正本に、和了・放銃・ツモられ�
 ### 検証contract（現在の残件一覧ではない）
 
 1. **bridge**: 現Champion系列を使い、chi/pon/daiminkan/ankan/kakan、赤牌、reach/ron/tsumo/pass、複数応答、リーチ後槓を固定局面で検査する。MinimalPolicyの半荘integrationだけで完了としない。
-2. **backend**: 同一PolicyInputでPython/Rustの合法手・選択・必要な補助出力を照合する。同じengineと初期条件の短い試行で局数・精算・終局理由まで確認する。異なるengine間の同seed同牌山は仮定しない。
+2. **backend**: Rust-only採用後は仕様fixture・回帰・native provenanceと新version gateを使う。過去のPython/Rust照合は旧revisionの証拠として保持する。同じengineと初期条件の再実行で選択・局数・精算・終局理由を確認し、異なるengine間の同seed同牌山は仮定しない。
 3. **記録**: 同一実行のCompletedRoundを正本とする。既存hanchan wrapperが返す`CompletedMatch.history`には同一実行の全局の`CompletedRound`が含まれる。局精算・本場/供託・収支はこの履歴を起点とし、既存`focal_outcome_source/engine_source.py`の射影・整合検査の再利用範囲を固定する。履歴だけでは得られない立直/副露等のイベント情報が必要な指標についてのみ、必要なfactとdriver callbackの利用範囲を別に定義する。callback追加を局精算取得の前提にしない。局ID一意性・本場/供託・収支・最終精算の整合と欠損拒否、保存物だけからの再集計を検査する。
-4. **protocol**: #385はfocal paired 8半荘/seedの先例であり、AABBのblock設計を承認する根拠ではない。ID、rotation、participant/artifact hash、主指標、CI、採否を#452で固定する。Arena PR #471での固定内容: ID `arena-heuristic-candidate-engine-aabb-half-v1`、1 block = 1 seed × 6配置（4席から候補の2席を選ぶ全通り、6半荘。旧v1の4 rotationsではない）、主指標は `RuleSet.default()` でのengine `final_points`、判定は旧v1と同じ型の両側95%正規近似区間（非劣性判定なし）、正式実行はRust backendでPythonを照合基準とする。block数はprotocol定数にせず、校正後・結果を見る前にeventごとのlockへ固定する。
+4. **protocol**: #385はfocal paired 8半荘/seedの先例であり、AABBのblock設計を承認する根拠ではない。ID、rotation、participant/artifact hash、主指標、CI、採否を#452で固定する。Arena PR #471での固定内容: ID `arena-heuristic-candidate-engine-aabb-half-v1`、1 block = 1 seed × 6配置（4席から候補の2席を選ぶ全通り、6半荘。旧v1の4 rotationsではない）、主指標は `RuleSet.default()` でのengine `final_points`、判定は旧v1と同じ型の両側95%正規近似区間（非劣性判定なし）、正式実行はRust backend。Python照合は旧採用gateの履歴であり、Rust-only採用後の恒常要件ではない。block数はprotocol定数にせず、校正後・結果を見る前にeventごとのlockへ固定する。
 5. **校正**: 実装確認後、候補に対応する時間/RSS・当月残予算・独立block分散から標本数を決める工程を別に置く。今回のソース確認だけではseed予約・正式実行へ進めない。
 
 ## 計算backend移行との境界
 
-[lisjong #328](https://github.com/lisbun/lisjong/issues/328)の重複計算backend廃止は、既存のPython/Rust照合証拠を保持しつつ、仕様・回帰・native配布/実行provenanceへ検証を移す別作業である。廃止後までPython全対局比較を恒常的な必須条件にしない。移行範囲に応じてArenaのgateを明示的に更新するまでは、固定済み実験のcontractを守る。P3、候補固有の未確認行動、seed・protocol・記録の整合確認は省略しない。
+[lisjong #328](https://github.com/lisbun/lisjong/issues/328)と[Arena #531](https://github.com/lisbun/lisjong-arena/issues/531)でRust-only採用を完了した。新gateは `arena-heuristic-candidate-engine-aabb-rust-only-gate-v1`。旧protocol・digest・P2証拠を変更せず、Python全対局比較を恒常要件から外す。
+
+[採用証拠](https://github.com/lisbun/lisjong-arena/issues/531#issuecomment-6381929250)はArena `2c2107c8f1eaf724fc328cb1b1fb842cdf4da5cb`、lisjong `89dd00d54d3651c1a8a720b2bea3933bb2ca0bd5`、記録されたwheel、WSL環境に限る。pin/wheel変更時は新しいidentityでgateを確認し、event lockと一致させる。AWS image上のPASS、旧artifact全件の現物確認、棋力改善を示すものではない。P3・候補固有の未確認行動・seed・protocol・記録整合・標本数/費用の条件は残る。
