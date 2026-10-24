@@ -8,6 +8,8 @@ Related: [#98](https://github.com/lisbun/lisjong-project/issues/98)「決める�
 
 項目1〜3は2026-10-12に回答済み（[記録](https://github.com/lisbun/lisjong-project/issues/98#issuecomment-6122880561)）。leaderとChampion昇格の自動更新、候補レーンの自動mergeを許可した。family分類は同日20:49 JSTの追加判断で変更済み（[#98本文](https://github.com/lisbun/lisjong-project/issues/98)、[ADR 0011](docs/decisions/0011-autonomous-strength-loop.md)）。手書き規則の閾値探索はHeuristic、主たる行動選択を学習モデルが担うPolicyはLearning。学習推定器を手書き規則へ供給する場合は「Heuristic＋学習推定器」とする。過去コメントの旧分類を現在の判断として使わない。
 
+判断用の具体案: [自律ループ準備の未承認案](docs/autonomous-loop-readiness.md#98-残る判断の具体案未承認)。本案の文書mergeは運用承認ではない。
+
 Question:
 
 1. leaderが5回交代するごとに、C0とS3規模で比較することを必須にするか。
