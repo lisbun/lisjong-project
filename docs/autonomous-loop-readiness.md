@@ -24,13 +24,13 @@ merge/CI状況は各PRを参照する。merge済みでも単体test成功を無�
 
 1. Arena #480の予約契約と#100のguard判定部は並行実装できる。
 2. lisjong #297の探索対象・identity・候補列、S0 fixture、S1の評価経路・指標・半減schedule、
-   S2の別seed/別相手・再確認基準を事前固定する。終了したpaijia v1 / genbutsu v1を既定候補に戻さない。
+   S2の別seed/別相手・再確認基準を事前固定する。終了したpaijia v1 / genbutsu v1 / call-value v1を既定候補に戻さない。
 3. Arena #481で既存の一つの開発比較経路に接続し、#480のlive bindingと#100のguardを各開始前に確認する。
 4. 非LLMのS0〜S2が成立してから、#99の仮説→実装→独立レビューを接続する。
 5. #98の未決条件と#83の候補固有正式gateが解消した後だけ、S3/自動昇格を別の実装単位で扱う。
 
-現在の対象と担当はSTATEおよびowner Issueを参照する。鳴きのfixture診断だけでは
-実候補列が揃ったとは扱わず、限定shadowの計画・結果から接続可否を決める。
+現在の対象と担当はSTATEおよびowner Issueを参照する。鳴きのfixture診断（lisjong #348）に続く
+限定shadow（Arena #536）は低頻度で停止したため、現時点で#481へ接続する実候補列はない。
 Rust-only採用は完了しているが、pin変更時は同revision wheelとgate証拠を確認する。
 自律loopと全面Rust移行の完成を、依存しない棋力改善の一律の前提にしない。
 
