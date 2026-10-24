@@ -18,7 +18,7 @@
 具体的な実装進捗はIssue/PRを正本とする。Arenaの
 [seed準備](https://github.com/lisbun/lisjong-arena/pull/529)と
 [資源guard](https://github.com/lisbun/lisjong-arena/pull/530)は途中PR。
-存在すること・単体test成功をmerge済みや運用済みと読み替えない。
+merge/CI状況は各PRを参照する。merge済みでも単体test成功を無人運用済みと読み替えない。
 
 ## 依存順序と並行担当
 

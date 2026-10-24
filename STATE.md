@@ -9,7 +9,7 @@
 - [#83](https://github.com/lisbun/lisjong-project/issues/83): 正式評価は未解禁。通過候補固有の標本数・環境・時計/上限・費用の計画が残る。
 - [lisjong #328](https://github.com/lisbun/lisjong/issues/328) / [#87](https://github.com/lisbun/lisjong-project/issues/87): D3はArena #528で完了。lisjong #346のRust必須化/限定削除はClaude Code担当、その後に配布確認・Arena採用。
 - [lisjong #302](https://github.com/lisbun/lisjong/issues/302): RiichiLab規則・実対局補助証拠の残件。未確認環境への適用を保留する。
-- [#97](https://github.com/lisbun/lisjong-project/issues/97): ChatGPTが#97〜#100・Arena #480/#481の6件を並行担当。seed準備はArena PR #529、資源guardはPR #530でCI/review中。[役割と残gate](docs/autonomous-loop-readiness.md)。
+- [#97](https://github.com/lisbun/lisjong-project/issues/97): ChatGPTが#97〜#100・Arena #480/#481の6件を並行担当。seed準備はArena PR #529、資源guardはPR #530。merge/検証状況は各PRを正本とする。[役割と残gate](docs/autonomous-loop-readiness.md)。
 
 # Next
 
