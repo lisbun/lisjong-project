@@ -29,10 +29,10 @@ merge/CI状況は各PRを参照する。merge済みでも単体test成功を無�
 4. 非LLMのS0〜S2が成立してから、#99の仮説→実装→独立レビューを接続する。
 5. #98の未決条件と#83の候補固有正式gateが解消した後だけ、S3/自動昇格を別の実装単位で扱う。
 
-2026-10-24の担当分離: lisjong #346はClaude Code、自律loop6件はChatGPT側。
-loop準備からlisjongのRust selector・計算core・pin/wheelを変更しない。
-#346の完了時には新revisionの配布確認とArena採用を別に照合する。
-自律loopとRust移行の完成を、依存しない棋力改善の一律の前提にしない。
+現在の対象と担当はSTATEおよびowner Issueを参照する。鳴きのfixture診断だけでは
+実候補列が揃ったとは扱わず、限定shadowの計画・結果から接続可否を決める。
+Rust-only採用は完了しているが、pin変更時は同revision wheelとgate証拠を確認する。
+自律loopと全面Rust移行の完成を、依存しない棋力改善の一律の前提にしない。
 
 ## #99: session間のhandoff契約
 
