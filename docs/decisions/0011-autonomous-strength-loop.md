@@ -54,6 +54,8 @@ research-track leaderとChampion昇格の自動更新を許可する。Champion�
 5. 仮説の系統ごとのS3試行上限。
 6. 月予算（AWS月$20総額内の配分・LLM利用）、GitHub ActionsのAWS用secret設定、停止スイッチの場所。
 
+判断用の未承認案と実装の接続条件は[自律ループ準備](../autonomous-loop-readiness.md)を参照する。
+
 最新の人の判断事項は[HUMAN.md](../../HUMAN.md)を参照。4〜6が決まるまで自動merge・S3自動起動・leader / Champion自動更新を有効化しない。Phase 1とLLM構成・安全装置の準備実装は進めてよい。LLM sessionの定期稼働は予算決定まで開始しない。
 
 ## Evaluation and ownership
