@@ -5,8 +5,8 @@
 | 対象 | 不足しているもの | 続行できる作業 |
 | --- | --- | --- |
 | #83のengine正式評価開始 | 候補固有の効果・分散・power・K・費用の事前計画、実行環境P3と時計/上限方式の判断。#517でJ1/N9は継続、J2の180秒は提案、約401秒の時計差は未解明。別pairの校正値を流用しない | 次仮説の選定と開発比較の設計。#472/#513/#514/#517の再実施は一般的な前提にしない |
-| #481への実候補の接続 | 実候補の仕様・identityと適合する評価契約。Arena #480のlive割当・接続証拠。paijia v1（#522不通過）、genbutsu v1（#526）・call-value v1（Arena #536）は低頻度停止、H5（#542）はSTOP-NO-SIGNAL、R1（Arena #550）はNOT-PREDICTIVEで終了。いずれも既定候補にしない | P1のpilot設計（lisjong #362）。Learning候補へ既存Heuristic契約を無条件流用しない |
-| P1のpilot実装・実行 | lisjong #362の設計（対象・比較・pilot/本学習の出口・停止条件）とDESIGN-READYの判断 | #362の設計。R1は再開条件付き保留（新仮説ができるまで作業なし。再開時はTRAINと既使用開発データだけ、TESTは調整に使わない） |
+| #481への実候補の接続 | 実候補の仕様・identityと適合する評価契約。Arena #480のlive割当・接続証拠。paijia v1（#522不通過）、genbutsu v1（#526）・call-value v1（Arena #536）は低頻度停止、H5（#542）はSTOP-NO-SIGNAL、R1（Arena #550）はNOT-PREDICTIVEで終了。いずれも既定候補にしない | P1 pilotの実装（lisjong #363、Arena #553）。Learning候補へ既存Heuristic契約を無条件流用しない |
+| P1 pilotの実行 | lisjong #363・Arena #553の実装・CI・レビュー、実行Issueでのpin・wheel・seed・予算の固定と実行承認 | lisjong #363・Arena #553の実装。R1は再開条件付き保留（新仮説ができるまで作業なし。再開時はTRAINと既使用開発データだけ、TESTは調整に使わない） |
 | lisjong #286（DEFERRED） | 損失集中または予算配分による再開判断と、正例supportを得るpopulation設計 | リーチ者の待ち推定v2（#285）は独立に設計可能 |
 | 外部sourceの用途拡大 | #86でHOLDの用途に対する根拠 | first-party sourceを使う次のLearning仮説の設計 |
 | 確定安全牌のRiichiLab適用（lisjong #302） | server規則の確認と実対局補助検査の記録照合。「位置の不一致0件」「ロン違反0件」、engineとRiichiLabの証拠を分離する | 確認済み基盤を維持し、他の強化作業は続行 |
