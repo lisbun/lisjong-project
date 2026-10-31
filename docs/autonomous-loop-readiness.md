@@ -31,7 +31,8 @@
 
 現在の対象と担当はSTATEおよびowner Issueを参照する。鳴きのfixture診断（lisjong #348）に続く
 限定shadow（Arena #536）は低頻度で停止した。H5もArena #542でSTOP-NO-SIGNAL終了。
-次はlisjong #356の限定行動価値学習の設計。現時点で#481へ接続する実候補列はない。
+Learning側のR1（lisjong #356、Arena #550）もNOT-PREDICTIVEで今回の実験を終了した（2026-11-01）。
+次の主仮説は未選定で、現時点で#481へ接続する実候補列はない。
 Learningの候補identityと適合する評価契約が決まってから接続し、既存Heuristic経路を無条件流用しない。
 Rust-only採用は完了しているが、pin変更時は同revision wheelとgate証拠を確認する。
 自律loopと全面Rust移行の完成を、依存しない棋力改善の一律の前提にしない。
