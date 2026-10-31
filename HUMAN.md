@@ -6,12 +6,12 @@ Priority: high
 Owner: lisbun（判断）
 Related: [#84](https://github.com/lisbun/lisjong-project/issues/84)、[#74](https://github.com/lisbun/lisjong-project/issues/74)、[lisjong #356](https://github.com/lisbun/lisjong/issues/356)
 
-R1実験はArena #550でNOT-PREDICTIVEとなり、今回の設計での実験は終了済み（2026-11-01記録）。採用可能な強化候補はなく、主仮説は未選定。比較用の候補は#84の最新節に整理した（未承認の提案）。
+R1実験はArena #550でNOT-PREDICTIVEとなり、今回の設計での実験は終了済み（2026-11-01記録）。採用可能な強化候補はなく、主仮説は未選定。比較用の候補は[#84の棚卸コメント](https://github.com/lisbun/lisjong-project/issues/84#issuecomment-6545362288)に整理した（未承認の提案）。
 
 Question:
 
 1. R1系列全体を終了とするか、TRAINと既使用開発データに限った事前固定の分析だけを残すか。
-2. 次の主仮説として、#84に挙げた候補のどれを設計対象にするか（または別案）。
+2. 次の主仮説として、そこに挙げた候補（P1設計・R1のTRAIN限定分析・生成費用削減）のどれを設計対象にするか（または別案）。
 
 Default: 未回答なら新しい対局・学習・seed予約・課金を始めない。既存記録だけを使う比較表の作成と、独立した保守・準備作業（#100、lisjong #302等）は進めてよい。
 Why human: 主仮説の選定とH/L配分は#84の方針判断に当たり、継続承認の範囲外。
