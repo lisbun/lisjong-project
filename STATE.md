@@ -1,6 +1,6 @@
 # Current focus
 
-P1（門前の最初のPonをPassへ替えたときの行動価値）のpilot実装。設計: [lisjong #362](https://github.com/lisbun/lisjong/issues/362)（DESIGN-READY）、実装: [lisjong #363](https://github.com/lisbun/lisjong/issues/363)・[Arena #553](https://github.com/lisbun/lisjong-arena/issues/553)。
+P1（門前の最初のPonをPassへ替えたときの行動価値）のpilot実行Issueの準備。設計: [lisjong #362](https://github.com/lisbun/lisjong/issues/362)（DESIGN-READY）、実装完了: [lisjong #363](https://github.com/lisbun/lisjong/issues/363)（`7464dae`）・[Arena #553](https://github.com/lisbun/lisjong-arena/issues/553)（`32b7f78`）。
 配分: [#84](https://github.com/lisbun/lisjong-project/issues/84)、[#74](https://github.com/lisbun/lisjong-project/issues/74)。確認日: 2026-11-01 JST。
 GitHub記録の照合。PC上のartifact・請求の独立再検証は行っていない。
 
@@ -14,10 +14,10 @@ GitHub記録の照合。PC上のartifact・請求の独立再検証は行って�
 # Next
 
 1. 11月初の月次確認は#84の棚卸コメントへ記録済み。AWS月額・残額とRiichiLabの状況は未照合（11月以降の上限USD 20）。
-2. lisjong #363（D arm wrapperと分岐点の共有predicate）とArena #553（protocol `pon-first-pass-branch-v1`）を実装する。#553のpin更新は#363のmerge後。実行は別の実行Issueで、pin・wheel・seed・予算を固定してから判断する（実装は実行承認ではない）。
+2. P1 pilotの実行Issueを起票し、pin（Arena `32b7f78`・lisjong `7464dae`・wheel `ab4dfffd…d11a`）・seed 553000..553023・上限・停止条件を固定する。実行の承認を得てから gate → rehearsal → 本計測。新pinのRust-only gate・wheelの取得と導入確認は未実施で、実行Issueの最初の段階で行う。実機での確認はすべて実行Issueの範囲で扱う。
    - pilot判定: STOP-INVALID / NOT-VIABLE-SUPPORT（将来のTEST分岐見込みが500未満、成立分岐0件、有効な配分なし）/ DESIGN-POSSIBLE。平均差の規模計算は記録のみで、E2の検出力は未取得。
    - 学習・評価の母集団は他家ロンで取り消されなかった成立分岐。SUPPORTは頻度だけでなく実行速度に強く依存する（遅い条件では500に届かない）。
-3. 生成費用の削減（記録行動の再生計測）は、pilotがNOT-VIABLE-SUPPORTで、分岐前の再実行がD armの費用の70%以上を占める場合だけ提案する。
+3. 生成費用の削減（記録行動の再生計測）は、pilotがNOT-VIABLE-SUPPORTで、D armの分岐前時間の割合（worker内測定のΣ分岐前 / ΣD arm全体）が7/10以上の場合だけ提案する。
 4. R1を再開する場合は、TRAIN（547000..547043）と既使用の開発データだけを、分析項目をIssueへ事前固定して扱う。TEST（547100..547143）は調整に使わない。
 5. lisjong #302の補助証拠、#285の推定研究、project #100の制御準備は独立管理。
 
