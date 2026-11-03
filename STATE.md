@@ -1,6 +1,6 @@
 # Current focus
 
-P1（門前の最初のPonをPassへ替えたときの行動価値）の本学習の設計。正本: [lisjong #365](https://github.com/lisbun/lisjong/issues/365)（設計のみ）。pilot: [Arena #555](https://github.com/lisbun/lisjong-arena/issues/555)（DESIGN-POSSIBLE、[レビュー](https://github.com/lisbun/lisjong/issues/362#issuecomment-6597953690)）。
+P1（門前の最初のPonをPassへ替えたときの行動価値）の本学習の実装。設計: [lisjong #365](https://github.com/lisbun/lisjong/issues/365)（DESIGN-READY）、実装: [lisjong #366](https://github.com/lisbun/lisjong/issues/366)・[Arena #556](https://github.com/lisbun/lisjong-arena/issues/556)。pilot: [Arena #555](https://github.com/lisbun/lisjong-arena/issues/555)（DESIGN-POSSIBLE）。
 配分: [#84](https://github.com/lisbun/lisjong-project/issues/84)、[#74](https://github.com/lisbun/lisjong-project/issues/74)。確認日: 2026-11-03 JST。
 GitHub記録の照合。PC上のartifact・請求の独立再検証は行っていない。
 
@@ -15,9 +15,9 @@ GitHub記録の照合。PC上のartifact・請求の独立再検証は行って�
 # Next
 
 1. 11月初の月次確認は#84の棚卸コメントへ記録済み。AWS月額・残額とRiichiLabの状況は未照合（11月以降の上限USD 20）。
-2. lisjong #365でP1本学習を設計する（設計のみ）。主出口E2（定数予測に対するΔMSEを独立TESTで1回）、特徴・モデルはTRAIN生成前に固定、SELECTなし。K = 296（平均差の規模計算）をE2の必要seed数に使わない。
-   - 60 seedsのブロックは約10,649秒で3時間上限までの余裕は約151秒。各ブロック開始時に固定seed数のまま速度を再確認し、超える見積もりなら開始せず停止する。実行機械・条件を固定する。
-   - 実行承認は設計と予算の確認後の別判断。pilotのseed 553000..553023は開発用途のみ。
+2. lisjong #366（reader・10列encoding・ridge artifact・E2 / E3評価）とArena #556（source protocol `pon-first-pass-source-v1`）を実装する。#556のpin更新は#366のmerge後。実行は別の実行Issueで、承認後に TRAIN生成 → fit・凍結 → TEST生成 → 評価1回。
+   - 決定（#365）: WSL、10列・ridge λ = 10・SELECTなし、収集14時間（12時間から変更、ユーザー判断）、1 split = 120 seeds × 3ブロック（40）、TRAIN 556000..556119 / TEST 556200..556319、主出口E2（P5 > 0）。各ブロック開始時に「3時間・session 4時間」と「累積14時間」を固定seed数のまま再確認する。
+   - 差の分散がR1の約2.8倍で、E2が通る見込みは高くない前提。E2不通過はNOT-PREDICTIVEで救済なし。
 3. 生成費用の削減（記録行動の再生計測）は、pilotがNOT-VIABLE-SUPPORTで、D armの分岐前時間の割合（worker内測定のΣ分岐前 / ΣD arm全体）が7/10以上の場合だけ提案する。
 4. R1を再開する場合は、TRAIN（547000..547043）と既使用の開発データだけを、分析項目をIssueへ事前固定して扱う。TEST（547100..547143）は調整に使わない。
 5. lisjong #302の補助証拠、#285の推定研究、project #100の制御準備は独立管理。
