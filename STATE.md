@@ -1,34 +1,32 @@
 # Current focus
 
-P1（門前の最初のPonをPassへ替えたときの行動価値）の本学習の実装。設計: [lisjong #365](https://github.com/lisbun/lisjong/issues/365)（DESIGN-READY）、実装: [lisjong #366](https://github.com/lisbun/lisjong/issues/366)・[Arena #556](https://github.com/lisbun/lisjong-arena/issues/556)。pilot: [Arena #555](https://github.com/lisbun/lisjong-arena/issues/555)（DESIGN-POSSIBLE）。
-配分: [#84](https://github.com/lisbun/lisjong-project/issues/84)、[#74](https://github.com/lisbun/lisjong-project/issues/74)。確認日: 2026-11-03 JST。
-GitHub記録の照合。PC上のartifact・請求の独立再検証は行っていない。
+P1本学習は完了（NOT-PREDICTIVE）。次の主仮説は未選定。
+配分・選定入口: [#84](https://github.com/lisbun/lisjong-project/issues/84)。Learningの順序・データ境界: [#74](https://github.com/lisbun/lisjong-project/issues/74)。
+確認日: 2026-11-06 JST。GitHub記録の照合で、PC上のartifact・請求の独立再監査は行っていない。
 
 # Now
 
-- [lisjong #356](https://github.com/lisbun/lisjong/issues/356)は設計DESIGN-READYでcompleted。R1（リーチの初回だけダマ、以後Champion）を対象に、lisjong #357/#360、Arena #544/#548で実装、Arena #546でpilot（PILOT-COMPLETE）を実施。
-- [Arena #550の結果](https://github.com/lisbun/lisjong/issues/356#issuecomment-6545223612): **NOT-PREDICTIVE**。凍結artifact `b765c5d7…e0d3`をTEST 44 seeds（546行）で1回評価し、E2のΔMSE −15.48、P5 −45.30で不通過。予測できないことの証明ではなく、強さの結果でもない。
-- ユーザー判断で今回のR1実験（encoding v1・ridge λ=10・TRAIN/TEST各44 seeds・12時間）を終了。E4設計Arena #551はnot planned。R1系列は終了とせず、**再開条件付きで保留**（[決定](https://github.com/lisbun/lisjong-project/issues/84#issuecomment-6545612729)）。具体的な新仮説ができるまで作業を割り当てない。
-- P1 pilot（Arena #555）: **DESIGN-POSSIBLE**。成立116 / 24 seeds、INVALID 0、取消率0、2 seed再実行一致、COMMITTED。c = 157.24秒 / seed、T* = 120、TEST分岐見込み580 ≥ 500。対の相関 −0.039・分散比1.037で、同じ山でも差のばらつきは減らなかった（R1の0.171と異なる）。分岐前時間の割合0.90（SUPPORT-OKのため案Cは非該当）。判定は学習開始の承認ではない。
-- 限定候補の終了はpaijia v1・genbutsu v1・call-value v1・H5に続き、Learning側のR1で5件目。採用可能な強化候補はない。Championは維持。
+- [Arena #558](https://github.com/lisbun/lisjong-arena/issues/558)は結果レビュー済み・completed。E2 ΔMSE −64.25（P5 −127.63、P95 −2.06）でNOT-PREDICTIVE。今回の10特徴・ridge λ=10はTESTでTRAIN平均より二乗誤差が大きかった。予測不能の証明でも棋力の結果でもない。
+- TRAIN 120 seeds / 696行、TEST 120 seeds / 654行（分岐あり118 seeds）。fit・評価各1回、INVALID 0、verify・回収hash一致、両allocation COMMITTEDは[レビュー記録](https://github.com/lisbun/lisjong-arena/issues/558#issuecomment-6661359139)を参照。
+- 収集46,472.4秒（約12.91時間）。初回STOP後、TEST結果を見る前の承認・[Arena PR #559](https://github.com/lisbun/lisjong-arena/pull/559)でブロック4時間・累積22時間へ変更してr2を完了。旧3時間/14時間は履歴。AWS利用なし。
+- lisjong #362/#365の設計、#363/#366・Arena #553/#556の実装、Arena #555のpilotは完了済み。実装・設計待ちへ戻さない。
+- R1今回実験（Arena #550）はNOT-PREDICTIVEで終了。系列は[ユーザー判断](https://github.com/lisbun/lisjong-project/issues/84#issuecomment-6545612729)どおり再開条件付き保留。具体的な新仮説ができるまで作業を割り当てない。
+- 採用可能な新候補はない。Champion維持。P1はE4へ進めず、今回の終了をP1系列やLearning全体の棄却へ拡張しない。
 
 # Next
 
-1. 11月初の月次確認は#84の棚卸コメントへ記録済み。AWS月額・残額とRiichiLabの状況は未照合（11月以降の上限USD 20）。
-2. lisjong #366（reader・10列encoding・ridge artifact・E2 / E3評価）とArena #556（source protocol `pon-first-pass-source-v1`）を実装する。#556のpin更新は#366のmerge後。実行は別の実行Issueで、承認後に TRAIN生成 → fit・凍結 → TEST生成 → 評価1回。
-   - 決定（#365）: WSL、10列・ridge λ = 10・SELECTなし、収集14時間（12時間から変更、ユーザー判断）、1 split = 120 seeds × 3ブロック（40）、TRAIN 556000..556119 / TEST 556200..556319、主出口E2（P5 > 0）。各ブロック開始時に「3時間・session 4時間」と「累積14時間」を固定seed数のまま再確認する。
-   - 差の分散がR1の約2.8倍で、E2が通る見込みは高くない前提。E2不通過はNOT-PREDICTIVEで救済なし。
-3. 生成費用の削減（記録行動の再生計測）は、pilotがNOT-VIABLE-SUPPORTで、D armの分岐前時間の割合（worker内測定のΣ分岐前 / ΣD arm全体）が7/10以上の場合だけ提案する。
-4. R1を再開する場合は、TRAIN（547000..547043）と既使用の開発データだけを、分析項目をIssueへ事前固定して扱う。TEST（547100..547143）は調整に使わない。
-5. lisjong #302の補助証拠、#285の推定研究、project #100の制御準備は独立管理。
+1. #84 / #74、lisjong #297で次仮説の比較材料を整理する。最大3案に対象判断・頻度/support・既存結果と異なる根拠・収支への接続・費用・主出口・停止条件を揃え、選定後に1案を限定Issueへ渡す。新しい主実験は未選定。
+2. P1の再fit・追加seed・TEST再評価、R1再開、TRAIN追加分析、生成費用削減を自動開始しない。新仮説や分析はscope・利用データ・項目を先に固定する。
+3. AWS月額・残額とRiichiLabの稼働版・対局数・表示レートは未照合。10月月次記録は#84の11月1日コメント、11月のP1完了は#84本文を参照。
+4. lisjong #302の補助証拠、#285の推定研究、project #87の保守、#97/#99/#100の自律loop準備は独立管理。一般的な前提にしない。
 
 # 判断の前提
 
-- Champion維持。H5・paijia v1・genbutsu v1・call-value v1・R1を追加seed/条件緩和/TESTでの再fitで救済しない。
-- 既使用DEVELOPMENT（H5 539000..539023、pilot 544000..544015、rehearsal 472000..472006）とR1のTRAIN/TESTを、後から未使用TESTへ改称しない。同一seedの全局/席/R/D派生を同一groupにする。
+- H5・paijia v1・genbutsu v1・call-value v1・R1・P1の既存結果を追加seed/条件緩和/TEST調整で救済しない。
+- R1 TRAIN 547000..547043 / TEST 547100..547143、P1 TRAIN 556000..556119 / TEST 556200..556319は使用済み。TESTを調整や新しい独立評価へ流用しない。
+- H5 539000..539023、R1 pilot 544000..544015、P1 pilot 553000..553023、既使用rehearsalは開発/動作確認用途。同一seedの全局/席/R/D派生を同一groupにする。
 - 既存OFFLINE-EVALを再利用せず、旧#326・大規模NN・RLへ自動移行しない。project #57 / Arena #317 / lisjong #286はDEFERRED。
-- #83の正式評価は候補固有の契約待ち。予測精度、判断改善、半荘棋力を区別する。
-- 個人PCでの長時間実行は、負荷・電源条件で速度が変わる（Arena #550の最初の準備はNOT-STARTED-BUDGETで停止）。開始条件・上限はmax(monotonic, realtime)で判定する。
+- #83の正式評価は候補固有の契約待ち。予測精度、判断改善、半荘棋力、運用品質を区別する。
 - native必須。pin変更時は同revision wheelと必要gateを確認する。
-- AWS上限は11月以降USD 20（既支出込み・credit適用前）。残額未照合、課金実行は別判断。
-- 通常merge/closeはAGENTSの継続承認。無人loopの条件は[HUMAN](HUMAN.md)を参照。
+- AWS上限は月USD 20（既支出込み・credit適用前）。残額未照合、課金実行は別判断。個人PCの使用・時間上限は個別承認を後続へ一般化しない。
+- 通常merge/closeはAGENTSの継続承認。無人loopの条件は[HUMAN](HUMAN.md)、個別の依存は[BLOCKING](BLOCKING.md)を参照。
