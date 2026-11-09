@@ -1,5 +1,12 @@
 # Human attention
 
+## Overall比較の実行計画（Arena #583）
+
+[Arena #588](https://github.com/lisbun/lisjong-arena/issues/588)の実行保護・環境適格性を確認し、
+WSL/AWS、資源・時間・保存・費用上限を固定した具体的な400半荘計画を提示してから判断を求める。
+今は実装・検証と計画作成を進める段階であり、承認依頼を先行させない。
+未承認ならformal seed予約・課金・正式対局を開始しない。二モデルlock・局記録のmergeは実行承認ではない。
+
 ## 自律強化ループの残る権限項目（ADR 0011）
 
 Priority: medium
