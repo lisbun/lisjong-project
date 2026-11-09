@@ -7,6 +7,18 @@ WSL/AWS、資源・時間・保存・費用上限を固定した具体的な400�
 今は実装・検証と計画作成を進める段階であり、承認依頼を先行させない。
 未承認ならformal seed予約・課金・正式対局を開始しない。二モデルlock・局記録のmergeは実行承認ではない。
 
+## 11月のAWS実額の照合（Arena #571ほか）
+
+Owner: lisbun（AWS consoleの確認はユーザー管理環境）
+Related: [Arena #571](https://github.com/lisbun/lisjong-arena/issues/571)、[#84](https://github.com/lisbun/lisjong-project/issues/84)
+
+11月はArena #564 / #573 / #582 / #571（pilotと12時間参加）でAWSを使用した。記録にあるのは見積りと承認上限だけで、請求実額・月残額は未照合。
+#571の12時間参加は2026-11-10 06:34 JSTに起動済みで、終了後のstrict回収・teardown確認が残る。
+
+Question: Cost Explorerの11月実額（credit適用前）と、#571 pilotの終了時CPU creditを含む最終請求。
+Default: 未回答なら月残額を不明として扱い、新しい課金実行を提案しない。費用を伴わない作業は続ける。
+Why human: 請求情報とAWS credentialはユーザー管理環境にある。
+
 ## 自律強化ループの残る権限項目（ADR 0011）
 
 Priority: medium
