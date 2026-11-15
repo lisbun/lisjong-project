@@ -9,5 +9,5 @@
 | #481への実候補の接続 | 実候補の仕様・identityと適合する評価契約。Arena #480のlive割当・接続証拠。paijia v1（#522不通過）、genbutsu v1（#526）・call-value v1（Arena #536）は低頻度停止、H5（#542）はSTOP-NO-SIGNAL、R1（Arena #550）・P1（Arena #558）の今回実験はNOT-PREDICTIVEで終了。lisjong #375（形式聴牌）・#377はINCONCLUSIVE等で終了、#379はRRだけSUPPORTED-DEVELOPMENT（東1局のみ）。RR以外は既定候補にしない | 次仮説の比較・設計（project #84/#74）。Learning候補へ既存Heuristic契約を無条件流用しない |
 | lisjong #286（DEFERRED） | 損失集中または予算配分による再開判断と、正例supportを得るpopulation設計 | リーチ者の待ち推定v2（#285）は独立に設計可能 |
 | 外部sourceの用途拡大 | #86でHOLDの用途に対する根拠 | first-party sourceを使う次のLearning仮説の設計 |
-| 次のAWS課金実行（[Arena #571](https://github.com/lisbun/lisjong-arena/issues/571)の延長・長期観測等） | 実行中の#571 12時間参加の終了・回収・teardown記録、11月のAWS実額と月上限USD 20の照合、個別承認 | WSLでの#588検証、費用を伴わない計画作成 |
+| 次のAWS課金実行（[Arena #571](https://github.com/lisbun/lisjong-arena/issues/571)の延長・長期観測等） | 実行中の#571 12時間参加の終了・回収・teardown記録、11月のAWS実額と月上限USD 20の照合、個別承認 | WSL等での費用を伴わない開発・検証と計画作成 |
 | 自律loopの運用開始 | #98項目4〜6・予算等の未決判断（HUMAN.md）。通常開発mergeの継続承認では解除しない | #99/#100の準備実装、通常開発のレビュー・merge |
