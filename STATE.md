@@ -12,11 +12,11 @@ L2aのLearning family昇格に続き、現行Heuristic対L2aのOverall正式比�
   承認済みの2 Bot 12時間参加を11/10 06:34 JSTに1回起動した（[記録](https://github.com/lisbun/lisjong-arena/issues/571#issuecomment-6752076699)、監視付きUSD 4）。終了・回収・teardownの結果は未記録。棋力判定・正式評価・Overallには使わない。
 
 - Heuristic候補の開発比較（AI作業環境、費用0）: [lisjong #375](https://github.com/lisbun/lisjong/issues/375)・[#377](https://github.com/lisbun/lisjong/issues/377)・[#379](https://github.com/lisbun/lisjong/issues/379)は完了。#379（東1局6,000局）でリーチ下1向聴の押し引き候補RRだけがSUPPORTED-DEVELOPMENT（+210点/分岐、95% [+93, +329]）。形式聴牌・通った牌は区間が0を含み、単独副露者の現物は平均が負。
-  東1局の1局収支だけの結果で、Championは変更していない。半荘での開発比較は[Arena #591](https://github.com/lisbun/lisjong-arena/issues/591)（計画案、未承認）。
+  RRの半荘開発比較[Arena #591](https://github.com/lisbun/lisjong-arena/issues/591)（engine AABB、K = 500 block・3,000半荘、seed 591000..591499 COMMITTED）は平均 +0.85 pt・95% [−0.64, +2.35]・SD 17.1 ptで、区間が0を含みINCONCLUSIVE-DEVELOPMENT。Championは変更していない。
 
 # Next
 
-1. Arena #591の計画（K・環境・判定規則）の承認を得て、RRの半荘開発比較を1回行う。結果が良ければ正式評価の計画（#83のgate）へ進む。
+1. 候補RRの扱いを決める（未決、[#84の記録](https://github.com/lisbun/lisjong-project/issues/84)）。正式評価へ進む場合、今回の点推定どおりなら検出力80%に約3,150 block（約19,000半荘）が必要で、#83のgateも要る。追加seedでの救済はしない。
 2. [#84](https://github.com/lisbun/lisjong-project/issues/84) / [#74](https://github.com/lisbun/lisjong-project/issues/74)、[lisjong #297](https://github.com/lisbun/lisjong/issues/297)で新仮説の比較材料を整理する。対象判断・頻度/support・既存結果と異なる根拠・収支経路・費用・停止条件を揃える。新案の採用は未決。
 3. lisjong #285の推定研究は独立管理、#286はDEFERRED。project #87の保守、#97/#99/#100の自律loop準備は強化の一般的な前提にしない。lisjong #302は完了済み。
 4. #571の12時間参加の終了後、strict回収・teardown・費用を#571へ記録する。延長・追加run・長期rating観測は別承認。固定Policy期間の表示レートは[registry](docs/riichilab-strength-registry.md)（最終観測2026-10-07）へ未反映。
